@@ -9,7 +9,8 @@
       "Bash(python3 -)",
       "Bash(echo \"EXIT=$?\")",
       "Read(//tmp/**)",
-      "Bash(rm -rf __pycache__ output)"
+      "Bash(rm -rf __pycache__ output)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
