@@ -1,0 +1,105 @@
+﻿GDD Draft #2
+July 21, 2026
+Gachō Badi (Goose Buddy) 
+Executive Summary
+Tomodachi Life meets Untitled Goose Game to form Gachō Badi. Users build their island of customizable residents and buildings in the presence of a precocious  goose. It combines the creation aspect and resident interaction (aka “drama”) of Tomodachi Life with the goal/task based gameplay and simple directional maneuverability of Untitled Goose Game — but where Untitled Goose Game’s goose causes chaos for its own sake, Gachō Badi’s goose is a quiet community-builder. Every task the goose completes nudges residents a little closer together — not only into romance, but into friendships, mended neighborly ties, and a stronger sense of belonging on the island — and the island only reaches harmony once the goose has helped everyone on it connect.
+
+
+Main game play is to build the island and use the Goose to draw residents and locations together. Unlike Untitled Goose Game, the goose’s antics aren’t mischief for its own sake — every task the goose completes is really a small act of connection: reuniting old friends, welcoming a newcomer into the group, mending a neighborly falling-out, or nudging two residents toward romance, told through the same indirect, physical-comedy problem solving Untitled Goose Game is known for. Romance is just one thread among many — friendship and a sense of community are just as central to what the goose is building. Tasks will appear as residents and shops or homes are built. The game ends once all available tasks are completed and the island is united.
+Game Mechanics (player-facing actions and loop)
+A lone goose inhabits the island. In this tutorial-like stage, the goose (controlled by the user via directional buttons and interaction commands (e.g. honk, pick up items, duck, dash, etc) must complete a few simple tasks (e.g. pick up trash, swim at the edge of the island, etc)). 
+
+
+Every task the goose completes contributes to credit. Credits enable the user to create and introduce residents or “actors” and buildings to the island. Notably all residents will have personality (e.g. irritable, friendly, cowardly, etc) and “roles” (e.g. baker, teacher, gym instructor, etc). Buildings will have “interactive” architecture that residents and the goose can play with (e.g. gate that can open and close, hose that can spout water, mailbox that can hold mail, etc). 
+
+
+Tasks are actions that the goose must perform on residents or buildings, framed around bringing residents together rather than causing them trouble. For example, the task can be for the goose to get two residents who’ve drifted apart to reconnect. This is an open-ended solution, which more often than not, requires an indirect interaction. One possible solution is to grab a memento one resident dropped and return it to them in front of the friend they’ve lost touch with, giving the two a reason to talk. Another solution is to honk at a resident carrying two coffees so they notice their neighbor sitting alone and offer to share one, warming the resident up to a neighbor they’d drifted from. Note that the availability of tasks is dependent on the residents and architecture available and that most tasks can be completed in any order (i.e. most tasks are non-sequential).
+
+
+The creativity comes from the open-ended solutions and the endless possibilities based on the residents’ roles, personalities, relationships, and layout of buildings.
+
+
+Game loop
+The goose completes tasks based on the available residents and locations. The more tasks they complete, more credits they have and are able to populate the island with more residents and buildings. With more residents and buildings, more tasks appear. The cycle continues between tasks generation and completion, credit gathering, and island expansion. 
+
+
+Game Completion
+Once all roles and locations are unlocked and all tasks are completed, every resident has been brought together by the goose, the island will live in harmony, and the game ends.
+
+
+AI Architecture (what each agent does in the game, described through its effect on gameplay)
+Writer Agent
+Given a set of actors (and their personalities), generate text based dialogue and actions between them. The text is similar to how a screenplay shows dialogue lines and directional cues. 
+
+
+Director Agent  - “One Wow”
+Takes the output of the writer agent (i.e. “screenplay”) and controls the residents (aka actors) to follow the script, which is the active gameplay the user sees.
+
+
+Character Personality Agent
+Plays a role in developing the personality of the actor. Takes in the user’s input of the actor’s movement (scaling from slow to fast), speech (reserved to candid), energy (flat to excited), intelligence (dull to astute) and sets their personality (e.g. sociable and forgiving).
+
+
+Task Creator Agent - “One Wow”
+Takes in the available roles and buildings on the island and generates a list of tasks that nudge two or more residents toward connection — friendship and community belonging as much as romance — rather than mischief for its own sake.
+
+
+Scene Orchestrator
+Creates other agents specifically for “scene” development. For example, there should be a Menu for creating an actor’s appearance or a building’s appearance. The scene orchestrator is prompted by the programmer on the scene they expect. It outputs the code and instructions on where to place it in the code base. Such scenes and agents are noted below:
+
+
+Character Appearance Agent
+Plays a role in creating an actor’s appearance.
+
+
+Building Designer Agent
+Plays a role in developing the buildings
+
+
+Island Layout Agent
+Plays a role in developing the appearance of the island
+
+
+
+
+Technical Strategy (agent roles, token budget, API constraints)
+I have educational access to ChatGPT from my university, so I am unfamiliar with costs, so the following was generated by ChatGPT. 
+
+
+Agent
+	Input Budget
+	Output Budget
+	Invocation Pattern
+	Personality Agent
+	300–700
+	150–300
+	Once during creation or editing
+	Writer Agent
+	800–1,800
+	250–700
+	Important interactions
+	Director Agent
+	700–1,500
+	300–700
+	Major scenes only
+	Task Creator
+	1,200–2,500
+	700–1,500
+	Batch generation
+	Appearance Agent
+	300–800
+	100–300
+	Character creation
+	Building Designer
+	800–1,800
+	300–900
+	Building creation
+	Island Layout Agent
+	1,000–2,500
+	300–1,000
+	Layout changes
+	Scene Orchestrator
+	3,000–12,000
+	2,000–8,000
+	Development time only
+	Approximate budgets per invocation
