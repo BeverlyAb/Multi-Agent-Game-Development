@@ -13,7 +13,7 @@ flowchart TB
         CPA["Character Personality Agent<br/>in: sliders<br/>out: resident.traits"]
         CAA["Character Appearance Agent<br/>in: resident.traits<br/>out: resident.appearance"]
         ILA["Island Layout Agent<br/>in: buildings<br/>out: building.location"]
-        BDA["Building Designer Agent<br/>in: building.interactive_feature (raw)<br/>out: building.interactive_feature (designed)"]
+        BDA["Building Designer Agent<br/>in: building.interactive_feature (raw)<br/>out: building.interactive_feature (designed) + building.designed"]
 
         SO -->|"'appearance' request"| CAA
         SO -->|"'building' request"| BDA
@@ -68,9 +68,10 @@ producing worse output:
   Agent** checks for it and refuses to run without it (it's quoted
   directly into the screenplay's scene-setting line).
 - **Building Designer Agent** overwrites `building.interactive_feature`
-  with its designed spec — **Task Creator** and **Writer** read that
-  field, so a skipped Building Designer means they work off the raw seed
-  hint instead of the designed feature.
+  with its designed spec and sets `building.designed = True`. **Task
+  Creator** and **Writer** both check `building.designed` and refuse to
+  run without it, so a skipped Building Designer can't silently slip the
+  raw seed text through as if it were finished content.
 - **Task Creator Agent** is one of the GDD's two "One Wow" agents: no
   task list, no screenplay, no staged actions — the runtime tick returns
   empty immediately.

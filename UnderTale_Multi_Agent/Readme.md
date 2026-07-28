@@ -1,16 +1,44 @@
 # Undertale — Encounter Generation Crew
 
-**This crew is built for *Undertale***, Toby Fox's 2015 RPG. The player
-is a human child navigating the Underground, fighting or sparing
-monsters in bullet-hell "SOUL box" encounters via a FIGHT/ACT/ITEM/MERCY
-menu, and the choice to spare or fight shapes which of Undertale's
-routes (Pacifist / Neutral / Genocide) the story follows.
+**This crew is a working prototype of my capstone game's own AI
+Architecture.** My capstone is *Gachō Badi (Goose Buddy)* (GDD at
+`../gdd-review-kit/gdd.txt`), and its GDD already specifies an 8-agent
+AI Architecture: a Character Personality Agent, a Task Creator Agent, a
+Writer Agent, a Director Agent, and a Scene Orchestrator that spins up a
+Character Appearance Agent, Building Designer Agent, and Island Layout
+Agent. This folder implements that exact architecture — same 8 roles,
+same hard-dependency pipeline — but exercises it against *Undertale*
+(Toby Fox's 2015 RPG) instead of Gachō Badi's own content, because
+Undertale's systems (personality-driven monsters, bullet-hell combat,
+route-based reactions) are public and well-documented enough to pressure-
+test the architecture end-to-end before writing Gachō Badi-specific
+prompts. Every agent here has a direct, named counterpart in Gachō
+Badi's GDD — see the mapping below.
 
-This folder is a working, dependency-free multi-agent crew that
-generates the content driving one of those encounters: a monster's
-battle personality, its context-sensitive ACT menu, the room it's
-fought in, the bullet pattern it throws, the battle-box dialogue for
-that turn, and the actual staged turn behavior the player sees.
+## How this maps onto Gachō Badi (Goose Buddy)
+
+| This crew (Undertale) | Gachō Badi's GDD equivalent | Shared generative pattern |
+|---|---|---|
+| Monster Personality Agent | Character Personality Agent | **Personality creation**: both take four numeric dials (here: aggression/playfulness/sympathy/chattiness; in the GDD: movement/speech/energy/intelligence) and turn them into named personality traits — the same bucket-then-summarize architecture, just re-labeled per game |
+| Bullet Pattern Designer Agent ("One Wow") | Task Creator Agent ("One Wow") | Batch-generates the central "thing to do" (an attack pattern / a task) from the roles and environment currently available — the GDD calls this and its Writer/Director counterpart the two agents load-bearing enough that a bad generation is visible to the player |
+| Dialogue Writer Agent | Writer Agent | Given personality-tagged actors and a prompt (an attack / a task), writes screenplay-style dialogue and directional cues |
+| Battle Director Agent ("One Wow") | Director Agent ("One Wow") | **Maneuverability**: takes the Writer's screenplay and turns it into the actual player-visible movement — here, "SOUL: dodge inside the bullet-hell box"; in Gachō Badi, the goose's directional movement (honk/duck/dash) reacting to the same screenplay. Both are the one agent that converts a script into physical, player-controlled motion |
+| Encounter Orchestrator | Scene Orchestrator | Dispatches a designer/programmer's content request to the right sub-agent instead of generating content itself |
+| ACT Menu Designer Agent | (feeds Task Creator's task design) | Personality determines the concrete interaction verbs available for a given actor — Undertale surfaces this as a literal ACT menu; the GDD achieves the same effect implicitly ("task availability is dependent on residents... their roles, personalities, relationships") |
+| Room Designer Agent | Building Designer Agent | Enriches a raw environment hint into a full design spec centered on one interactive/environmental feature |
+| Area Layout Agent | Island Layout Agent | Assigns each environment piece a location along a fixed set of named zones |
+
+So "personality creation" and "maneuverability" — the two mechanics
+named when this mapping was requested — aren't just similar in spirit:
+`MonsterPersonalityAgent._bucket()` and `BattleDirectorAgent.run()` in
+this repo are architecturally identical to what Gachō Badi's Character
+Personality Agent and Director Agent need to do, just fed Undertale
+dials and an Undertale screenplay instead of Gachō Badi's sliders and
+goose antics. Swapping the seed data in `main.py` and the flavor text in
+`agents.py` for Gachō Badi's residents/buildings/tasks — without
+touching the pipeline's structure or its validation — is the intended
+next step once this architecture is confirmed against a known-good
+reference game.
 
 ## What this crew produces
 
@@ -59,10 +87,10 @@ to reproduce the break yourself).
 | Monster Personality Agent | battle dials (aggression/playfulness/sympathy/chattiness) | `monster.traits` + battle-style summary |
 | Area Layout Agent | list of rooms | `room.location` (mutates in place) |
 | ACT Menu Designer Agent | monster *(requires `.traits`)* | `monster.act_options` (mutates in place) |
-| Room Designer Agent | room *(requires `.location`)* | `room.feature`, enriched (mutates in place) |
+| Room Designer Agent | room *(requires `.location`)* | `room.feature`, enriched, + `room.designed = True` (mutates in place) |
 | Encounter Orchestrator | a request kind (`act_menu`/`room`/`layout`) + payload | dispatches to the matching agent above, returns its result |
-| Bullet Pattern Designer Agent ("One Wow") | monsters *(need `.traits`)* + rooms *(need `.location`)* | attack list (bullet patterns) |
-| Dialogue Writer Agent | an attack + monsters *(need `.act_options`)* + rooms *(need `.location`)* | battle script (box dialogue + flavor text) |
+| Bullet Pattern Designer Agent ("One Wow") | monsters *(need `.traits`)* + rooms *(need `.location` + `.designed`)* | attack list (bullet patterns) |
+| Dialogue Writer Agent | an attack + monsters *(need `.act_options`)* + rooms *(need `.location` + `.designed`)* | battle script (box dialogue + flavor text) |
 | Battle Director Agent ("One Wow") | battle script + attack + rooms *(need `.location`)* | staged turn actions — the actual gameplay |
 
 Implementation: [`agents.py`](agents.py) (agent definitions, with each
@@ -102,7 +130,7 @@ completion and produces correct, inspectable output when you don't.
 ## Running it
 
 ```bash
-cd CrewAI
+cd UnderTale_Multi_Agent
 python3 main.py
 ```
 

@@ -31,6 +31,7 @@ class Building:
     kind: str  # e.g. bakery, mailbox, garden
     interactive_feature: str  # e.g. "hose that can spout water"
     location: str = ""  # set by IslandLayoutAgent; required by TaskCreator/Writer/Director
+    designed: bool = False  # set by BuildingDesignerAgent; required by TaskCreator/Writer
 
 
 @dataclass

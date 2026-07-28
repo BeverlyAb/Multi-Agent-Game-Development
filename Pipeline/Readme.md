@@ -56,10 +56,10 @@ the break yourself).
 | Character Personality Agent | slider values (movement/speech/energy/intelligence) | `resident.traits` + summary |
 | Island Layout Agent | list of buildings | `building.location` (mutates in place) |
 | Character Appearance Agent | resident *(requires `.traits`)* | `resident.appearance` (mutates in place) |
-| Building Designer Agent | building *(requires `.location`)* | `building.interactive_feature`, enriched (mutates in place) |
+| Building Designer Agent | building *(requires `.location`)* | `building.interactive_feature`, enriched, + `building.designed = True` (mutates in place) |
 | Scene Orchestrator | a request kind (`appearance`/`building`/`layout`) + payload | dispatches to the matching agent above, returns its result |
-| Task Creator Agent ("One Wow") | residents *(need `.traits`)* + buildings *(need `.location`)* | task list |
-| Writer Agent | a task + residents *(need `.appearance`)* + buildings *(need `.location`)* | screenplay (dialogue + directional cues) |
+| Task Creator Agent ("One Wow") | residents *(need `.traits`)* + buildings *(need `.location` + `.designed`)* | task list |
+| Writer Agent | a task + residents *(need `.appearance`)* + buildings *(need `.location` + `.designed`)* | screenplay (dialogue + directional cues) |
 | Director Agent ("One Wow") | screenplay + task + buildings *(need `.location`)* | staged actions — the actual gameplay |
 
 Implementation: [`agents.py`](agents.py) (agent definitions, with each

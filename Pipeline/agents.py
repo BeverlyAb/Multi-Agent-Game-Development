@@ -106,6 +106,11 @@ class TaskCreatorAgent(BaseAgent):
                     f"TaskCreatorAgent requires '{building.name}' to have an assigned location "
                     "-- run IslandLayoutAgent first."
                 )
+            if not building.designed:
+                raise ValueError(
+                    f"TaskCreatorAgent requires '{building.name}' to be designed "
+                    "-- run BuildingDesignerAgent first."
+                )
         for i, resident in enumerate(residents):
             building = buildings[i % len(buildings)]
             template = self.TEMPLATES[i % len(self.TEMPLATES)]
@@ -154,6 +159,11 @@ class WriterAgent(BaseAgent):
             raise ValueError(
                 f"WriterAgent requires '{building.name}' to have an assigned location "
                 "-- run IslandLayoutAgent first."
+            )
+        if building is not None and not building.designed:
+            raise ValueError(
+                f"WriterAgent requires '{building.name}' to be designed "
+                "-- run BuildingDesignerAgent first."
             )
         fallback_lines = [
             f"INT./EXT. {building.name.upper() if building else 'ISLAND'} - {building.location.upper() if building else 'DAY'}",
@@ -248,9 +258,9 @@ class BuildingDesignerAgent(BaseAgent):
     """
     Input:  a Building with a raw .interactive_feature hint.
     Output: an enriched design spec, written back into
-            building.interactive_feature so every downstream agent
-            (Task Creator, Writer) reads the designed version, not the
-            raw seed text.
+            building.interactive_feature, plus building.designed = True
+            so every downstream agent (Task Creator, Writer) can require
+            and confirm a designed building, not just the raw seed text.
     """
 
     def run(self, building: Building) -> str:
@@ -261,6 +271,7 @@ class BuildingDesignerAgent(BaseAgent):
             fallback=fallback,
         )
         building.interactive_feature = spec
+        building.designed = True
         self._log(f"designed building {building.name}")
         return spec
 

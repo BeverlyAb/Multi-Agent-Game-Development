@@ -116,6 +116,11 @@ class BulletPatternDesignerAgent(BaseAgent):
                     f"BulletPatternDesignerAgent requires '{room.name}' to have an assigned location "
                     "-- run AreaLayoutAgent first."
                 )
+            if not room.designed:
+                raise ValueError(
+                    f"BulletPatternDesignerAgent requires '{room.name}' to be designed "
+                    "-- run RoomDesignerAgent first."
+                )
         for i, monster in enumerate(monsters):
             room = rooms[i % len(rooms)]
             template = self.TEMPLATES[i % len(self.TEMPLATES)]
@@ -168,6 +173,11 @@ class DialogueWriterAgent(BaseAgent):
             raise ValueError(
                 f"DialogueWriterAgent requires '{room.name}' to have an assigned location "
                 "-- run AreaLayoutAgent first."
+            )
+        if room is not None and not room.designed:
+            raise ValueError(
+                f"DialogueWriterAgent requires '{room.name}' to be designed "
+                "-- run RoomDesignerAgent first."
             )
         fallback_lines = [
             f"* {monster.name if monster else 'A monster'} blocks the way in {room.location if room else 'the Underground'}.",
@@ -270,9 +280,10 @@ class RoomDesignerAgent(BaseAgent):
 
     """
     Input:  a Room with a raw .feature hint.
-    Output: an enriched design spec, written back into room.feature so
-            every downstream agent (Bullet Pattern Designer, Dialogue
-            Writer) reads the designed version, not the raw seed text.
+    Output: an enriched design spec, written back into room.feature, plus
+            room.designed = True so every downstream agent (Bullet
+            Pattern Designer, Dialogue Writer) can require and confirm a
+            designed room, not just the raw seed text.
     """
 
     def run(self, room: Room) -> str:
@@ -283,6 +294,7 @@ class RoomDesignerAgent(BaseAgent):
             fallback=fallback,
         )
         room.feature = spec
+        room.designed = True
         self._log(f"designed room {room.name}")
         return spec
 

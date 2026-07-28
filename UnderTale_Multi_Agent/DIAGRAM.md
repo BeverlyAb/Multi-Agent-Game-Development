@@ -13,7 +13,7 @@ flowchart TB
         MPA["Monster Personality Agent<br/>in: battle dials<br/>out: monster.traits"]
         AMA["ACT Menu Designer Agent<br/>in: monster.traits<br/>out: monster.act_options"]
         ALA["Area Layout Agent<br/>in: rooms<br/>out: room.location"]
-        RDA["Room Designer Agent<br/>in: room.feature (raw)<br/>out: room.feature (designed)"]
+        RDA["Room Designer Agent<br/>in: room.feature (raw)<br/>out: room.feature (designed) + room.designed"]
 
         EO -->|"'act_menu' request"| AMA
         EO -->|"'room' request"| RDA
@@ -68,9 +68,10 @@ producing worse output:
   Writer Agent** checks for it and refuses to run without it (it's quoted
   directly into the battle box's ACT line).
 - **Room Designer Agent** overwrites `room.feature` with its designed
-  spec — **Bullet Pattern Designer** and **Dialogue Writer** read that
-  field, so a skipped Room Designer means they work off the raw seed
-  hint instead of the designed environmental feature.
+  spec and sets `room.designed = True`. **Bullet Pattern Designer** and
+  **Dialogue Writer** both check `room.designed` and refuse to run
+  without it, so a skipped Room Designer can't silently slip the raw
+  seed text through as if it were finished content.
 - **Bullet Pattern Designer Agent** is one of this crew's two "One Wow"
   agents: no attack list, no battle script, no turn actions — the battle
   turn returns empty immediately.

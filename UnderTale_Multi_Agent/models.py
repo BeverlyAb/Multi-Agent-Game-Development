@@ -31,6 +31,7 @@ class Room:
     kind: str  # e.g. puzzle room, sentry station, battle arena
     feature: str  # e.g. "conveyor-belt puzzle that reverses on a switch"
     location: str = ""  # set by AreaLayoutAgent; required by BulletPatternDesigner/DialogueWriter/BattleDirector
+    designed: bool = False  # set by RoomDesignerAgent; required by BulletPatternDesigner/DialogueWriter
 
 
 @dataclass
