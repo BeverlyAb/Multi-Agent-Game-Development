@@ -28,20 +28,34 @@ Once all roles and locations are unlocked and all tasks are completed, every res
 
 
 AI Architecture (what each agent does in the game, described through its effect on gameplay)
-Writer Agent
-Given a set of actors (and their personalities), generate text based dialogue and actions between them. The text is similar to how a screenplay shows dialogue lines and directional cues. 
-
-
-Director Agent  - “One Wow”
-Takes the output of the writer agent (i.e. “screenplay”) and controls the residents (aka actors) to follow the script, which is the active gameplay the user sees.
-
+Note: this section was rewritten after building working, tested reference crews for both parent games (a Tomodachi Life crew and an Untitled Goose Game crew — see ../TomodachiLife_Multi_Agent and ../UntitledGooseGame_Multi_Agent). Building those surfaced two gaps the original 8-agent list didn’t cover — nothing tracked how residents felt about each other, and nothing guaranteed a task was actually solvable with the goose’s own moves — so this version folds in the pieces of each reference crew Gachō Badi actually needs, on top of the roles that still held up.
 
 Character Personality Agent
 Plays a role in developing the personality of the actor. Takes in the user’s input of the actor’s movement (scaling from slow to fast), speech (reserved to candid), energy (flat to excited), intelligence (dull to astute) and sets their personality (e.g. sociable and forgiving).
 
 
+Relationship Agent (new)
+Borrowed from the Tomodachi Life reference crew’s Relationship Agent. Reads every resident’s personality and tracks how each pair of residents on the island feels about each other (e.g. close friends, drifted apart, friendly rivals, a budding crush). This is what makes a task like “these two used to be close” mean something — without it, the Task Creator Agent would only ever be able to invent generic prompts instead of tasks about somebody’s actual relationship.
+
+
 Task Creator Agent - “One Wow”
-Takes in the available roles and buildings on the island and generates a list of tasks that nudge two or more residents toward connection — friendship and community belonging as much as romance — rather than mischief for its own sake.
+Takes in the available roles, buildings, and resident relationships on the island and generates a list of tasks that nudge two or more residents toward connection — friendship and community belonging as much as romance — rather than mischief for its own sake.
+
+
+Goose Solution Planner Agent (new)
+Borrowed from the Untitled Goose Game reference crew’s Goose Verb Planner Agent. Given a task, plans at least one valid indirect solution using only the goose’s own verbs (honk, grab, pick up, duck, dash, etc.) and never dialogue, since the goose itself never speaks. This guarantees every task the Task Creator Agent generates is actually solvable before the player ever sees it, and doubles as the source for an in-game hint if the player gets stuck.
+
+
+Writer Agent
+Given a set of actors (and their personalities and relationships to each other), generate text based dialogue and actions between them. The text is similar to how a screenplay shows dialogue lines and directional cues.
+
+
+Director Agent  - “One Wow”
+Takes the output of the writer agent (i.e. “screenplay”) together with the Goose Solution Planner’s verb plan, and controls both the residents (aka actors) and the goose’s staged actions to follow them, which is the active gameplay the user sees.
+
+
+Newscaster Agent (new)
+Borrowed from the Tomodachi Life reference crew’s Newscaster Agent. Once a task resolves, recaps what happened as a short island bulletin or bit of overheard gossip, so the player can see the island’s sense of community visibly growing one resolved task at a time.
 
 
 Scene Orchestrator
@@ -74,6 +88,10 @@ Agent
 	300–700
 	150–300
 	Once during creation or editing
+	Relationship Agent
+	400–900
+	150–400
+	Once per resident pair, refreshed after major tasks
 	Writer Agent
 	800–1,800
 	250–700
@@ -86,6 +104,14 @@ Agent
 	1,200–2,500
 	700–1,500
 	Batch generation
+	Goose Solution Planner
+	900–2,000
+	400–1,000
+	Once per task, at generation time
+	Newscaster Agent
+	300–700
+	100–300
+	After each resolved task
 	Appearance Agent
 	300–800
 	100–300

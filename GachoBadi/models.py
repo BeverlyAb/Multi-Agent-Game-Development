@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 @dataclass
@@ -23,6 +23,7 @@ class Resident:
     traits: List[str] = field(default_factory=list)
     personality_summary: str = ""
     appearance: str = ""
+    relationships: Dict[str, str] = field(default_factory=dict)  # set by RelationshipAgent: other resident -> label
 
 
 @dataclass
@@ -39,6 +40,7 @@ class Task:
     task_id: int
     description: str
     target_resident: str
+    other_resident: Optional[str]  # the resident on the other side of the relationship, if any
     involves_building: Optional[str]
     status: str = "open"  # open | completed
 
@@ -50,7 +52,19 @@ class Screenplay:
 
 
 @dataclass
+class VerbPlan:
+    task_id: int
+    lines: List[str]  # goose-verb-only stage directions (honk/grab/pick up/duck/dash) -- no dialogue, ever
+
+
+@dataclass
 class StagedAction:
     actor: str
     action: str
     location: str
+
+
+@dataclass
+class NewsBulletin:
+    task_id: int
+    headline: str

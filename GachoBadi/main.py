@@ -42,6 +42,7 @@ def main() -> int:
         crew = GachoBadiCrew(seed=7)
 
         residents = crew.run_personality_pass(residents)
+        residents = crew.run_relationship_pass(residents)
         dev_time_result = crew.run_dev_time_pass(residents, buildings)
         tick_result = crew.run_game_tick(residents, buildings)
 
@@ -61,7 +62,10 @@ def main() -> int:
         print(f"Tasks generated      : {len(tick_result['tasks'])}")
         if tick_result["screenplay"]:
             print(f"Screenplay lines     : {len(tick_result['screenplay'].lines)}")
+            print(f"Verb plan lines      : {len(tick_result['verb_plan'].lines)}")
             print(f"Staged actions       : {len(tick_result['staged_actions'])}")
+        if tick_result["news"]:
+            print(f"News headline        : {tick_result['news'].headline}")
         print(f"LLM provider in use  : {crew.llm.provider} "
               f"({'live API calls' if crew.llm.provider != 'mock' else 'local deterministic fallback'})")
         print(f"Full run written to  : {os.path.abspath(out_path)}")

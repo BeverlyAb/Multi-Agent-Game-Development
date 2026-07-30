@@ -1,5 +1,7 @@
-"""The Crew: coordinates all eight agents through one dev-time pass and one
-runtime game-loop tick, matching the data flow in DIAGRAM.md.
+"""The Crew: coordinates all eleven agents through a personality pass, a
+relationship pass, a dev-time pass, and one runtime game-loop tick (tasks
+-> screenplay + verb plan -> staging -> news bulletin), matching the data
+flow in DIAGRAM.md.
 """
 from __future__ import annotations
 
@@ -9,12 +11,15 @@ from typing import List
 from agents import (
     CharacterPersonalityAgent,
     DirectorAgent,
+    GooseSolutionPlannerAgent,
+    NewscasterAgent,
+    RelationshipAgent,
     SceneOrchestratorAgent,
     TaskCreatorAgent,
     WriterAgent,
 )
 from llm_client import LLMClient
-from models import Building, Resident, Sliders
+from models import Building, Resident
 
 
 class GachoBadiCrew:
@@ -23,15 +28,23 @@ class GachoBadiCrew:
     def __init__(self, seed: int = 7):
         self.llm = LLMClient(seed=seed)
         self.personality_agent = CharacterPersonalityAgent(self.llm)
+        self.relationship_agent = RelationshipAgent(self.llm)
         self.task_creator = TaskCreatorAgent(self.llm)
         self.writer = WriterAgent(self.llm)
+        self.goose_planner = GooseSolutionPlannerAgent(self.llm)
         self.director = DirectorAgent(self.llm)
+        self.newscaster = NewscasterAgent(self.llm)
         self.scene_orchestrator = SceneOrchestratorAgent(self.llm)
 
     def run_personality_pass(self, residents: List[Resident]) -> List[Resident]:
         """Enriches raw resident requests (name/role/sliders) with traits + a summary."""
         print("\n=== PERSONALITY PASS: Character Personality Agent ===")
         return [self.personality_agent.run(r.name, r.role, r.sliders) for r in residents]
+
+    def run_relationship_pass(self, residents: List[Resident]) -> List[Resident]:
+        """Maps how every pair of residents feels about each other. Requires .traits."""
+        print("\n=== RELATIONSHIP PASS: Relationship Agent ===")
+        return self.relationship_agent.run(residents)
 
     def run_dev_time_pass(self, residents: List[Resident], buildings: List[Building]) -> dict:
         """Simulates a programmer asking the Scene Orchestrator for new content.
@@ -49,29 +62,42 @@ class GachoBadiCrew:
         return {"layout": layout, "building_specs": building_specs, "appearances": appearances}
 
     def run_game_tick(self, residents: List[Resident], buildings: List[Building]) -> dict:
-        """One pass of the runtime loop: tasks -> screenplay -> staging.
+        """One pass of the runtime loop: tasks -> screenplay + verb plan -> staging -> news.
 
-        Expects `residents` to already carry personality traits + an
-        appearance spec, and `buildings` to already carry an assigned
-        location (see run_personality_pass and run_dev_time_pass) --
-        TaskCreatorAgent, WriterAgent, and DirectorAgent all validate
-        this and raise if a prior agent was skipped.
+        Expects `residents` to already carry personality traits +
+        relationships + an appearance spec, and `buildings` to already
+        carry an assigned location + design (see run_personality_pass,
+        run_relationship_pass, and run_dev_time_pass) -- TaskCreatorAgent,
+        WriterAgent, GooseSolutionPlannerAgent, DirectorAgent, and
+        NewscasterAgent all validate this and raise if a prior agent was
+        skipped.
         """
         print("\n=== RUNTIME GAME LOOP TICK ===")
 
         tasks = self.task_creator.run(residents, buildings)
         if not tasks:
-            return {"personalities": residents, "tasks": [], "screenplay": None, "staged_actions": []}
+            return {
+                "personalities": residents,
+                "tasks": [],
+                "screenplay": None,
+                "verb_plan": None,
+                "staged_actions": [],
+                "news": None,
+            }
 
         active_task = tasks[0]
         screenplay = self.writer.run(active_task, residents, buildings)
-        staged_actions = self.director.run(screenplay, active_task, buildings)
+        verb_plan = self.goose_planner.run(active_task, buildings)
+        staged_actions = self.director.run(screenplay, verb_plan, active_task, buildings)
+        news = self.newscaster.run(staged_actions, active_task)
 
         return {
             "personalities": residents,
             "tasks": tasks,
             "screenplay": screenplay,
+            "verb_plan": verb_plan,
             "staged_actions": staged_actions,
+            "news": news,
         }
 
     @staticmethod
