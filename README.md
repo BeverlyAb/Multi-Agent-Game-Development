@@ -37,14 +37,13 @@ Once all roles and locations are unlocked and all tasks are completed, every res
 
 ## Scope & First Playable Slice
 
-This is a semester project, not a shipped game, so attempting the full runtime pipeline against an open-ended roster from day one isn't realistic — this section exists because an earlier review correctly flagged that the GDD had no timeline or scoping acknowledgment. The first playable slice is a single vertical scenario: one resident archetype (a baker, "Hazel"), one building ("Hazel's Bakery"), and the one task chain needed to reconnect Hazel with a single drifted-apart neighbor. Every agent in the AI Architecture section below has to work end-to-end for that one scenario before any additional roles, buildings, or task variety get added.
+This is a semester project, not a shipped game, so attempting the full runtime pipeline against an open-ended roster from day one isn't realistic — this section exists because an earlier review correctly flagged that the GDD had no timeline or scoping acknowledgment. The first playable slice is a single vertical scenario: one resident archetype (a baker, "Hazel"), one building ("Hazel's Bakery"), and the one task chain needed to reconnect Hazel with a single drifted-apart neighbor. The target is core gameplay — goose movement, one resolvable task, and one screenplay-plus-verb-plan-driven moment — working end to end within 3 weeks. Everything else (additional roles/buildings, extra task variety, visual polish, story or level content) is deliberately deferred until after that core loop is proven, not attempted alongside it.
 
-- **Milestone 1** (weeks 1-3): Character Personality Agent and Relationship Agent working for 2 hardcoded residents, validated in isolation — no goose gameplay yet.
-- **Milestone 2** (weeks 4-6): Scene Orchestrator, Character Appearance Agent, Building Designer Agent, and Island Layout Agent wired up for 1 building; Task Creator Agent generating a task from that fixed scenario.
-- **Milestone 3** (weeks 7-9): Writer Agent, Goose Solution Planner Agent, and Director Agent staging that one task end-to-end in engine. This is the first point the game is actually playable.
-- **Milestone 4** (weeks 10-12): Newscaster Agent, then — and only then — additional roles and buildings beyond the single vertical slice.
+- **Week 1:** Character Personality Agent and Relationship Agent working for 2 hardcoded residents (Hazel and one drifted-apart neighbor), validated in isolation — no goose gameplay yet.
+- **Week 2:** Scene Orchestrator, Character Appearance Agent, Building Designer Agent, and Island Layout Agent wired up for the one building; Task Creator Agent generating the one task from that fixed scenario.
+- **Week 3:** Writer Agent, Goose Solution Planner Agent, and Director Agent staging that one task end-to-end in engine, with basic goose movement and honk/grab/duck/dash controls. This is the point core gameplay is playable — a player can move the goose, trigger the task, and watch it resolve.
 
-The loop needs to prove itself fun at the smallest possible scale before the roster grows; if Milestone 3 isn't fun with one resident and one building, adding five more of each won't fix that.
+Everything past week 3 is additive, not load-bearing: the Newscaster Agent, additional roles/buildings, task variety, resident/building aesthetics, and any extra levels or story content get built on top of a core loop that already works, not as a prerequisite for it. If that 3-week core loop isn't fun with one resident and one building, more content won't fix that — so no time is spent on embellishment before that checkpoint.
 
 ## AI Architecture
 
