@@ -1,6 +1,6 @@
-Beverly Abadines Quon
+
 GDD Draft #6
-August 1, 2026
+
 Gachō Badi (Goose Buddy)
 
 Revision note (Draft #6): removes the in-fiction credit economy entirely (it was added in Draft #5 to answer the design review board's "the economy has no math" finding) and replaces the credit-driven unlock loop with a direct task-set completion gate: the Task Creator Agent now generates tasks in sets of 5-9 at a time, and resolving 75% of the current set (rounded up) unlocks up to 2 more residents and up to 2 more buildings from the fixed roster, which in turn triggers the next set — no currency changes hands anywhere. This isn't a step backward on the review board's economy concern; it removes the thing that needed balancing instead of balancing it. Every other Draft #5 commitment (finite game, one-way-door task consumption, explicit goal-state completion detection, the continuously-reactive Director Agent) is preserved below, just described without credits.
