@@ -22,7 +22,7 @@ executes, so the crew always produces output.
 """
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from llm_client import LLMClient
 from models import ChecklistItem, Prop, RoutineDials, StagedGag, VerbPlan, Villager
@@ -167,7 +167,10 @@ class GooseVerbPlannerAgent(BaseAgent):
         "Untitled Goose Game has no dialogue and no cutscenes -- everything is solved through "
         "five verbs and object physics. This agent replaces the 'Writer Agent' slot other crews "
         "in this repo have, because writing dialogue here would be inauthentic; what the game "
-        "actually needs is a plan of physical actions."
+        "actually needs is a plan of physical actions. It is also this crew's Goose Solution "
+        "Planner: the Checklist Creator does not certify solvability, so no item may reach the "
+        "player until this agent proves a goose-only solution actually exists against the "
+        "current cast and world model -- it never invents a villager or prop that isn't there."
     )
 
     """
@@ -175,15 +178,35 @@ class GooseVerbPlannerAgent(BaseAgent):
             enriched by VillagerDesignerAgent (needs .appearance) and the
             prop enriched by AreaLayoutAgent (needs .location) and
             PropDesignerAgent (needs .designed).
-    Output: VerbPlan consumed by ReactionDirectorAgent.
+    Output: a VerbPlan consumed by ReactionDirectorAgent, or None if no
+            solution is reachable -- e.g. the item's target_villager or
+            involves_prop no longer names anything in the current cast.
+            An unreachable item is the caller's (Crew's) job to retire, the
+            same way an unavailable resident/building/item is handled in
+            the GDD: re-plan or retire the task outright, never leave the
+            player stuck chasing something that isn't there.
     """
 
     VERBS = ["Honk", "Grab", "Run", "Tug", "Flap"]
 
-    def run(self, item: ChecklistItem, villagers: List[Villager], props: List[Prop]) -> VerbPlan:
+    def run(self, item: ChecklistItem, villagers: List[Villager], props: List[Prop]) -> Optional[VerbPlan]:
         villager = next((v for v in villagers if v.name == item.target_villager), None)
-        prop = next((p for p in props if p.name == item.involves_prop), None)
-        if villager is not None and not villager.appearance:
+        prop = next((p for p in props if p.name == item.involves_prop), None) if item.involves_prop else None
+
+        if villager is None:
+            self._log(
+                f"item #{item.item_id} UNREACHABLE -- no villager named '{item.target_villager}' "
+                "in the current cast"
+            )
+            return None
+        if item.involves_prop and prop is None:
+            self._log(
+                f"item #{item.item_id} UNREACHABLE -- no prop named '{item.involves_prop}' "
+                "in the current world model"
+            )
+            return None
+
+        if not villager.appearance:
             raise ValueError(
                 f"GooseVerbPlannerAgent requires '{villager.name}' to have a designed appearance "
                 "-- run VillagerDesignerAgent first."
@@ -200,7 +223,7 @@ class GooseVerbPlannerAgent(BaseAgent):
             )
         fallback_lines = [
             f"* SCENE: {prop.location if prop else 'the village'}.",
-            f"* ({villager.name if villager else 'A villager'} is {villager.appearance if villager else 'nearby'}.)",
+            f"* ({villager.name} is {villager.appearance}.)",
             f"* Goose: {self.VERBS[0]} near {prop.name if prop else 'the nearest object'}.",
             f"* Goose: {self.VERBS[1]} {prop.name if prop else 'the object'}.",
             f"* Objective resolves: {item.description}",

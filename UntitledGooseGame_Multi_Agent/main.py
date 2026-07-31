@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from dataclasses import asdict
 
 from crew import UntitledGooseGameCrew
 from models import Prop, RoutineDials, Villager
@@ -63,6 +64,10 @@ def main() -> int:
             "prep_pass": prep_result,
             "mischief_tick": UntitledGooseGameCrew.to_jsonable(tick_result),
         }
+        # Props are mutated in place (location, designed) by run_prep_pass, but
+        # tick_result only carries villagers/checklist/verb_plan/staged_gags --
+        # the web/ Phaser client needs the enriched props too, to place them.
+        output["mischief_tick"]["props"] = [asdict(p) for p in props]
 
         os.makedirs("output", exist_ok=True)
         out_path = os.path.join("output", "run.json")

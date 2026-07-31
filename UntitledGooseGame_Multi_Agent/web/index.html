@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Untitled Goose Game -- Village Mischief (Phaser)</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #1b2a1b; overflow: hidden; }
+  #game-container { display: flex; align-items: center; justify-content: center; height: 100vh; }
+  canvas { image-rendering: pixelated; }
+</style>
+</head>
+<body>
+<div id="game-container"></div>
+
+<!--
+  Fallback copy of ../output/run.json, embedded so this page also works when
+  opened directly as a file:// URL (no server, no CORS-able fetch). game.js
+  tries to fetch the live file first (see loadVillageData in game.js) and
+  only falls back to this embedded copy if that fetch is blocked or missing.
+  Regenerate this block by re-running `python3 main.py` and pasting the new
+  output/run.json contents in below.
+-->
+<script id="village-data" type="application/json">
+{
+  "game": "Untitled Goose Game",
+  "prep_pass": {
+    "layout": "Layout: Garden Rake (Garden), Sun Hat (High Street), Toy Plane (Back Gardens), spread across the village.",
+    "prop_specs": [
+      "Garden Rake (garden tool): affords flings mud when stepped on.",
+      "Sun Hat (clothing item): affords blows off in even a light breeze.",
+      "Toy Plane (toy): affords squeaks loudly when squeezed."
+    ],
+    "appearances": [
+      "The Gardener: a gardener whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without.",
+      "The Shopkeeper: a shopkeeper whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without.",
+      "The Boy: a boy whose barely notices what's missing, easily tricked by the obvious, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without."
+    ]
+  },
+  "mischief_tick": {
+    "villagers": [
+      {
+        "name": "The Gardener",
+        "role": "gardener",
+        "dials": { "territorialness": 90, "obliviousness": 20, "fussiness": 70, "patience": 30 },
+        "traits": ["guards their things like a hawk", "sharp-eyed and hard to fool", "rattled by the smallest thing out of place", "snaps the instant something's wrong"],
+        "routine_summary": "The Gardener, the gardener, guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong.",
+        "appearance": "The Gardener: a gardener whose guards their things like a hawk shows in their outfit and the one prop they're never without."
+      },
+      {
+        "name": "The Shopkeeper",
+        "role": "shopkeeper",
+        "dials": { "territorialness": 60, "obliviousness": 35, "fussiness": 85, "patience": 40 },
+        "traits": ["guards their things like a hawk", "sharp-eyed and hard to fool", "rattled by the smallest thing out of place", "snaps the instant something's wrong"],
+        "routine_summary": "The Shopkeeper, the shopkeeper, guards their things like a hawk, sharp-eyed and hard to fool.",
+        "appearance": "The Shopkeeper: a shopkeeper whose guards their things like a hawk shows in their outfit."
+      },
+      {
+        "name": "The Boy",
+        "role": "boy",
+        "dials": { "territorialness": 40, "obliviousness": 80, "fussiness": 55, "patience": 15 },
+        "traits": ["barely notices what's missing", "easily tricked by the obvious", "rattled by the smallest thing out of place", "snaps the instant something's wrong"],
+        "routine_summary": "The Boy, the boy, barely notices what's missing, easily tricked by the obvious.",
+        "appearance": "The Boy: a boy whose barely notices what's missing shows in their outfit."
+      }
+    ],
+    "checklist": [
+      { "item_id": 1, "description": "Get The Gardener to drop Garden Rake without noticing.", "target_villager": "The Gardener", "involves_prop": "Garden Rake", "status": "open" },
+      { "item_id": 2, "description": "Make The Shopkeeper lock themselves out near High Street using Sun Hat.", "target_villager": "The Shopkeeper", "involves_prop": "Sun Hat", "status": "open" },
+      { "item_id": 3, "description": "Steal Toy Plane from right under The Boy's nose at Back Gardens.", "target_villager": "The Boy", "involves_prop": "Toy Plane", "status": "open" }
+    ],
+    "props": [
+      { "name": "Garden Rake", "kind": "garden tool", "affordance": "flings mud when stepped on", "location": "Garden", "designed": true },
+      { "name": "Sun Hat", "kind": "clothing item", "affordance": "blows off in even a light breeze", "location": "High Street", "designed": true },
+      { "name": "Toy Plane", "kind": "toy", "affordance": "squeaks loudly when squeezed", "location": "Back Gardens", "designed": true }
+    ]
+  }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

@@ -9,7 +9,7 @@
     ],
     "appearances": [
       "The Gardener: a gardener whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without.",
-      "The Shopkeeper: a shopkeeper whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without.",
+      "The Shopkeeper: a shopkeeper whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, slow to notice a pattern shows in their outfit and the one prop they're never without.",
       "The Boy: a boy whose barely notices what's missing, easily tricked by the obvious, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without."
     ]
   },
@@ -40,16 +40,16 @@
           "territorialness": 60,
           "obliviousness": 35,
           "fussiness": 85,
-          "patience": 40
+          "patience": 65
         },
         "traits": [
           "guards their things like a hawk",
           "sharp-eyed and hard to fool",
           "rattled by the smallest thing out of place",
-          "snaps the instant something's wrong"
+          "slow to notice a pattern"
         ],
-        "routine_summary": "The Shopkeeper, the shopkeeper, guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong. (territorialness/obliviousness/fussiness/patience: 60/35/85/40)",
-        "appearance": "The Shopkeeper: a shopkeeper whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without."
+        "routine_summary": "The Shopkeeper, the shopkeeper, guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, slow to notice a pattern. (territorialness/obliviousness/fussiness/patience: 60/35/85/65)",
+        "appearance": "The Shopkeeper: a shopkeeper whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, slow to notice a pattern shows in their outfit and the one prop they're never without."
       },
       {
         "name": "The Boy",
@@ -76,21 +76,24 @@
         "description": "Get The Gardener to drop Garden Rake without noticing.",
         "target_villager": "The Gardener",
         "involves_prop": "Garden Rake",
-        "status": "open"
+        "status": "open",
+        "retire_reason": ""
       },
       {
         "item_id": 2,
         "description": "Make The Shopkeeper lock themselves out near High Street using Sun Hat.",
         "target_villager": "The Shopkeeper",
         "involves_prop": "Sun Hat",
-        "status": "open"
+        "status": "open",
+        "retire_reason": ""
       },
       {
         "item_id": 3,
         "description": "Steal Toy Plane from right under The Boy's nose at Back Gardens.",
         "target_villager": "The Boy",
         "involves_prop": "Toy Plane",
-        "status": "open"
+        "status": "open",
+        "retire_reason": ""
       }
     ],
     "verb_plan": {
@@ -113,6 +116,29 @@
         "actor": "The Gardener",
         "action": "notice, react, and give chase or give up",
         "location": "Garden"
+      }
+    ],
+    "props": [
+      {
+        "name": "Garden Rake",
+        "kind": "garden tool",
+        "affordance": "Garden Rake (garden tool): affords flings mud when stepped on.",
+        "location": "Garden",
+        "designed": true
+      },
+      {
+        "name": "Sun Hat",
+        "kind": "clothing item",
+        "affordance": "Sun Hat (clothing item): affords blows off in even a light breeze.",
+        "location": "High Street",
+        "designed": true
+      },
+      {
+        "name": "Toy Plane",
+        "kind": "toy",
+        "affordance": "Toy Plane (toy): affords squeaks loudly when squeezed.",
+        "location": "Back Gardens",
+        "designed": true
       }
     ]
   }

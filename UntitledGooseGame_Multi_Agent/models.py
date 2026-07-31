@@ -45,7 +45,11 @@ class ChecklistItem:
     description: str  # the mischief objective, e.g. "Make the groundskeeper lock himself out"
     target_villager: str
     involves_prop: Optional[str]
-    status: str = "open"  # open | ticked off
+    status: str = "open"  # open | done | retired
+    # Set by GooseVerbPlannerAgent when it retires an item instead of planning
+    # it -- e.g. target_villager/involves_prop no longer exist in this cast.
+    # Empty for "open"/"done" items.
+    retire_reason: str = ""
 
 
 @dataclass
