@@ -14,7 +14,9 @@
       "Bash(echo \"NORMAL RUN EXIT=$?\")",
       "Bash(rm -rf __pycache__)",
       "Bash(ls -la UnderTale_Multi_Agent/output)",
-      "Bash(ls -la UnderTale_Multi_Agent/__pycache__)"
+      "Bash(ls -la UnderTale_Multi_Agent/__pycache__)",
+      "Bash(echo \"gdd.txt diff exit=$?\")",
+      "Bash(echo \"gdd copy.txt diff exit=$?\")"
     ]
   }
 }

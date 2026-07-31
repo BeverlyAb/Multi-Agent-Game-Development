@@ -6,11 +6,13 @@ Goose Game: the player controls a goose that pulls off indirect,
 open-ended antics on custom residents and buildings — but unlike
 Untitled Goose Game's chaos-for-its-own-sake, every task here nudges two
 or more residents toward connection (friendship, community belonging, or
-romance), earning credits that unlock more residents/buildings, which
-unlock more tasks, until the island is united.
+romance). Tasks appear in sets of 5-9; resolving 75% of a set unlocks up
+to 2 more residents and 2 more buildings from a fixed roster, which
+opens the next set, until the island is united. There is no in-game
+currency anywhere in this loop.
 
 This folder is a working, dependency-free implementation of the eleven
-agents described in that GDD's **AI Architecture** section (Draft #3),
+agents described in that GDD's **AI Architecture** section (Draft #6),
 wired together as a coordinating crew rather than left as a spec. Three
 of those eleven — Relationship Agent, Goose Solution Planner Agent, and
 Newscaster Agent — were folded in after building this repo's Tomodachi
@@ -18,6 +20,19 @@ Life and Untitled Goose Game reference crews surfaced two gaps the
 original 8-agent list didn't cover: nothing tracked how residents felt
 about each other, and nothing guaranteed a task was actually solvable
 with the goose's own moves.
+
+Draft #5 added, in response to a design review board's findings, an
+explicit goal-state completion check and a one-way "tasks are consumed,
+not repeatable" rule; Draft #6 removed the credit economy Draft #5 had
+introduced and replaced it with the task-set/75%-threshold unlock
+described above (see the GDD's Game Mechanics section for both). This
+demo crew is a single illustrative tick, not a persistent runtime, so it
+does not yet implement the goal-state check, task retirement, or the
+task-set/threshold cycle across multiple runs — the Task Creator Agent
+here generates one task per invocation without tracking which pairings
+have already been resolved or how large a "set" is. Wiring that state
+machine in is follow-up work, not something this README claims is
+already built.
 
 ## What this crew produces
 
