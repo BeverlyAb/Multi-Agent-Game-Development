@@ -16,11 +16,11 @@
 
 ## Executive Summary
 
-**Gachō Badi is a finite, completable game, not an endless sandbox** — every system in this document is designed around that commitment, because an earlier review found the economy math, the completion condition, and the pitch's own language each silently assuming a different answer.
-
 Tomodachi Life meets Untitled Goose Game to form Gachō Badi. Users build their island of customizable residents and buildings in the presence of a precocious goose. It combines the creation aspect and resident interaction (aka "drama") of Tomodachi Life with the goal/task based gameplay and simple directional maneuverability of Untitled Goose Game — but where Untitled Goose Game's goose causes chaos for its own sake, Gachō Badi's goose is a quiet community-builder. Every task the goose completes nudges residents a little closer together — not only into romance, but into friendships, mended neighborly ties, and a stronger sense of belonging on the island — and the island only reaches harmony once the goose has helped everyone on it connect.
 
 Main gameplay is to explore an already-populated island and use the Goose to draw residents and locations together. All residents and core buildings are present from the beginning, so the player immediately sees a living community rather than an empty island waiting to be unlocked. The runtime agents configure that community at the start of a game: personalities are generated, roles are assigned from the fixed roster, relationships are established, and the Item Interaction Agent loads the supported affordances and consequences for every interactive object. The Goose Solution Planner then becomes the central gameplay gatekeeper, using that world model to ensure that every task can be solved through existing goose verbs and real object interactions before it reaches the player. Unlike Untitled Goose Game, the goose's antics are not mischief for its own sake — every task is a small act of connection: reuniting old friends, welcoming an isolated resident into a group, mending a neighborly falling-out, or nudging two residents toward romance through indirect physical-comedy problem solving. The game ends once all available tasks are completed and the island is united.
+
+**Gachō Badi is a finite, completable game, not an endless sandbox.** 
 
 ## Game Mechanics (player-facing actions and loop)
 
