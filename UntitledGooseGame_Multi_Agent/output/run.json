@@ -75,7 +75,7 @@
     "checklist": [
       {
         "item_id": 1,
-        "description": "Get The Gardener to chase you into Garden Rake's reach at Garden.",
+        "description": "Get The Gardener to chase you into Garden Rake's reach in the Gardens.",
         "target_villager": "The Gardener",
         "involves_prop": "Garden Rake",
         "status": "open",
@@ -111,7 +111,7 @@
       },
       {
         "item_id": 5,
-        "description": "Make The Shopkeeper lock themselves out near Market using Spare Key.",
+        "description": "Swipe Spare Key from Market so The Shopkeeper ends up locked out without it.",
         "target_villager": "The Shopkeeper",
         "involves_prop": "Spare Key",
         "status": "open",

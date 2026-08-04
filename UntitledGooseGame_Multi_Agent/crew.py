@@ -63,11 +63,16 @@ class UntitledGooseGameCrew:
         generating a brand-new one; omit it to have the Checklist Creator
         propose a fresh checklist.
 
-        The Goose Verb Planner is this crew's Goose Solution Planner: it
-        must prove a reachable solution exists before an item is staged.
-        Items it can't solve -- e.g. their villager or prop no longer
-        exists in this cast -- are retired here rather than surfaced to
-        the player, so the active item returned is always solvable.
+        The Goose Verb Planner is this crew's Goose Solution Planner: per
+        the GDD, it must prove a solution exists for *every* candidate
+        task before that task reaches the player, not only the one
+        currently staged in the live scene. So this loop runs the planner
+        against every open item -- not just until the first one plans
+        successfully -- retiring any it can't solve; the first item that
+        does plan becomes this tick's staged/active one, but every other
+        open item is left already certified solvable (or already retired)
+        for whenever the player gets to it, instead of reaching the
+        player unverified.
         """
         print("\n=== MISCHIEF TICK ===")
 
@@ -90,9 +95,9 @@ class UntitledGooseGameCrew:
                         "against the current cast/props."
                     )
                 continue
-            active_item = item
-            verb_plan = plan
-            break
+            if active_item is None:
+                active_item = item
+                verb_plan = plan
 
         if active_item is None:
             return {"villagers": villagers, "checklist": checklist, "verb_plan": None, "staged_gags": []}

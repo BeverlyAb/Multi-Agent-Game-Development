@@ -101,6 +101,26 @@ function buildTextures(scene) {
   g.fillRoundedRect(2, 2, 24, 24, 5);
   g.generateTexture("prop-default", 28, 28);
 
+  // A key's whole point is a door it opens -- without one, "locked out"
+  // has nothing to visibly lock. One door per key prop starts open and
+  // flips to this locked state (padlock) once its objective completes,
+  // giving that objective a real room instead of only an invisible flag.
+  g.clear();
+  g.fillStyle(0x6b3f1d, 1);
+  g.fillRoundedRect(2, 2, 20, 36, 3);
+  g.fillStyle(0xead9c4, 1);
+  g.fillCircle(16, 20, 2);
+  g.generateTexture("door-open", 24, 40);
+
+  g.clear();
+  g.fillStyle(0x4a4a4a, 1);
+  g.fillRoundedRect(2, 2, 20, 36, 3);
+  g.fillStyle(0xf4c430, 1);
+  g.fillRoundedRect(8, 16, 8, 10, 2);
+  g.fillStyle(0x2c2c2c, 1);
+  g.fillCircle(12, 16, 3);
+  g.generateTexture("door-locked", 24, 40);
+
   g.destroy();
 }
 
@@ -130,6 +150,7 @@ class VillageScene extends Phaser.Scene {
 
     this.propsByName = {};
     this.propSprites = this.physics.add.group();
+    this.doorsByProp = {};
     this.propDefs.forEach((p) => this.spawnProp(p));
 
     this.villagerSprites = this.physics.add.group({ immovable: true });
@@ -207,6 +228,16 @@ class VillageScene extends Phaser.Scene {
 
     this.propsByName[propDef.name] = sprite;
     this.propSprites.add(sprite);
+
+    if (propDef.kind === "key") {
+      const door = this.add.sprite(z.cx - 150, z.cy - 130, "door-open").setDepth(2);
+      this.add.text(door.x, door.y - 26, "Shop Door", {
+        fontFamily: "monospace",
+        fontSize: "10px",
+        color: "#dff7ff",
+      }).setOrigin(0.5).setDepth(2);
+      this.doorsByProp[propDef.name] = door;
+    }
   }
 
   spawnVillager(villagerDef) {
@@ -354,7 +385,37 @@ class VillageScene extends Phaser.Scene {
     const at = villager || this.goose;
     this.popText(at.x, at.y - 50, "OBJECTIVE COMPLETE", "#7cffb2");
     if (villager) this.alertVillager(villager);
+    // "wearing" and "locked_out" used to be flags with no visible payoff --
+    // nothing ever actually put a hat on a villager or locked a door, so
+    // the checklist claimed things the game never did. These give both a
+    // real, checkable effect instead of an invisible state flip.
+    if (flag === "wearing") this.wearProp(villager, item.involves_prop);
+    if (flag === "locked_out") this.lockDoor(item.involves_prop);
     this.refreshChecklistHud();
+  }
+
+  // Attaches the prop to the villager's head for the rest of the game --
+  // this is the actual "wear" logic wear_by_mistake was missing: the prop
+  // stops being a droppable/re-grabbable world object and instead follows
+  // the villager every frame (see update()).
+  wearProp(villager, propName) {
+    const prop = this.propsByName[propName];
+    if (!prop || !villager) return;
+    this.tweens.killTweensOf(prop);
+    prop.carried = true;
+    prop.worn = true;
+    prop.label.setVisible(false);
+    villager.wornProp = prop;
+  }
+
+  // Flips the shop door tied to this key from open to visibly locked --
+  // the concrete "room" lock_out_with_key was missing: without a door,
+  // nothing could actually be locked, only an invisible flag flipped.
+  lockDoor(propName) {
+    const door = this.doorsByProp[propName];
+    if (!door) return;
+    door.setTexture("door-locked");
+    this.popText(door.x, door.y - 30, "LOCKED", "#ff6b6b");
   }
 
   doTug() {
@@ -482,6 +543,10 @@ class VillageScene extends Phaser.Scene {
     });
     Object.values(this.villagersByName).forEach((v) => {
       v.label.setPosition(v.x, v.y - 34);
+      if (v.wornProp) {
+        v.wornProp.x = v.x + 10;
+        v.wornProp.y = v.y - 28;
+      }
       // lure_into_hazard is the only objective that ever moves a villager:
       // while alerted, chase the goose in a straight line; the idle bob
       // tween is paused for that window so it doesn't fight the physics

@@ -68,12 +68,24 @@ OBJECTIVE_KINDS = {
     },
     "lock_out_with_key": {
         "prop_kind": "key",
-        "template": "Make {villager} lock themselves out near {location} using {prop}.",
+        # Deliberately does not claim {villager} is standing at {location}:
+        # this objective's mechanic (move_away_from_origin) only ever
+        # checks the prop's own distance from its own home, exactly like
+        # steal_from_area -- it never moves or repositions a villager, who
+        # stays put at whichever location their *first* checklist item
+        # placed them at (see web/game.js spawnVillager). The old wording
+        # ("locks themselves out near {location}") asserted the villager
+        # physically travels to the key's location, which the game can
+        # never actually show whenever that villager's other item put them
+        # somewhere else -- making the objective read as unachievable even
+        # though the underlying mechanic always was. {location} here names
+        # where the key itself is kept, not where the villager stands.
+        "template": "Swipe {prop} from {location} so {villager} ends up locked out without it.",
         "verbs": ["Grab", "Flap"],
         "mechanic": "move_away_from_origin",
         "params": {"min_distance": 260},
         "flag": "locked_out",
-        "reaction": "steps outside and locks themselves out near {location} with {prop} gone",
+        "reaction": "reaches for {prop} to get back in and finds it gone",
     },
     "lure_into_hazard": {
         "prop_kind": "garden tool",
