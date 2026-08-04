@@ -15,6 +15,11 @@ const WORLD_H = 2 * TILE_H + 3 * GUTTER;
 const ALERT_DURATION_MS = 1500;
 const CHASE_SPEED = 150;
 
+// HUD text placement: pulled in from the raw window edges so nothing sits
+// flush against the browser's own edge/chrome.
+const HUD_MARGIN_X = 40;
+const HUD_BOTTOM_MARGIN = 48;
+
 function zoneRect(index) {
   const r = Math.floor(index / 3), c = index % 3;
   const x = GUTTER + c * (TILE_W + GUTTER);
@@ -260,8 +265,8 @@ class VillageScene extends Phaser.Scene {
     // setText() before layoutHud() ever runs, so the initial width has to
     // already be sane (advancedWordWrap throws if it's narrower than one
     // character, which a hardcoded placeholder like 10px can be).
-    const wrapWidth = Math.max(240, this.scale.width - 32);
-    this.hudText = this.add.text(16, 16, "", {
+    const wrapWidth = Math.max(240, this.scale.width - HUD_MARGIN_X - 16);
+    this.hudText = this.add.text(HUD_MARGIN_X, 16, "", {
       fontFamily: "monospace",
       fontSize: "14px",
       color: "#ffffff",
@@ -270,7 +275,7 @@ class VillageScene extends Phaser.Scene {
       wordWrap: { width: wrapWidth, useAdvancedWrap: true },
     }).setScrollFactor(0).setDepth(100);
 
-    this.helpText = this.add.text(16, 0, "", {
+    this.helpText = this.add.text(HUD_MARGIN_X, 0, "", {
       fontFamily: "monospace",
       fontSize: "12px",
       color: "#d7ffd7",
@@ -289,10 +294,11 @@ class VillageScene extends Phaser.Scene {
   }
 
   layoutHud() {
-    const wrapWidth = Math.max(240, this.scale.width - 32);
+    const wrapWidth = Math.max(240, this.scale.width - HUD_MARGIN_X - 16);
     this.hudText.setWordWrapWidth(wrapWidth, true);
     this.helpText.setWordWrapWidth(wrapWidth, true);
-    this.helpText.setPosition(16, this.scale.height - this.helpText.height - 16);
+    this.hudText.setPosition(HUD_MARGIN_X, 16);
+    this.helpText.setPosition(HUD_MARGIN_X, this.scale.height - this.helpText.height - HUD_BOTTOM_MARGIN);
   }
 
   refreshChecklistHud() {
@@ -301,9 +307,15 @@ class VillageScene extends Phaser.Scene {
       if (status === "retired") return "❌";
       return "⬜";
     };
+    // Canvas text has no native strikethrough, so a done item is crossed
+    // off by interleaving a combining long-stroke-overlay (U+0336) after
+    // every character -- the browser's own text shaper draws it, same as
+    // any other combining mark, so it still just falls out of setText().
+    const strikeThrough = (s) => s.split("").map((ch) => ch + "̶").join("");
     const lines = this.checklist.map((item) => {
       const suffix = item.status === "retired" ? ` (unreachable: ${item.retire_reason})` : "";
-      return `${boxFor(item.status)} #${item.item_id} ${item.description}${suffix}`;
+      const line = `${boxFor(item.status)} #${item.item_id} ${item.description}${suffix}`;
+      return item.status === "done" ? strikeThrough(line) : line;
     });
     this.hudText.setText(["MISCHIEF CHECKLIST", ...lines].join("\n"));
   }
