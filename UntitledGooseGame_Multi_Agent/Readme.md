@@ -104,7 +104,7 @@ dialogue-shaped gag would immediately break UGG's premise for the player.
 | Area Orchestrator | a request kind (`layout`/`prop`/`villager`) + payload | dispatches to the matching prep-time agent above, returns its result |
 | Checklist Creator Agent (**"One Wow"**) | villagers *(need `.traits`)* + props *(need `.location` + `.designed`)* | `List[ChecklistItem]` — the open-ended mischief checklist |
 | Goose Verb Planner Agent (**"One Wow"**, also this crew's Goose Solution Planner) | a checklist item + villagers *(need `.appearance`)* + props *(need `.location` + `.designed`)* | a `VerbPlan` (Honk/Grab/Run/Tug/Flap sequence + a structured, checkable `CompletionCondition`), or retires the item if no solution is reachable against the current cast |
-| Reaction Director Agent | the `VerbPlan` + the active checklist item + props *(need `.location`)* | `List[StagedGag]` — the actual gameplay: goose action + villager reaction, no dialogue |
+| Reaction Director Agent | the `VerbPlan` *(needs non-empty `.lines`)* + the active checklist item + props *(reads `.location` if present, falls back to the prop's name otherwise)* | `List[StagedGag]` — the actual gameplay: goose action + villager reaction, no dialogue |
 
 Implementation: [`agents.py`](agents.py) (agent definitions, with each
 agent's required input validated at the top of its `run()`, and the
@@ -137,22 +137,22 @@ flowchart TB
     subgraph TICK["Mischief Tick"]
         CCA["Checklist Creator Agent ('One Wow')<br/>requires: villager.traits + prop.location + prop.designed"]
         GVP["Goose Verb Planner Agent ('One Wow' / Goose Solution Planner)<br/>requires: villager.appearance + prop.location + prop.designed"]
-        RDA2["Reaction Director Agent<br/>requires: VerbPlan + prop.location"]
+        RDA2["Reaction Director Agent<br/>requires: VerbPlan.lines (non-empty)"]
         GAME[("Phaser web client —<br/>player-controlled goose")]
     end
 
     VRA -->|"villager.traits"| VDA
     VRA -->|"villager.traits"| CCA
-    ALA -->|"prop.location"| PDA
     ALA -->|"prop.location"| CCA
     ALA -->|"prop.location"| GVP
+    ALA -.->|"prop.location (optional -- falls back to prop name)"| RDA2
     PDA -->|"prop.designed"| CCA
     PDA -->|"prop.designed"| GVP
     VDA -->|"villager.appearance"| GVP
 
     CCA -->|"ChecklistItem[] (objective_kind, target_villager, involves_prop)"| GVP
     GVP -->|"VerbPlan + CompletionCondition"| RDA2
-    GVP -.->|"no reachable solution -> item.retire_reason, item skipped"| CCA
+    GVP -.->|"no reachable solution -> item.retire_reason set in place, crew.py advances to next open item"| GVP
     RDA2 -->|"StagedGag[] (goose action + villager reaction)"| GAME
     GAME -.->|"complete_item() feedback hook, not yet wired to a live server"| GVP
 ```

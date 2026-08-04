@@ -27,22 +27,22 @@ flowchart TB
     subgraph TICK["Mischief Tick"]
         CCA["Checklist Creator Agent ('One Wow')<br/>requires: villager.traits + prop.location + prop.designed"]
         GVP["Goose Verb Planner Agent ('One Wow' / Goose Solution Planner)<br/>requires: villager.appearance + prop.location + prop.designed"]
-        RDA2["Reaction Director Agent<br/>requires: VerbPlan + prop.location"]
+        RDA2["Reaction Director Agent<br/>requires: VerbPlan.lines (non-empty)"]
         GAME[("Phaser web client —<br/>player-controlled goose")]
     end
 
     VRA -->|"villager.traits"| VDA
     VRA -->|"villager.traits"| CCA
-    ALA -->|"prop.location"| PDA
     ALA -->|"prop.location"| CCA
     ALA -->|"prop.location"| GVP
+    ALA -.->|"prop.location (optional -- falls back to prop name)"| RDA2
     PDA -->|"prop.designed"| CCA
     PDA -->|"prop.designed"| GVP
     VDA -->|"villager.appearance"| GVP
 
     CCA -->|"ChecklistItem[] (objective_kind, target_villager, involves_prop)"| GVP
     GVP -->|"VerbPlan + CompletionCondition"| RDA2
-    GVP -.->|"no reachable solution -> item.retire_reason, item skipped"| CCA
+    GVP -.->|"no reachable solution -> item.retire_reason set in place, crew.py advances to next open item"| GVP
     RDA2 -->|"StagedGag[] (goose action + villager reaction)"| GAME
     GAME -.->|"complete_item() feedback hook, not yet wired to a live server"| GVP
 
@@ -65,9 +65,13 @@ producing worse output:
 - **Villager Routine Agent** writes `villager.traits`. Both **Villager
   Designer Agent** and **Checklist Creator Agent** check for it and
   refuse to run without it.
-- **Area Layout Agent** writes `prop.location`. **Checklist Creator**,
-  **Goose Verb Planner**, and **Reaction Director** all check for it
-  directly and refuse to run (or have nothing to stage) without it.
+- **Area Layout Agent** writes `prop.location`. **Checklist Creator** and
+  **Goose Verb Planner** both check for it directly and refuse to run
+  without it. **Reaction Director** reads it too, but only as a soft
+  dependency — it falls back to the prop's bare name as the staging
+  location rather than raising, so a skipped Area Layout Agent still
+  breaks the pipeline upstream (at the Checklist Creator) before
+  Reaction Director ever gets the chance to paper over it.
 - **Prop Designer Agent** sets `prop.designed = True`. **Checklist
   Creator** and **Goose Verb Planner** both check it, so a skipped Prop
   Designer can't let the raw seed affordance text slip through as if it
@@ -96,15 +100,18 @@ silently degraded output.
 ## Reading the diagram
 
 - **Solid arrows** are direct hand-offs where one agent's output is a
-  required input to the next.
-- **Dotted arrows** are the two feedback paths: an unreachable checklist
-  item retiring back onto the same checklist instead of reaching the
-  player, and `UntitledGooseGameCrew.complete_item()` — a hook meant for
-  a live game loop to call once a goal condition is actually confirmed
-  satisfied, so the next mischief tick advances past a finished item.
-  The current `web/` client only renders one static `output/run.json`
-  snapshot, so that second feedback path is a designed hook, not yet a
-  live one.
+  required input to the next (missing it raises a `ValueError`).
+- **Dotted arrows** are soft dependencies and feedback paths, not hard
+  requirements: Area Layout Agent's `prop.location` reaching Reaction
+  Director is read-if-present rather than enforced; Goose Verb Planner's
+  self-loop is an unreachable checklist item retiring in place (status
+  set to `"retired"` on the same list) rather than being sent back to
+  the Checklist Creator to regenerate; and
+  `UntitledGooseGameCrew.complete_item()` is a hook meant for a live game
+  loop to call once a goal condition is actually confirmed satisfied, so
+  the next mischief tick advances past a finished item. The current
+  `web/` client only renders one static `output/run.json` snapshot, so
+  that last feedback path is a designed hook, not yet a live one.
 - **Phaser web client** is the player-visible terminus, not an agent —
   it reads the crew's JSON output (`output/run.json`) and renders the
   village, props, and the active checklist item's goose-verb plan.

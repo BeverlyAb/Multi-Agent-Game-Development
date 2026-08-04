@@ -7,10 +7,89 @@
   html, body { margin: 0; padding: 0; background: #1b2a1b; overflow: hidden; }
   #game-container { display: flex; align-items: center; justify-content: center; height: 100vh; }
   canvas { image-rendering: pixelated; }
+
+  /*
+    HUD panels live in the DOM, not on the Phaser canvas -- a canvas-based
+    HUD anchored with setScrollFactor(0) still gets its pointer hit-testing
+    run through the main camera's zoom/scroll transform in Phaser 3, so
+    hover/click on a fixed HUD element silently misses once the camera
+    zooms or follows the goose. Plain HTML overlays have no such problem.
+    Each group is right-anchored and packs leftward (row-reverse) so the
+    panel slides out to the tab's left without ever moving the tab itself.
+  */
+  .hud-group {
+    position: fixed;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    gap: 8px;
+    font-family: monospace;
+  }
+  #checklist-group { top: 16px; }
+  #help-group { top: 54px; }
+
+  .hud-tab {
+    background: #274d2eee;
+    color: #ffffff;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .hud-tab.pinned { background: #3f8a4dee; }
+
+  .hud-panel {
+    display: none;
+    max-width: 360px;
+    background: #000000aa;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+  }
+  .hud-panel.visible { display: block; }
+  #help-panel { color: #d7ffd7; font-size: 12px; }
 </style>
 </head>
 <body>
 <div id="game-container"></div>
+
+<div class="hud-group" id="checklist-group">
+  <div class="hud-tab" id="checklist-tab">📋 Checklist</div>
+  <div class="hud-panel" id="checklist-panel"></div>
+</div>
+<div class="hud-group" id="help-group">
+  <div class="hud-tab" id="help-tab">❓ Help</div>
+  <div class="hud-panel" id="help-panel">Move: WASD / Arrows   Run: hold Shift
+Honk: Space   Grab: E   Tug: Q   Flap: F
+Each objective needs something different -- deliver, carry away, or lure. Check the board.</div>
+</div>
+
+<script>
+  function setupHudTab(tabId, panelId) {
+    const tab = document.getElementById(tabId);
+    const panel = document.getElementById(panelId);
+    let pinned = false;
+    let hovering = false;
+    const refresh = () => {
+      panel.classList.toggle("visible", pinned || hovering);
+      tab.classList.toggle("pinned", pinned);
+    };
+    tab.addEventListener("mouseenter", () => { hovering = true; refresh(); });
+    tab.addEventListener("mouseleave", () => { hovering = false; refresh(); });
+    tab.addEventListener("click", () => { pinned = !pinned; refresh(); });
+    return { tab, panel };
+  }
+  window.hudTabs = {
+    checklist: setupHudTab("checklist-tab", "checklist-panel"),
+    help: setupHudTab("help-tab", "help-panel"),
+  };
+</script>
 
 <!--
   Fallback copy of ../output/run.json, embedded so this page also works when
