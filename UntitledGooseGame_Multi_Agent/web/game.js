@@ -9,6 +9,12 @@ const TILE_W = 480, TILE_H = 420, GUTTER = 40;
 const WORLD_W = 3 * TILE_W + 4 * GUTTER;
 const WORLD_H = 2 * TILE_H + 3 * GUTTER;
 
+// How long a villager stays "alerted" after a Honk/Flap/chase-trigger, and
+// how fast an alerted villager chases the goose (lure_into_hazard only --
+// every other objective kind never moves a villager sprite at all).
+const ALERT_DURATION_MS = 1500;
+const CHASE_SPEED = 150;
+
 function zoneRect(index) {
   const r = Math.floor(index / 3), c = index % 3;
   const x = GUTTER + c * (TILE_W + GUTTER);
@@ -112,6 +118,10 @@ class VillageScene extends Phaser.Scene {
     this.checklist = tick.checklist || [];
     this.propDefs = tick.props || [];
     this.villagerDefs = tick.villagers || [];
+    // mechanic+params for every objective_kind, keyed the same way as each
+    // checklist item's objective_kind -- the single source of truth is the
+    // crew's OBJECTIVE_KINDS table (agents.py), not a duplicate here.
+    this.objectiveKinds = this.villageData.objective_kinds || {};
 
     this.propsByName = {};
     this.propSprites = this.physics.add.group();
@@ -207,9 +217,18 @@ class VillageScene extends Phaser.Scene {
     sprite.setImmovable(true);
     sprite.villagerName = villagerDef.name;
     sprite.baseY = sprite.y;
-    sprite.alerted = false;
+    // Timed alert window (replaces a one-shot blip) so both "must be
+    // unalerted when delivered" and "chases while alerted" have a real
+    // duration to check against, not a single frame.
+    sprite.alertedUntil = 0;
+    sprite.chasing = false;
+    sprite.wearing = false;
+    sprite.distracted = false;
+    sprite.stolen = false;
+    sprite.locked_out = false;
+    sprite.lured = false;
 
-    this.tweens.add({
+    sprite.idleTween = this.tweens.add({
       targets: sprite,
       y: sprite.baseY - 6,
       duration: 900 + Phaser.Math.Between(0, 400),
@@ -230,12 +249,25 @@ class VillageScene extends Phaser.Scene {
   }
 
   buildHud() {
+    // wordWrap is required here: checklist descriptions now carry a
+    // retire_reason suffix that can run long (e.g. "prop kind 'clothing
+    // item' cannot satisfy objective 'lock_out_with_key' (requires
+    // 'key')"), and without it Phaser's Text object just draws past the
+    // canvas edge instead of wrapping -- it reads as the line being cropped
+    // off rather than continuing on a new line. Width is kept in sync with
+    // the canvas size in layoutHud() since scale mode is RESIZE.
+    // Computed now, not a placeholder -- refreshChecklistHud() below calls
+    // setText() before layoutHud() ever runs, so the initial width has to
+    // already be sane (advancedWordWrap throws if it's narrower than one
+    // character, which a hardcoded placeholder like 10px can be).
+    const wrapWidth = Math.max(240, this.scale.width - 32);
     this.hudText = this.add.text(16, 16, "", {
       fontFamily: "monospace",
       fontSize: "14px",
       color: "#ffffff",
       backgroundColor: "#000000aa",
       padding: { x: 10, y: 8 },
+      wordWrap: { width: wrapWidth, useAdvancedWrap: true },
     }).setScrollFactor(0).setDepth(100);
 
     this.helpText = this.add.text(16, 0, "", {
@@ -244,11 +276,12 @@ class VillageScene extends Phaser.Scene {
       color: "#d7ffd7",
       backgroundColor: "#000000aa",
       padding: { x: 10, y: 6 },
+      wordWrap: { width: wrapWidth, useAdvancedWrap: true },
     }).setScrollFactor(0).setDepth(100);
     this.helpText.setText(
       "Move: WASD / Arrows   Run: hold Shift\n" +
       "Honk: Space   Grab: E   Tug: Q   Flap: F\n" +
-      "Grab a prop, carry it to its villager, then Tug to complete the objective."
+      "Each objective needs something different -- deliver, carry away, or lure. Check the board."
     );
     this.refreshChecklistHud();
     this.layoutHud();
@@ -256,6 +289,9 @@ class VillageScene extends Phaser.Scene {
   }
 
   layoutHud() {
+    const wrapWidth = Math.max(240, this.scale.width - 32);
+    this.hudText.setWordWrapWidth(wrapWidth, true);
+    this.helpText.setWordWrapWidth(wrapWidth, true);
     this.helpText.setPosition(16, this.scale.height - this.helpText.height - 16);
   }
 
@@ -266,7 +302,7 @@ class VillageScene extends Phaser.Scene {
       return "⬜";
     };
     const lines = this.checklist.map((item) => {
-      const suffix = item.status === "retired" ? " (unreachable, retired)" : "";
+      const suffix = item.status === "retired" ? ` (unreachable: ${item.retire_reason})` : "";
       return `${boxFor(item.status)} #${item.item_id} ${item.description}${suffix}`;
     });
     this.hudText.setText(["MISCHIEF CHECKLIST", ...lines].join("\n"));
@@ -287,19 +323,16 @@ class VillageScene extends Phaser.Scene {
     });
   }
 
+  isAlerted(sprite) {
+    return this.time.now < sprite.alertedUntil;
+  }
+
   alertVillager(sprite) {
-    if (sprite.alerted) return;
-    sprite.alerted = true;
+    const alreadyAlerted = this.isAlerted(sprite);
+    sprite.alertedUntil = this.time.now + ALERT_DURATION_MS;
+    if (alreadyAlerted) return; // extend the window silently, don't re-pop/bounce
     this.popText(sprite.x, sprite.y - 40, "?!", "#ffe66d");
-    this.tweens.add({
-      targets: sprite,
-      scale: 1.25,
-      duration: 120,
-      yoyo: true,
-      onComplete: () => {
-        sprite.alerted = false;
-      },
-    });
+    this.tweens.add({ targets: sprite, scale: 1.25, duration: 120, yoyo: true });
   }
 
   doHonk() {
@@ -332,6 +365,28 @@ class VillageScene extends Phaser.Scene {
     this.popText(this.goose.x, this.goose.y - 30, `grabbed ${nearest.propName}`, "#9be564");
   }
 
+  // Every checklist item's objective_kind maps to a mechanic+params in
+  // this.objectiveKinds (see main.py). Only that mechanic's own check (Tug
+  // for a delivery, passive distance-from-home for a removal, passive
+  // proximity for a lure) can complete the item -- there is no longer one
+  // rule that completes every item regardless of what it actually asks for.
+  openItemFor(propName) {
+    return this.checklist.find((c) => c.involves_prop === propName && c.status === "open");
+  }
+
+  mechanicFor(item) {
+    return item ? this.objectiveKinds[item.objective_kind] || null : null;
+  }
+
+  completeItem(item, villager, flag) {
+    item.status = "done";
+    if (villager && flag) villager[flag] = true;
+    const at = villager || this.goose;
+    this.popText(at.x, at.y - 50, "OBJECTIVE COMPLETE", "#7cffb2");
+    if (villager) this.alertVillager(villager);
+    this.refreshChecklistHud();
+  }
+
   doTug() {
     if (!this.carriedProp) {
       this.popText(this.goose.x, this.goose.y - 30, "nothing to tug", "#cccccc");
@@ -345,20 +400,49 @@ class VillageScene extends Phaser.Scene {
     this.tweens.add({ targets: [prop, prop.label], x: flingX, duration: 180, ease: "Quad.easeOut" });
     this.popText(prop.x, prop.y - 26, `dropped ${prop.propName}`, "#9be564");
 
-    const item = this.checklist.find(
-      (c) => c.involves_prop === prop.propName && c.status === "open"
-    );
-    if (!item) return;
+    const item = this.openItemFor(prop.propName);
+    const spec = this.mechanicFor(item);
+    // move_away_from_origin/lure_into_hazard items complete passively in
+    // update() -- Tug is only how a *delivery* objective gets checked.
+    if (!spec || spec.mechanic !== "deliver_to_villager") return;
+
     const villager = this.villagersByName[item.target_villager];
-    if (villager) {
-      const d = Phaser.Math.Distance.Between(prop.x, prop.y, villager.x, villager.y);
-      if (d < 220) {
-        item.status = "done";
-        this.alertVillager(villager);
-        this.popText(villager.x, villager.y - 50, "OBJECTIVE COMPLETE", "#7cffb2");
-        this.refreshChecklistHud();
-      }
+    if (!villager) return;
+    const d = Phaser.Math.Distance.Between(prop.x, prop.y, villager.x, villager.y);
+    if (d >= spec.params.min_distance) return;
+    if (spec.params.require_unalerted && this.isAlerted(villager)) {
+      this.popText(villager.x, villager.y - 40, `${item.target_villager} noticed!`, "#ff6b6b");
+      return;
     }
+    this.completeItem(item, villager, item.objective_kind === "wear_by_mistake" ? "wearing" : "distracted");
+  }
+
+  // Passive checks run every frame from update() for the two mechanics that
+  // don't hinge on a Tug: carrying a prop far enough from home (theft /
+  // lock-out), and a lured villager reaching the hazard's radius.
+  checkCarriedPropCompletion() {
+    if (!this.carriedProp) return;
+    const prop = this.carriedProp;
+    const item = this.openItemFor(prop.propName);
+    const spec = this.mechanicFor(item);
+    if (!spec || spec.mechanic !== "move_away_from_origin") return;
+    const d = Phaser.Math.Distance.Between(prop.x, prop.y, prop.homeX, prop.homeY);
+    if (d < spec.params.min_distance) return;
+    const villager = this.villagersByName[item.target_villager];
+    this.completeItem(item, villager, item.objective_kind === "lock_out_with_key" ? "locked_out" : "stolen");
+  }
+
+  checkLureCompletion() {
+    this.checklist.forEach((item) => {
+      if (item.status !== "open") return;
+      const spec = this.mechanicFor(item);
+      if (!spec || spec.mechanic !== "lure_into_hazard") return;
+      const hazard = this.propsByName[item.involves_prop];
+      const villager = this.villagersByName[item.target_villager];
+      if (!hazard || !villager) return;
+      const d = Phaser.Math.Distance.Between(hazard.x, hazard.y, villager.x, villager.y);
+      if (d < spec.params.hazard_radius) this.completeItem(item, villager, "lured");
+    });
   }
 
   doFlap() {
@@ -428,7 +512,24 @@ class VillageScene extends Phaser.Scene {
     });
     Object.values(this.villagersByName).forEach((v) => {
       v.label.setPosition(v.x, v.y - 34);
+      // lure_into_hazard is the only objective that ever moves a villager:
+      // while alerted, chase the goose in a straight line; the idle bob
+      // tween is paused for that window so it doesn't fight the physics
+      // velocity moveToObject() sets every frame.
+      const alerted = this.isAlerted(v);
+      if (alerted && !v.chasing) {
+        v.chasing = true;
+        v.idleTween.pause();
+      } else if (!alerted && v.chasing) {
+        v.chasing = false;
+        v.body.setVelocity(0, 0);
+        v.idleTween.resume();
+      }
+      if (v.chasing) this.physics.moveToObject(v, this.goose, CHASE_SPEED);
     });
+
+    this.checkCarriedPropCompletion();
+    this.checkLureCompletion();
 
     if (Phaser.Input.Keyboard.JustDown(this.keys.honk)) this.doHonk();
     if (Phaser.Input.Keyboard.JustDown(this.keys.grab)) this.doGrab();

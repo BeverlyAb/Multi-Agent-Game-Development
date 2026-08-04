@@ -1,11 +1,13 @@
 {
   "game": "Untitled Goose Game",
   "prep_pass": {
-    "layout": "Layout: Garden Rake (Garden), Sun Hat (High Street), Toy Plane (Back Gardens), spread across the village.",
+    "layout": "Layout: Garden Rake (Garden), Sun Hat (High Street), Toy Plane (Back Gardens), Meat Pie (Pub), Spare Key (Market), spread across the village.",
     "prop_specs": [
       "Garden Rake (garden tool): affords flings mud when stepped on.",
       "Sun Hat (clothing item): affords blows off in even a light breeze.",
-      "Toy Plane (toy): affords squeaks loudly when squeezed."
+      "Toy Plane (toy): affords squeaks loudly when squeezed.",
+      "Meat Pie (food item): affords smells amazing, easy to carry off.",
+      "Spare Key (key): affords hangs on a hook, opens the shop's back door."
     ],
     "appearances": [
       "The Gardener: a gardener whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without.",
@@ -73,26 +75,47 @@
     "checklist": [
       {
         "item_id": 1,
-        "description": "Get The Gardener to drop Garden Rake without noticing.",
+        "description": "Get The Gardener to chase you into Garden Rake's reach at Garden.",
         "target_villager": "The Gardener",
         "involves_prop": "Garden Rake",
         "status": "open",
+        "objective_kind": "lure_into_hazard",
         "retire_reason": ""
       },
       {
         "item_id": 2,
-        "description": "Make The Shopkeeper lock themselves out near High Street using Sun Hat.",
+        "description": "Make The Shopkeeper put on Sun Hat by mistake near High Street.",
         "target_villager": "The Shopkeeper",
         "involves_prop": "Sun Hat",
         "status": "open",
+        "objective_kind": "wear_by_mistake",
         "retire_reason": ""
       },
       {
         "item_id": 3,
-        "description": "Steal Toy Plane from right under The Boy's nose at Back Gardens.",
+        "description": "Use Toy Plane to distract The Boy at Back Gardens.",
         "target_villager": "The Boy",
         "involves_prop": "Toy Plane",
         "status": "open",
+        "objective_kind": "distract_and_swap",
+        "retire_reason": ""
+      },
+      {
+        "item_id": 4,
+        "description": "Steal Meat Pie from right under The Gardener's nose at Pub.",
+        "target_villager": "The Gardener",
+        "involves_prop": "Meat Pie",
+        "status": "open",
+        "objective_kind": "steal_from_area",
+        "retire_reason": ""
+      },
+      {
+        "item_id": 5,
+        "description": "Make The Shopkeeper lock themselves out near Market using Spare Key.",
+        "target_villager": "The Shopkeeper",
+        "involves_prop": "Spare Key",
+        "status": "open",
+        "objective_kind": "lock_out_with_key",
         "retire_reason": ""
       }
     ],
@@ -101,20 +124,40 @@
       "lines": [
         "* SCENE: Garden.",
         "* (The Gardener is The Gardener: a gardener whose guards their things like a hawk, sharp-eyed and hard to fool, rattled by the smallest thing out of place, snaps the instant something's wrong shows in their outfit and the one prop they're never without..)",
-        "* Goose: Honk near Garden Rake.",
-        "* Goose: Grab Garden Rake.",
-        "* Objective resolves: Get The Gardener to drop Garden Rake without noticing."
-      ]
+        "* Goose: Honk Garden Rake.",
+        "* Goose: Run Garden Rake.",
+        "* Objective resolves: Get The Gardener to chase you into Garden Rake's reach at Garden."
+      ],
+      "steps": [
+        {
+          "verb": "Honk",
+          "target": "Garden Rake"
+        },
+        {
+          "verb": "Run",
+          "target": "Garden Rake"
+        }
+      ],
+      "completion": {
+        "mechanic": "lure_into_hazard",
+        "prop": "Garden Rake",
+        "target_villager": "The Gardener",
+        "params": {
+          "hazard_radius": 90
+        }
+      },
+      "verified": true,
+      "verification_note": "objective_kind 'lure_into_hazard' resolved to mechanic 'lure_into_hazard'; prop 'Garden Rake' kind matches required 'garden tool'; villager appearance and prop location/design confirmed present."
     },
     "staged_gags": [
       {
         "actor": "Goose",
-        "action": "execute plan: Get The Gardener to drop Garden Rake without noticing.",
+        "action": "execute plan: Get The Gardener to chase you into Garden Rake's reach at Garden.",
         "location": "Garden"
       },
       {
         "actor": "The Gardener",
-        "action": "notice, react, and give chase or give up",
+        "action": "gives chase and stumbles right into Garden Rake's reach",
         "location": "Garden"
       }
     ],
@@ -139,7 +182,55 @@
         "affordance": "Toy Plane (toy): affords squeaks loudly when squeezed.",
         "location": "Back Gardens",
         "designed": true
+      },
+      {
+        "name": "Meat Pie",
+        "kind": "food item",
+        "affordance": "Meat Pie (food item): affords smells amazing, easy to carry off.",
+        "location": "Pub",
+        "designed": true
+      },
+      {
+        "name": "Spare Key",
+        "kind": "key",
+        "affordance": "Spare Key (key): affords hangs on a hook, opens the shop's back door.",
+        "location": "Market",
+        "designed": true
       }
     ]
+  },
+  "objective_kinds": {
+    "wear_by_mistake": {
+      "mechanic": "deliver_to_villager",
+      "params": {
+        "min_distance": 220,
+        "require_unalerted": true
+      }
+    },
+    "distract_and_swap": {
+      "mechanic": "deliver_to_villager",
+      "params": {
+        "min_distance": 220,
+        "require_unalerted": false
+      }
+    },
+    "steal_from_area": {
+      "mechanic": "move_away_from_origin",
+      "params": {
+        "min_distance": 260
+      }
+    },
+    "lock_out_with_key": {
+      "mechanic": "move_away_from_origin",
+      "params": {
+        "min_distance": 260
+      }
+    },
+    "lure_into_hazard": {
+      "mechanic": "lure_into_hazard",
+      "params": {
+        "hazard_radius": 90
+      }
+    }
   }
 }

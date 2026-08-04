@@ -25,7 +25,69 @@ from __future__ import annotations
 from typing import List, Optional
 
 from llm_client import LLMClient
-from models import ChecklistItem, Prop, RoutineDials, StagedGag, VerbPlan, Villager
+from models import ChecklistItem, CompletionCondition, Prop, RoutineDials, StagedGag, VerbPlan, Villager
+
+
+# ---------------------------------------------------------------------------
+# Objective-kind table: the one place that ties a prop's kind to a narrative
+# template, a goose-verb sequence, and a structurally-checkable completion
+# mechanic+params. ChecklistCreatorAgent looks a prop's kind up here to pick
+# a coherent objective; GooseVerbPlannerAgent looks it up again to verify the
+# resolved prop's kind still matches before staging a plan; the web client
+# reads the resulting completion block to decide when the item is done --
+# nobody hardcodes a single "carry prop near villager" rule anymore.
+# ---------------------------------------------------------------------------
+
+OBJECTIVE_KINDS = {
+    "wear_by_mistake": {
+        "prop_kind": "clothing item",
+        "template": "Make {villager} put on {prop} by mistake near {location}.",
+        "verbs": ["Grab", "Run", "Tug"],
+        "mechanic": "deliver_to_villager",
+        "params": {"min_distance": 220, "require_unalerted": True},
+        "flag": "wearing",
+        "reaction": "ends up wearing {prop} without ever realizing it isn't theirs",
+    },
+    "distract_and_swap": {
+        "prop_kind": "toy",
+        "template": "Use {prop} to distract {villager} at {location}.",
+        "verbs": ["Grab", "Run", "Honk"],
+        "mechanic": "deliver_to_villager",
+        "params": {"min_distance": 220, "require_unalerted": False},
+        "flag": "distracted",
+        "reaction": "gets distracted by {prop} and drops their routine entirely",
+    },
+    "steal_from_area": {
+        "prop_kind": "food item",
+        "template": "Steal {prop} from right under {villager}'s nose at {location}.",
+        "verbs": ["Grab", "Flap"],
+        "mechanic": "move_away_from_origin",
+        "params": {"min_distance": 260},
+        "flag": "stolen",
+        "reaction": "notices {prop} is gone from right under their nose, too late to stop it",
+    },
+    "lock_out_with_key": {
+        "prop_kind": "key",
+        "template": "Make {villager} lock themselves out near {location} using {prop}.",
+        "verbs": ["Grab", "Flap"],
+        "mechanic": "move_away_from_origin",
+        "params": {"min_distance": 260},
+        "flag": "locked_out",
+        "reaction": "steps outside and locks themselves out near {location} with {prop} gone",
+    },
+    "lure_into_hazard": {
+        "prop_kind": "garden tool",
+        "template": "Get {villager} to chase you into {prop}'s reach at {location}.",
+        "verbs": ["Honk", "Run"],
+        "mechanic": "lure_into_hazard",
+        "params": {"hazard_radius": 90},
+        "flag": "lured",
+        "reaction": "gives chase and stumbles right into {prop}'s reach",
+    },
+}
+
+# prop kind -> objective_kind, the inverse lookup ChecklistCreatorAgent uses.
+PROP_KIND_TO_OBJECTIVE_KIND = {spec["prop_kind"]: kind for kind, spec in OBJECTIVE_KINDS.items()}
 
 
 class BaseAgent:
@@ -106,14 +168,6 @@ class ChecklistCreatorAgent(BaseAgent):
     degrading silently.
     """
 
-    TEMPLATES = [
-        "Get {villager} to drop {prop} without noticing.",
-        "Make {villager} lock themselves out near {location} using {prop}.",
-        "Steal {prop} from right under {villager}'s nose at {location}.",
-        "Get {villager} to chase you into {prop}'s reach at {location}.",
-        "Make {villager} put on {prop} by mistake.",
-    ]
-
     def run(self, villagers: List[Villager], props: List[Prop]) -> List[ChecklistItem]:
         items: List[ChecklistItem] = []
         if not villagers or not props:
@@ -136,13 +190,23 @@ class ChecklistCreatorAgent(BaseAgent):
                     f"ChecklistCreatorAgent requires '{prop.name}' to be designed "
                     "-- run PropDesignerAgent first."
                 )
-        for i, villager in enumerate(villagers):
-            prop = props[i % len(props)]
-            template = self.TEMPLATES[i % len(self.TEMPLATES)]
-            fallback = template.format(villager=villager.name, prop=prop.name, location=prop.location)
+        # Iterate over props, not villagers: pairing must be driven by what
+        # each prop's kind can actually support, so every prop kind (and the
+        # objective it unlocks) gets a checklist item even when there are
+        # more props than villagers. The old villager-driven loop could
+        # never reach a prop kind past index len(villagers)-1.
+        for i, prop in enumerate(props):
+            villager = villagers[i % len(villagers)]
+            objective_kind = PROP_KIND_TO_OBJECTIVE_KIND.get(prop.kind)
+            if objective_kind is None:
+                self._log(f"no objective kind registered for prop kind '{prop.kind}' -> skipping {prop.name}")
+                continue
+            spec = OBJECTIVE_KINDS[objective_kind]
+            fallback = spec["template"].format(villager=villager.name, prop=prop.name, location=prop.location)
             description = self.llm.generate(
-                system="You invent one short, open-ended, indirect physical-comedy checklist objective for an Untitled-Goose-Game-style area. No dialogue -- describe only the objective.",
+                system="You invent one short, open-ended, indirect physical-comedy checklist objective for an Untitled-Goose-Game-style area. No dialogue -- describe only the objective. It must match the given objective kind and prop -- never invent a mechanic the prop's kind can't support.",
                 prompt=(
+                    f"Objective kind: {objective_kind}\n"
                     f"Villager: {villager.name} ({villager.role}, traits: {villager.traits})\n"
                     f"Prop: {prop.name} at {prop.location} ({prop.affordance})"
                 ),
@@ -150,10 +214,11 @@ class ChecklistCreatorAgent(BaseAgent):
             )
             items.append(
                 ChecklistItem(
-                    item_id=i + 1,
+                    item_id=len(items) + 1,
                     description=description,
                     target_villager=villager.name,
                     involves_prop=prop.name,
+                    objective_kind=objective_kind,
                 )
             )
         self._log(f"generated {len(items)} checklist item(s)")
@@ -194,16 +259,29 @@ class GooseVerbPlannerAgent(BaseAgent):
         prop = next((p for p in props if p.name == item.involves_prop), None) if item.involves_prop else None
 
         if villager is None:
-            self._log(
-                f"item #{item.item_id} UNREACHABLE -- no villager named '{item.target_villager}' "
-                "in the current cast"
-            )
+            reason = f"no villager named '{item.target_villager}' in the current cast"
+            self._log(f"item #{item.item_id} UNREACHABLE -- {reason}")
+            item.retire_reason = reason
             return None
         if item.involves_prop and prop is None:
-            self._log(
-                f"item #{item.item_id} UNREACHABLE -- no prop named '{item.involves_prop}' "
-                "in the current world model"
+            reason = f"no prop named '{item.involves_prop}' in the current world model"
+            self._log(f"item #{item.item_id} UNREACHABLE -- {reason}")
+            item.retire_reason = reason
+            return None
+
+        spec = OBJECTIVE_KINDS.get(item.objective_kind)
+        if spec is None:
+            reason = f"unknown objective_kind '{item.objective_kind}'"
+            self._log(f"item #{item.item_id} UNREACHABLE -- {reason}")
+            item.retire_reason = reason
+            return None
+        if prop is not None and prop.kind != spec["prop_kind"]:
+            reason = (
+                f"prop kind '{prop.kind}' cannot satisfy objective '{item.objective_kind}' "
+                f"(requires '{spec['prop_kind']}')"
             )
+            self._log(f"item #{item.item_id} UNREACHABLE -- {reason}")
+            item.retire_reason = reason
             return None
 
         if not villager.appearance:
@@ -221,11 +299,20 @@ class GooseVerbPlannerAgent(BaseAgent):
                 f"GooseVerbPlannerAgent requires '{prop.name}' to be designed "
                 "-- run PropDesignerAgent first."
             )
+
+        location = prop.location if prop else "the village"
+        steps = [{"verb": verb, "target": prop.name if prop else "the nearest object"} for verb in spec["verbs"]]
+        completion = CompletionCondition(
+            mechanic=spec["mechanic"],
+            prop=prop.name if prop else "",
+            target_villager=villager.name,
+            params=dict(spec["params"]),
+        )
+
         fallback_lines = [
-            f"* SCENE: {prop.location if prop else 'the village'}.",
+            f"* SCENE: {location}.",
             f"* ({villager.name} is {villager.appearance}.)",
-            f"* Goose: {self.VERBS[0]} near {prop.name if prop else 'the nearest object'}.",
-            f"* Goose: {self.VERBS[1]} {prop.name if prop else 'the object'}.",
+            *[f"* Goose: {step['verb']} {step['target']}." for step in steps],
             f"* Objective resolves: {item.description}",
         ]
         plan_text = self.llm.generate(
@@ -234,12 +321,30 @@ class GooseVerbPlannerAgent(BaseAgent):
                 "only these goose verbs: Honk, Grab, Run, Tug, Flap, for an "
                 "Untitled-Goose-Game-style checklist item."
             ),
-            prompt=f"Checklist item: {item.description}\nVillager: {villager}\nProp: {prop}",
+            prompt=f"Checklist item: {item.description}\nVillager: {villager}\nProp: {prop}\nVerb sequence: {steps}",
             fallback="\n".join(fallback_lines),
         )
         lines = plan_text.split("\n") if plan_text else fallback_lines
+
+        # "Verified" asserts the structural invariants above held (the
+        # objective_kind resolved to a real mechanic, and the prop actually
+        # carries the kind that mechanic requires) -- it is not a claim that
+        # the objective is fun, balanced, or reachable in every world; those
+        # are exactly the two things checked above, so the note says so.
+        verification_note = (
+            f"objective_kind '{item.objective_kind}' resolved to mechanic '{spec['mechanic']}'; "
+            f"prop '{prop.name if prop else '(none)'}' kind matches required '{spec['prop_kind']}'; "
+            "villager appearance and prop location/design confirmed present."
+        )
         self._log(f"planned verb sequence for item #{item.item_id} ({len(lines)} lines)")
-        return VerbPlan(item_id=item.item_id, lines=lines)
+        return VerbPlan(
+            item_id=item.item_id,
+            lines=lines,
+            steps=steps,
+            completion=completion,
+            verified=True,
+            verification_note=verification_note,
+        )
 
 
 class ReactionDirectorAgent(BaseAgent):
@@ -264,9 +369,14 @@ class ReactionDirectorAgent(BaseAgent):
             )
         prop = next((p for p in props if p.name == item.involves_prop), None)
         location = prop.location if prop and prop.location else (item.involves_prop or "the village")
+        spec = OBJECTIVE_KINDS.get(item.objective_kind)
+        if spec is not None:
+            reaction = spec["reaction"].format(prop=item.involves_prop or "it", location=location)
+        else:
+            reaction = "notice, react, and give chase or give up"
         staged = [
             StagedGag(actor="Goose", action=f"execute plan: {item.description}", location=location),
-            StagedGag(actor=item.target_villager, action="notice, react, and give chase or give up", location=location),
+            StagedGag(actor=item.target_villager, action=reaction, location=location),
         ]
         self._log(f"staged {len(staged)} gag(s) for item #{item.item_id} at {location}")
         return staged

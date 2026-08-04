@@ -84,10 +84,11 @@ class UntitledGooseGameCrew:
             plan = self.verb_planner.run(item, villagers, props)
             if plan is None:
                 item.status = "retired"
-                item.retire_reason = (
-                    "Goose Solution Planner found no reachable solution for this item "
-                    "against the current cast/props."
-                )
+                if not item.retire_reason:
+                    item.retire_reason = (
+                        "Goose Solution Planner found no reachable solution for this item "
+                        "against the current cast/props."
+                    )
                 continue
             active_item = item
             verb_plan = plan

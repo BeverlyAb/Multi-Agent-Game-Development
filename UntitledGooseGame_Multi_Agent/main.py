@@ -16,6 +16,7 @@ import os
 import sys
 from dataclasses import asdict
 
+from agents import OBJECTIVE_KINDS
 from crew import UntitledGooseGameCrew
 from models import Prop, RoutineDials, Villager
 
@@ -43,6 +44,8 @@ def build_village_seed():
         Prop(name="Garden Rake", kind="garden tool", affordance="flings mud when stepped on"),
         Prop(name="Sun Hat", kind="clothing item", affordance="blows off in even a light breeze"),
         Prop(name="Toy Plane", kind="toy", affordance="squeaks loudly when squeezed"),
+        Prop(name="Meat Pie", kind="food item", affordance="smells amazing, easy to carry off"),
+        Prop(name="Spare Key", kind="key", affordance="hangs on a hook, opens the shop's back door"),
     ]
     return villagers, props
 
@@ -63,6 +66,15 @@ def main() -> int:
             "game": "Untitled Goose Game",
             "prep_pass": prep_result,
             "mischief_tick": UntitledGooseGameCrew.to_jsonable(tick_result),
+            # Only the single active checklist item gets a fully-planned
+            # VerbPlan.completion each tick (see run_mischief_tick), but the
+            # web client lets the player attempt any open item -- so it
+            # needs every objective kind's mechanic+params up front rather
+            # than duplicating this table in JS.
+            "objective_kinds": {
+                kind: {"mechanic": spec["mechanic"], "params": spec["params"]}
+                for kind, spec in OBJECTIVE_KINDS.items()
+            },
         }
         # Props are mutated in place (location, designed) by run_prep_pass, but
         # tick_result only carries villagers/checklist/verb_plan/staged_gags --
