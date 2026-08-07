@@ -48,17 +48,21 @@ result.accepted_all
 | `definitions/models_verification.py` | The shared vocabulary (`Finding`, `GuardrailViolation`, `CallRecord`, `ReviewResult`) every other file speaks — this workflow's own bookkeeping model, distinct from the project's top-level `definitions/models.py` (the actual game's Resident/Building/Task domain). Deliberately a separate file, not merged: merging would pollute the game's domain model with verification plumbing, and would break this package's portability to another project. |
 | `generic/guarded_llm_client.py`, `generic/guarded_output.py` | The two loops themselves. Agent-agnostic — both only ever call `constraints.evaluate()`, never inspect a domain object directly. |
 | `generic/changelog.py` | Append-only JSONL log of every attempt, with a plain-English justification for why it was accepted or retried. Agent-agnostic. |
-| `constraints/<agent>_constraints.{py,yaml}` | Everything domain-specific, split in two: the `.yaml` holds **declarative values** (token budget, priority weights, `max_retries`); the `.py` holds **gap-detection logic** (regex extraction, word-overlap checks, whatever actually needs code) and imports the `.yaml`'s values in. See "Why the YAML/Python split" below. |
+| `constraints/<agent>/constraints.{py,yaml}` | Everything domain-specific, split in two: `constraints.yaml` holds **declarative values** (token budget, priority weights, `max_retries`); `constraints.py` holds **gap-detection logic** (regex extraction, word-overlap checks, whatever actually needs code) and imports the `.yaml`'s values in. See "Why the YAML/Python split" below. |
 
-Constraint file **and YAML config names always end in `_constraints`**
-(`goose_solution_planner_constraints.py`, not
-`goose_solution_planner.py`) specifically so they can never be mistaken
-for the agent module they constrain (`agents/runtime/goose_solution_planner_agent.py`)
-when scanning file lists or import lines.
+**Each agent gets its own folder** under `constraints/`
+(`constraints/goose_solution_planner/`, not a flat
+`goose_solution_planner_constraints.py`) so the full import path,
+`workflow.constraints.goose_solution_planner.constraints`, can never be
+mistaken for the agent module it constrains
+(`agents/runtime/goose_solution_planner_agent.py`), and so each agent's
+`constraints.yaml` is unambiguous to `config_loader.py`'s per-file
+`os.path.dirname(__file__)` lookup even though every agent's file is
+named identically.
 
 ## Constraint files that exist today
 
-- **`goose_solution_planner_constraints`** (input side) — 4 gap
+- **`constraints/goose_solution_planner/`** (input side) — 4 gap
   detectors: `no_unregistered_verb` (BLOCKING, priority `1000` — every
   `Goose: <verb>` line must use a verb from the building's registered
   `goose_actions`, the one rule this agent exists to enforce),
@@ -66,13 +70,13 @@ when scanning file lists or import lines.
   `has_at_least_one_verb_step` (BLOCKING — non-empty output with zero
   actionable verb steps leaves `DirectorAgent` nothing real to stage),
   `mentions_task_context` (ADVISORY — flags likely generic boilerplate).
-- **`task_creator_constraints`** (input side) — 4 gap detectors:
+- **`constraints/task_creator/`** (input side) — 4 gap detectors:
   `mentions_both_residents` (BLOCKING), `no_mischief_tone` (BLOCKING,
   priority `950` — re-creates, in a properly-scoped place, a capability
   this project used to get from the now-removed Assignment #4
   Consistency Critic Agent), `mentions_building` (ADVISORY),
   `not_too_short` (ADVISORY).
-- **`chain_reaction_constraints`** (output side, via `verify_output`) —
+- **`constraints/chain_reaction/`** (output side, via `verify_output`) —
   4 gap detectors: `outcome_is_registered` (BLOCKING, priority `1000` —
   this agent's equivalent of `no_unregistered_verb`: the staged outcome
   must match one of `building.possible_outcomes` verbatim),
@@ -113,17 +117,24 @@ can't express.
    (input side). If no (like `ChainReactionAgent`), use
    `guarded_output.verify_output()` (output side) and decide a plain-text
    flattening for whatever it returns.
-2. Copy `constraints/goose_solution_planner_constraints.{py,yaml}` (input
-   side) or `constraints/chain_reaction_constraints.{py,yaml}` (output
-   side) as a template. **Name both files `<agent>_constraints.{py,yaml}`.**
-3. In the `.yaml`: set `token_budget` from `gdd.txt`'s Technical Strategy
-   table row for that agent (or a placeholder + comment if the agent
-   makes no `generate()` call, like `chain_reaction_constraints.yaml`
+2. Create `constraints/<agent>/` with an `__init__.py`, then copy
+   `constraints/goose_solution_planner/constraints.{py,yaml}` (input
+   side) or `constraints/chain_reaction/constraints.{py,yaml}` (output
+   side) into it as a template. **Keep the filenames `constraints.py`/
+   `constraints.yaml`** — the enclosing folder name is what identifies
+   the agent, not the filename.
+3. In `constraints.yaml`: set `token_budget` from `gdd.txt`'s Technical
+   Strategy table row for that agent (or a placeholder + comment if the
+   agent makes no `generate()` call, like `chain_reaction/constraints.yaml`
    does), and any `priority_weights` that need to outrank the default.
-4. In the `.py`: write `gap_detectors` — each is `(output_text: str,
+4. In `constraints.py`: write `gap_detectors` — each is `(output_text: str,
    context: dict) -> List[Finding]`. Only check things genuinely true for
    that agent's own contract; don't duplicate what `generic/guardrails.py`
-   already covers generically.
+   already covers generically. Import shared pieces with three dots
+   (`from ...generic.guardrails import TokenBudget`, `from ..base import
+   AgentConstraints`, `from ..config_loader import load_constraint_config`)
+   — one more level than a flat file would need, since the agent now sits
+   in its own subfolder.
 5. Wherever that agent is constructed, either wrap its `LLMClient` in a
    `GuardedLLMClient`, or call `verify_output()` on its return value
    after running it normally.

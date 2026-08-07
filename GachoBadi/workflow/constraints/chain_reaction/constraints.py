@@ -1,16 +1,17 @@
 """Gap-detection LOGIC for agents/runtime/chain_reaction_agent.py --
-pairs with chain_reaction_constraints.yaml.
+pairs with constraints.yaml (this same folder).
 
 Unlike every other constraint file in this package, this agent makes NO
 self.llm.generate() call at all -- its only randomness is
 self.llm.choice(building.possible_outcomes) (see that agent's own
 docstring: "the one random draw in the whole crew that isn't just flavor
-text"). guarded_llm_client.GuardedLLMClient can't guard this agent: there
-is no generate() call to intercept. Use guarded_output.verify_output()
-instead, against a flattened text projection of the ChainReaction it
-returns. The expected flattening (one line per step, "{actor}: {action}")
-is exactly what these detectors parse -- see generic/demo_verify.py's
-flatten_chain() for the reference implementation.
+text"). generic.guarded_llm_client.GuardedLLMClient can't guard this
+agent: there is no generate() call to intercept. Use
+generic.guarded_output.verify_output() instead, against a flattened text
+projection of the ChainReaction it returns. The expected flattening (one
+line per step, "{actor}: {action}") is exactly what these detectors
+parse -- see generic/demo_verify.py's flatten_chain() for the reference
+implementation.
 
 context dict this file's detectors expect:
   {
@@ -24,14 +25,12 @@ from __future__ import annotations
 import os
 from typing import Dict, List
 
-from ..generic.guardrails import TokenBudget
-from ..definitions.models_verification import Finding, Severity
-from .base import AgentConstraints
-from .config_loader import load_constraint_config
+from ...generic.guardrails import TokenBudget
+from ...definitions.models_verification import Finding, Severity
+from ..base import AgentConstraints
+from ..config_loader import load_constraint_config
 
-_CONFIG = load_constraint_config(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "chain_reaction_constraints.yaml")
-)
+_CONFIG = load_constraint_config(os.path.join(os.path.dirname(os.path.abspath(__file__)), "constraints.yaml"))
 TOKEN_BUDGET = TokenBudget(**_CONFIG["token_budget"])
 
 

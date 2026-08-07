@@ -1,9 +1,9 @@
 """Gap-detection LOGIC for agents/runtime/goose_solution_planner_agent.py
--- pairs with goose_solution_planner_constraints.yaml, which holds this
+-- pairs with constraints.yaml (this same folder), which holds this
 same agent's token budget and priority weights (the values that don't
 need code). Split this way per the project's own choice: declarative
 values live in YAML, only genuine logic (regex extraction, etc.) lives
-in Python -- see config_loader.py and workflow/README.md's "What's
+in Python -- see ../config_loader.py and ../../README.md's "What's
 generic vs. what's per-agent" section for why.
 
 The checks below encode the hard rules that agent's own docstring
@@ -24,14 +24,12 @@ import os
 import re
 from typing import Dict, List
 
-from ..generic.guardrails import TokenBudget
-from ..definitions.models_verification import Finding, Severity
-from .base import AgentConstraints
-from .config_loader import load_constraint_config
+from ...generic.guardrails import TokenBudget
+from ...definitions.models_verification import Finding, Severity
+from ..base import AgentConstraints
+from ..config_loader import load_constraint_config
 
-_CONFIG = load_constraint_config(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "goose_solution_planner_constraints.yaml")
-)
+_CONFIG = load_constraint_config(os.path.join(os.path.dirname(os.path.abspath(__file__)), "constraints.yaml"))
 TOKEN_BUDGET = TokenBudget(**_CONFIG["token_budget"])
 
 _GOOSE_LINE_RE = re.compile(r"^\s*\*?\s*Goose:\s*([A-Za-z ]+?)\b", re.MULTILINE)

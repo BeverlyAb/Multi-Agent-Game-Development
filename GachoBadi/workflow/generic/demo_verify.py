@@ -41,9 +41,9 @@ from agents.runtime.goose_solution_planner_agent import GooseSolutionPlannerAgen
 from agents.runtime.task_creator_agent import TaskCreatorAgent
 from definitions.models import Building, ChainReaction, Resident, Sliders, Task, VerbOutcome
 from workflow.generic.changelog import clear_changelog, read_changelog, LOG_PATH
-from workflow.constraints.chain_reaction_constraints import CHAIN_REACTION_CONSTRAINTS
-from workflow.constraints.goose_solution_planner_constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
-from workflow.constraints.task_creator_constraints import TASK_CREATOR_CONSTRAINTS
+from workflow.constraints.chain_reaction.constraints import CHAIN_REACTION_CONSTRAINTS
+from workflow.constraints.goose_solution_planner.constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
+from workflow.constraints.task_creator.constraints import TASK_CREATOR_CONSTRAINTS
 from workflow.generic.guarded_llm_client import GuardedLLMClient
 from workflow.generic.guarded_output import verify_output
 from workflow.definitions.models_verification import ReviewResult
@@ -159,7 +159,7 @@ def run_task_creator_demo(ctx: DemoContext) -> ReviewResult:
 
 
 def flatten_chain(chain: ChainReaction) -> str:
-    """The text projection constraints/chain_reaction_constraints.py's
+    """The text projection constraints/chain_reaction/constraints.py's
     detectors expect: one 'actor: action' line per staged step."""
     return "\n".join(f"{s.actor}: {s.action}" for s in chain.steps)
 

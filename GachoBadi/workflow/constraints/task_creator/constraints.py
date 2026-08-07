@@ -1,5 +1,5 @@
 """Gap-detection LOGIC for agents/runtime/task_creator_agent.py -- pairs
-with task_creator_constraints.yaml.
+with constraints.yaml (this same folder).
 
 These checks re-create, in a properly-scoped place, a capability this
 project used to get from the (now-removed) Assignment #4 Consistency
@@ -33,14 +33,12 @@ from __future__ import annotations
 import os
 from typing import Dict, List
 
-from ..generic.guardrails import TokenBudget
-from ..definitions.models_verification import Finding, Severity
-from .base import AgentConstraints
-from .config_loader import load_constraint_config
+from ...generic.guardrails import TokenBudget
+from ...definitions.models_verification import Finding, Severity
+from ..base import AgentConstraints
+from ..config_loader import load_constraint_config
 
-_CONFIG = load_constraint_config(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "task_creator_constraints.yaml")
-)
+_CONFIG = load_constraint_config(os.path.join(os.path.dirname(os.path.abspath(__file__)), "constraints.yaml"))
 TOKEN_BUDGET = TokenBudget(**_CONFIG["token_budget"])
 
 # Same tone list the (now-removed) Consistency Critic Agent used to

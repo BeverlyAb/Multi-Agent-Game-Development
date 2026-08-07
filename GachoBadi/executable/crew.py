@@ -32,9 +32,9 @@ from agents.runtime.task_creator_agent import TaskCreatorAgent, build_catalog
 from agents.runtime.writer_agent import WriterAgent
 from api.llm_client import LLMClient
 from definitions.models import Building, ChainReaction, Item, Resident, Task
-from workflow.constraints.chain_reaction_constraints import CHAIN_REACTION_CONSTRAINTS
-from workflow.constraints.goose_solution_planner_constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
-from workflow.constraints.task_creator_constraints import TASK_CREATOR_CONSTRAINTS
+from workflow.constraints.chain_reaction.constraints import CHAIN_REACTION_CONSTRAINTS
+from workflow.constraints.goose_solution_planner.constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
+from workflow.constraints.task_creator.constraints import TASK_CREATOR_CONSTRAINTS
 from workflow.generic.guarded_llm_client import GuardedLLMClient
 from workflow.generic.guarded_output import verify_output
 from workflow.definitions.models_verification import Severity
@@ -90,7 +90,7 @@ class GachoBadiCrew:
     def _flatten_chain(chain: ChainReaction) -> str:
         """Same flattening workflow/demo_verify.py uses -- one 'actor:
         action' line per staged step, the shape
-        constraints/chain_reaction_constraints.py's detectors expect."""
+        constraints/chain_reaction/constraints.py's detectors expect."""
         return "\n".join(f"{s.actor}: {s.action}" for s in chain.steps)
 
     def _record_unresolved(self, agent_name: str, task_id: int, call_record) -> None:
@@ -247,7 +247,7 @@ class GachoBadiCrew:
         while offset < len(catalog):
             remaining = len(catalog) - offset
             size = min(self.task_creator.SET_SIZE_MAX, remaining)
-            # Pool mode (workflow/constraints/task_creator_constraints.py):
+            # Pool mode (workflow/constraints/task_creator/constraints.py):
             # generate_set() makes one generate() call per task INSIDE
             # this one method call, so the exact per-task pair can't be
             # supplied -- only every resident/building valid for this

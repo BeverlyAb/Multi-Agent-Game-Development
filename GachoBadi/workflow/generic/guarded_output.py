@@ -7,7 +7,7 @@ nothing to wrap around the agent's constructor.
 
 Instead, the caller runs the agent normally, flattens whatever it
 returned into a plain text projection (the caller decides the format --
-see constraints/chain_reaction_constraints.py for the convention it
+see constraints/chain_reaction/constraints.py for the convention it
 expects), and hands that text to verify_output() here. Everything below
 that point -- GENERIC_OUTPUT_GUARDRAILS, gap_detectors, priority scoring,
 changelog logging -- is the exact same machinery guarded_llm_client.py

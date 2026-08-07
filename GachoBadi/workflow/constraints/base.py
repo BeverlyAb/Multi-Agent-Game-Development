@@ -24,8 +24,8 @@ class AgentConstraints:
     Strategy table), a gap-detection pass (domain-specific Python
     functions -- the checks that need real logic), and priority_weights
     (a plain rule-name -> int mapping, meant to be loaded straight out of
-    that agent's <name>_constraints.yaml via config_loader.py rather than
-    written in code). A rule named in priority_weights outranks the
+    that agent's own constraints.yaml, in its own subfolder, via
+    config_loader.py rather than written in code). A rule named in priority_weights outranks the
     default BLOCKING/ADVISORY-based score regardless of severity; a rule
     left out just falls back to that default. Override priority_score()
     directly only if an agent needs ranking logic beyond a flat
