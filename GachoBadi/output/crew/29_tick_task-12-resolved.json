@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 12,
+    "set_id": 2,
+    "description": "Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.",
+    "target_resident": "Otto",
+    "other_resident": "Vic",
+    "involves_building": "Garden Hose Stand",
+    "goal_state": "Otto and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 12,
+    "lines": [
+      "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+      "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
+      "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 12,
+    "lines": [
+      "* SCENE: east meadow.",
+      "* Goose: Grab near Garden Hose Stand.",
+      "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+      "* Goose: carries it toward Otto.",
+      "* Objective resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: east meadow.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Otto",
+      "action": "react and progress toward: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Vic",
+      "action": "notice, warm up, and reconnect",
+      "location": "east meadow"
+    }
+  ],
+  "news": {
+    "task_id": 12,
+    "headline": "ISLAND BULLETIN: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand."
+  }
+}

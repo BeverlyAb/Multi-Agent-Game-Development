@@ -1,0 +1,8 @@
+{
+  "building": "Front Gate",
+  "goose_actions": [
+    "Honk",
+    "Duck"
+  ],
+  "spec": "Front Gate (Front Gate (structure): features gate that can open and close.): the goose can honk/duck it; residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
+}

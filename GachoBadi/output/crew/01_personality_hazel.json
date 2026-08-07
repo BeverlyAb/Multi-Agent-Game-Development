@@ -1,0 +1,17 @@
+{
+  "name": "Hazel",
+  "role": "baker",
+  "sliders": {
+    "movement": 30,
+    "speech": 70,
+    "energy": 60,
+    "intelligence": 55
+  },
+  "traits": [
+    "sedentary",
+    "candid",
+    "excitable",
+    "astute"
+  ],
+  "personality_summary": "Hazel the baker comes across as sedentary, candid, excitable, astute. (30/70/60/55 movement/speech/energy/intelligence)"
+}

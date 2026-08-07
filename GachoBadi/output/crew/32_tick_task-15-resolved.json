@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 15,
+    "set_id": 2,
+    "description": "Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.",
+    "target_resident": "Vic",
+    "other_resident": "Hazel",
+    "involves_building": "Garden Hose Stand",
+    "goal_state": "Vic and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 15,
+    "lines": [
+      "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+      "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+      "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+      "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+      "(Task resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 15,
+    "lines": [
+      "* SCENE: east meadow.",
+      "* Goose: Grab near Garden Hose Stand.",
+      "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+      "* Goose: carries it toward Vic.",
+      "* Objective resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: east meadow.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Vic",
+      "action": "react and progress toward: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Hazel",
+      "action": "notice, warm up, and reconnect",
+      "location": "east meadow"
+    }
+  ],
+  "news": {
+    "task_id": 15,
+    "headline": "ISLAND BULLETIN: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends."
+  }
+}

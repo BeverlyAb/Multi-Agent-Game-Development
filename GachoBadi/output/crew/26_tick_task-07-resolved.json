@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 7,
+    "set_id": 1,
+    "description": "Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.",
+    "target_resident": "Otto",
+    "other_resident": "Hazel",
+    "involves_building": "Hazel's Bakery",
+    "goal_state": "Otto and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 7,
+    "lines": [
+      "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+      "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
+      "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 7,
+    "lines": [
+      "* SCENE: north dock.",
+      "* Goose: Grab near Hazel's Bakery.",
+      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: carries it toward Otto.",
+      "* Objective resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: north dock.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Otto",
+      "action": "react and progress toward: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Hazel",
+      "action": "notice, warm up, and reconnect",
+      "location": "north dock"
+    }
+  ],
+  "news": {
+    "task_id": 7,
+    "headline": "ISLAND BULLETIN: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery."
+  }
+}

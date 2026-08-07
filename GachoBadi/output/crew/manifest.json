@@ -1,0 +1,174 @@
+{
+  "game": "Gacho Badi (Goose Buddy)",
+  "catalog_size": 18,
+  "sets": [
+    {
+      "set_id": 1,
+      "size": 9,
+      "threshold": 7,
+      "settled_this_set": 7,
+      "still_open": 2
+    },
+    {
+      "set_id": 2,
+      "size": 9,
+      "threshold": 7,
+      "settled_this_set": 7,
+      "still_open": 2
+    }
+  ],
+  "records": [
+    {
+      "content_type": "personality",
+      "file": "01_personality_hazel.json"
+    },
+    {
+      "content_type": "personality",
+      "file": "02_personality_otto.json"
+    },
+    {
+      "content_type": "personality",
+      "file": "03_personality_vic.json"
+    },
+    {
+      "content_type": "relationship",
+      "file": "04_relationship_hazel-otto.json"
+    },
+    {
+      "content_type": "relationship",
+      "file": "05_relationship_hazel-vic.json"
+    },
+    {
+      "content_type": "relationship",
+      "file": "06_relationship_otto-vic.json"
+    },
+    {
+      "content_type": "island_layout",
+      "file": "07_island_layout_layout.json"
+    },
+    {
+      "content_type": "building_design",
+      "file": "08_building_design_hazel-s-bakery.json"
+    },
+    {
+      "content_type": "building_design",
+      "file": "09_building_design_front-gate.json"
+    },
+    {
+      "content_type": "building_design",
+      "file": "10_building_design_garden-hose-stand.json"
+    },
+    {
+      "content_type": "appearance",
+      "file": "11_appearance_hazel.json"
+    },
+    {
+      "content_type": "appearance",
+      "file": "12_appearance_otto.json"
+    },
+    {
+      "content_type": "appearance",
+      "file": "13_appearance_vic.json"
+    },
+    {
+      "content_type": "item_interaction_building",
+      "file": "14_item_interaction_building_hazel-s-bakery.json"
+    },
+    {
+      "content_type": "item_interaction_building",
+      "file": "15_item_interaction_building_front-gate.json"
+    },
+    {
+      "content_type": "item_interaction_building",
+      "file": "16_item_interaction_building_garden-hose-stand.json"
+    },
+    {
+      "content_type": "item_interaction_item",
+      "file": "17_item_interaction_item_a-family-memento.json"
+    },
+    {
+      "content_type": "task_set",
+      "file": "18_task_set_set-1.json"
+    },
+    {
+      "content_type": "task_set",
+      "file": "19_task_set_set-2.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "20_tick_task-01-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "21_tick_task-02-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "22_tick_task-03-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "23_tick_task-04-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "24_tick_task-05-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "25_tick_task-06-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "26_tick_task-07-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "27_tick_task-10-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "28_tick_task-11-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "29_tick_task-12-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "30_tick_task-13-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "31_tick_task-14-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "32_tick_task-15-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "33_tick_task-16-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "34_tick_task-08-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "35_tick_task-09-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "36_tick_task-17-resolved.json"
+    },
+    {
+      "content_type": "tick",
+      "file": "37_tick_task-18-resolved.json"
+    },
+    {
+      "content_type": "completion",
+      "file": "38_completion_harmony.json"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 4,
+    "set_id": 1,
+    "description": "Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.",
+    "target_resident": "Hazel",
+    "other_resident": "Vic",
+    "involves_building": "Hazel's Bakery",
+    "goal_state": "Hazel and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 4,
+    "lines": [
+      "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+      "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+      "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+      "(Task resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 4,
+    "lines": [
+      "* SCENE: north dock.",
+      "* Goose: Grab near Hazel's Bakery.",
+      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: carries it toward Hazel.",
+      "* Objective resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: north dock.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Hazel",
+      "action": "react and progress toward: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Vic",
+      "action": "notice, warm up, and reconnect",
+      "location": "north dock"
+    }
+  ],
+  "news": {
+    "task_id": 4,
+    "headline": "ISLAND BULLETIN: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk."
+  }
+}

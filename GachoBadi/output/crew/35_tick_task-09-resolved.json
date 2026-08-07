@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 9,
+    "set_id": 1,
+    "description": "Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.",
+    "target_resident": "Otto",
+    "other_resident": "Hazel",
+    "involves_building": "Garden Hose Stand",
+    "goal_state": "Otto and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 9,
+    "lines": [
+      "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+      "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
+      "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 9,
+    "lines": [
+      "* SCENE: east meadow.",
+      "* Goose: Grab near Garden Hose Stand.",
+      "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+      "* Goose: carries it toward Otto.",
+      "* Objective resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: east meadow.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Otto",
+      "action": "react and progress toward: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Hazel",
+      "action": "notice, warm up, and reconnect",
+      "location": "east meadow"
+    }
+  ],
+  "news": {
+    "task_id": 9,
+    "headline": "ISLAND BULLETIN: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk."
+  }
+}

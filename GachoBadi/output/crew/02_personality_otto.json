@@ -1,0 +1,17 @@
+{
+  "name": "Otto",
+  "role": "teacher",
+  "sliders": {
+    "movement": 20,
+    "speech": 40,
+    "energy": 35,
+    "intelligence": 90
+  },
+  "traits": [
+    "sedentary",
+    "reserved",
+    "flat",
+    "astute"
+  ],
+  "personality_summary": "Otto the teacher comes across as sedentary, reserved, flat, astute. (20/40/35/90 movement/speech/energy/intelligence)"
+}

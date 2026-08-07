@@ -113,6 +113,13 @@ class GachoBadiCrew:
         all_tasks: List[Task] = []
         set_summaries: List[dict] = []
         tick_records: List[dict] = []
+        # Task Creator's own output (the premises + goal_states it selected
+        # for this set) is a distinct agent output from what later happens
+        # to each task (Goose Planner/Writer/Director/Newscaster, captured
+        # in tick_records) -- snapshotted here, right after generate_set()
+        # and before any resolution mutates task.status, so the two don't
+        # collapse into one file when main.py writes them out separately.
+        set_task_snapshots: List[dict] = []
 
         offset = 0
         set_id = 1
@@ -121,6 +128,7 @@ class GachoBadiCrew:
             size = min(self.task_creator.SET_SIZE_MAX, remaining)
             tasks = self.task_creator.generate_set(catalog, offset, set_id, residents, buildings, size=size)
             threshold = self.task_creator.threshold_for(len(tasks))
+            set_task_snapshots.append({"set_id": set_id, "premises": [asdict(t) for t in tasks]})
 
             settled = 0
             for task in tasks:
@@ -161,6 +169,7 @@ class GachoBadiCrew:
             "personalities": residents,
             "catalog_size": len(catalog),
             "sets": set_summaries,
+            "set_task_snapshots": set_task_snapshots,
             "ticks": tick_records,
             "final_tasks": all_tasks,
             "completion": completion,

@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 17,
+    "set_id": 2,
+    "description": "Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+    "target_resident": "Vic",
+    "other_resident": "Otto",
+    "involves_building": "Front Gate",
+    "goal_state": "Vic and Otto are both present at Front Gate with a positive reaction flag set on Otto",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 17,
+    "lines": [
+      "INT./EXT. FRONT GATE - TOWN SQUARE",
+      "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+      "(They are drifted apart with Otto -- Otto and Vic: drifted apart -- a missed birthday.)",
+      "GOOSE: (honks meaningfully near the Front Gate)",
+      "Vic: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 17,
+    "lines": [
+      "* SCENE: town square.",
+      "* Goose: Honk near Front Gate.",
+      "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+      "* Goose: carries it toward Vic.",
+      "* Objective resolves: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: town square.",
+      "location": "town square"
+    },
+    {
+      "actor": "Vic",
+      "action": "react and progress toward: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+      "location": "town square"
+    },
+    {
+      "actor": "Otto",
+      "action": "notice, warm up, and reconnect",
+      "location": "town square"
+    }
+  ],
+  "news": {
+    "task_id": 17,
+    "headline": "ISLAND BULLETIN: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate."
+  }
+}

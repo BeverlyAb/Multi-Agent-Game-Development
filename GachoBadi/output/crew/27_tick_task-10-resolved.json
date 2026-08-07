@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 10,
+    "set_id": 2,
+    "description": "Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.",
+    "target_resident": "Otto",
+    "other_resident": "Vic",
+    "involves_building": "Hazel's Bakery",
+    "goal_state": "Otto and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 10,
+    "lines": [
+      "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+      "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
+      "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 10,
+    "lines": [
+      "* SCENE: north dock.",
+      "* Goose: Grab near Hazel's Bakery.",
+      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: carries it toward Otto.",
+      "* Objective resolves: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: north dock.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Otto",
+      "action": "react and progress toward: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Vic",
+      "action": "notice, warm up, and reconnect",
+      "location": "north dock"
+    }
+  ],
+  "news": {
+    "task_id": 10,
+    "headline": "ISLAND BULLETIN: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart."
+  }
+}

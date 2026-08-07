@@ -1,0 +1,55 @@
+{
+  "task": {
+    "task_id": 1,
+    "set_id": 1,
+    "description": "Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+    "target_resident": "Hazel",
+    "other_resident": "Otto",
+    "involves_building": "Hazel's Bakery",
+    "goal_state": "Hazel and Otto are both present at Hazel's Bakery with a positive reaction flag set on Otto",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 1,
+    "lines": [
+      "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+      "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are drifted apart with Otto -- Hazel and Otto: drifted apart -- a missed birthday.)",
+      "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Hazel: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 1,
+    "lines": [
+      "* SCENE: north dock.",
+      "* Goose: Grab near Hazel's Bakery.",
+      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: carries it toward Hazel.",
+      "* Objective resolves: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+    ]
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: north dock.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Hazel",
+      "action": "react and progress toward: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+      "location": "north dock"
+    },
+    {
+      "actor": "Otto",
+      "action": "notice, warm up, and reconnect",
+      "location": "north dock"
+    }
+  ],
+  "news": {
+    "task_id": 1,
+    "headline": "ISLAND BULLETIN: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+  }
+}

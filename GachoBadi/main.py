@@ -1,7 +1,8 @@
 """Entry point: runs the Gacho Badi crew end-to-end -- personality,
 relationships, dev-time content, item interaction, and a full playthrough
-of the lifetime task catalog through Game Completion -- and writes
-output/run.json.
+of the lifetime task catalog through Game Completion -- and writes every
+generated piece to its own file under output/crew/, the same one-file-
+per-output pattern as run_content_pipeline.py's output/content_pipeline/.
 
 Usage:
     python3 main.py
@@ -13,12 +14,22 @@ is guaranteed to finish and produce output; see the try/except in main().
 """
 from __future__ import annotations
 
+import itertools
 import json
 import os
+import re
 import sys
+from dataclasses import asdict
 
 from crew import GachoBadiCrew
 from models import Building, Item, Resident, Sliders
+
+OUTPUT_DIR = os.path.join("output", "crew")
+
+
+def slugify(text: str, max_words: int = 4) -> str:
+    words = re.findall(r"[a-zA-Z0-9]+", text.lower())[:max_words]
+    return "-".join(words) or "untitled"
 
 
 def build_island_seed():
@@ -47,6 +58,25 @@ def build_island_seed():
     return residents, buildings, items
 
 
+class OutputWriter:
+    """Writes one JSON file per generated piece and builds the manifest
+    entries describing where each one landed -- mirrors
+    run_content_pipeline.py's write_records()/manifest.json exactly."""
+
+    def __init__(self, output_dir: str):
+        self.output_dir = output_dir
+        self.entries = []
+        self._next = 1
+
+    def write(self, content_type: str, detail: str, payload) -> str:
+        filename = f"{self._next:02d}_{content_type}_{slugify(detail)}.json"
+        self._next += 1
+        with open(os.path.join(self.output_dir, filename), "w") as f:
+            json.dump(payload, f, indent=2)
+        self.entries.append({"content_type": content_type, "file": filename})
+        return filename
+
+
 def main() -> int:
     print("Gacho Badi (Goose Buddy) -- AI Architecture Crew")
     print("=" * 55)
@@ -61,17 +91,88 @@ def main() -> int:
         item_interaction_result = crew.run_item_interaction_pass(buildings, items)
         playthrough = crew.run_playthrough(residents, buildings)
 
-        output = {
-            "game": "Gacho Badi (Goose Buddy)",
-            "dev_time_pass": dev_time_result,
-            "item_interaction_pass": item_interaction_result,
-            "playthrough": GachoBadiCrew.to_jsonable(playthrough),
-        }
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        for existing in os.listdir(OUTPUT_DIR):
+            os.remove(os.path.join(OUTPUT_DIR, existing))
+        out = OutputWriter(OUTPUT_DIR)
 
-        os.makedirs("output", exist_ok=True)
-        out_path = os.path.join("output", "run.json")
-        with open(out_path, "w") as f:
-            json.dump(output, f, indent=2)
+        # Character Personality Agent -- one file per resident.
+        for resident in residents:
+            out.write(
+                "personality",
+                resident.name,
+                {
+                    "name": resident.name,
+                    "role": resident.role,
+                    "sliders": asdict(resident.sliders),
+                    "traits": resident.traits,
+                    "personality_summary": resident.personality_summary,
+                },
+            )
+
+        # Relationship Agent -- one file per unordered pair (label + backstory).
+        for a, b in itertools.combinations(residents, 2):
+            out.write(
+                "relationship",
+                f"{a.name}-{b.name}",
+                {
+                    "residents": [a.name, b.name],
+                    "label": a.relationships.get(b.name, ""),
+                    "backstory": a.relationship_backstories.get(b.name, ""),
+                },
+            )
+
+        # Dev-Time Content Pipeline -- Island Layout, Building Designer, Character Appearance.
+        out.write("island_layout", "layout", {"spec": dev_time_result["layout"]})
+        for building, spec in zip(buildings, dev_time_result["building_specs"]):
+            out.write("building_design", building.name, {"building": building.name, "spec": spec})
+        for resident, spec in zip(residents, dev_time_result["appearances"]):
+            out.write("appearance", resident.name, {"resident": resident.name, "spec": spec})
+
+        # Item Interaction / World Affordance Agent -- one file per building, one per item.
+        for building, spec in zip(buildings, item_interaction_result["building_specs"]):
+            out.write(
+                "item_interaction_building",
+                building.name,
+                {"building": building.name, "goose_actions": building.goose_actions, "spec": spec},
+            )
+        for item, spec in zip(items, item_interaction_result["item_specs"]):
+            out.write(
+                "item_interaction_item",
+                item.name,
+                {
+                    "item": item.name,
+                    "goose_actions": item.goose_actions,
+                    "reset_rule": item.reset_rule,
+                    "spec": spec,
+                },
+            )
+
+        # Task Creator Agent -- one file per set, the pre-resolution premises it selected.
+        for snapshot in playthrough["set_task_snapshots"]:
+            out.write("task_set", f"set-{snapshot['set_id']}", snapshot)
+
+        # Goose Solution Planner + Writer + Director + Newscaster -- one file per task.
+        for tick in playthrough["ticks"]:
+            task = tick["task"]
+            out.write(
+                "tick",
+                f"task-{task.task_id:02d}-{task.status}",
+                GachoBadiCrew.to_jsonable(tick),
+            )
+
+        # Game Completion -- one file, the epilogue.
+        out.write("completion", "harmony" if playthrough["completion"]["harmony"] else "incomplete", playthrough["completion"])
+
+        manifest = {
+            "game": "Gacho Badi (Goose Buddy)",
+            "catalog_size": playthrough["catalog_size"],
+            "sets": playthrough["sets"],
+            "records": out.entries,
+        }
+        manifest_path = os.path.join(OUTPUT_DIR, "manifest.json")
+        with open(manifest_path, "w") as f:
+            json.dump(manifest, f, indent=2)
 
         resolved = sum(1 for t in playthrough["final_tasks"] if t.status == "resolved")
         retired = sum(1 for t in playthrough["final_tasks"] if t.status == "retired")
@@ -83,9 +184,10 @@ def main() -> int:
         print(f"Tasks resolved       : {resolved}")
         print(f"Tasks retired        : {retired}")
         print(f"Harmony reached      : {playthrough['completion']['harmony']}")
+        print(f"Output files written : {len(out.entries)} + manifest.json")
         print(f"LLM provider in use  : {crew.llm.provider} "
               f"({'live API calls' if crew.llm.provider != 'mock' else 'local deterministic fallback'})")
-        print(f"Full run written to  : {os.path.abspath(out_path)}")
+        print(f"Manifest written to  : {os.path.abspath(manifest_path)}")
         return 0
     except Exception as exc:  # last-resort guard: never let the crew crash silently
         print(f"\n[FATAL] Crew run failed unexpectedly: {exc!r}", file=sys.stderr)

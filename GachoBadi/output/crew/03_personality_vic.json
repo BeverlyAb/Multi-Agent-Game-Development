@@ -1,0 +1,17 @@
+{
+  "name": "Vic",
+  "role": "gym instructor",
+  "sliders": {
+    "movement": 90,
+    "speech": 80,
+    "energy": 95,
+    "intelligence": 45
+  },
+  "traits": [
+    "energetic",
+    "candid",
+    "excitable",
+    "dull"
+  ],
+  "personality_summary": "Vic the gym instructor comes across as energetic, candid, excitable, dull. (90/80/95/45 movement/speech/energy/intelligence)"
+}
