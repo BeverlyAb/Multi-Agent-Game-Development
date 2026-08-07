@@ -11,12 +11,71 @@ cd GachoBadi
 python3 run_content_pipeline.py
 ```
 
-No API key required (deterministic fallback, see `llm_client.py`). Every
-generated piece is written to its own file under `output/content_pipeline/`
-(e.g. `03_task_premise_mend-fallout.json`), alongside `catalog_check.json`
-and a `manifest.json` that lists what was generated and in what order —
-each file's query, retrieved chunk, raw generation, critic report, and
-corrected text in full.
+No API key required (deterministic fallback, see `llm_client.py`).
+
+## Output files
+
+Every generated piece gets its own file — nothing is bundled into one
+big JSON. A run writes this:
+
+```
+output/content_pipeline/
+├── manifest.json                                    <- index: game, allowed_verbs, which files exist and in what order
+├── 01_item_affordance_a-lost-memento.json            <- Item Interaction Content Agent
+├── 02_relationship_backstory_hazel-otto.json         <- Relationship Backstory Content Agent
+├── 03_task_premise_mend-fallout.json                 <- Task Premise Content Agent (Hazel/Otto)
+├── 04_item_affordance_a-chipped-garden-trowel.json   <- Item Interaction Content Agent, 2nd item
+├── 05_task_premise_welcome-isolated.json             <- Task Premise Content Agent, 2nd task (Vic/Hazel)
+└── catalog_check.json                                <- cross-task redundancy check over 03 + 05
+```
+
+Filenames are self-describing on their own: `{order}_{content_type}_{detail}.json`,
+where `{detail}` is the item name, the resident pair, or the connection
+kind — so which file is which is legible without opening any of them.
+Re-running `python3 run_content_pipeline.py` clears this directory first,
+so it never accumulates stale files from a previous run.
+
+**`manifest.json`** — what a client (the Phaser page in `web/`, or a
+grader) reads first:
+```json
+{
+  "game": "Gacho Badi (Goose Buddy)",
+  "allowed_verbs": ["Dash", "Duck", "Grab", "Honk", "Pick up"],
+  "records": [
+    { "content_type": "item_affordance", "file": "01_item_affordance_a-lost-memento.json" },
+    { "content_type": "relationship_backstory", "file": "02_relationship_backstory_hazel-otto.json" },
+    { "content_type": "task_premise", "file": "03_task_premise_mend-fallout.json" },
+    { "content_type": "item_affordance", "file": "04_item_affordance_a-chipped-garden-trowel.json" },
+    { "content_type": "task_premise", "file": "05_task_premise_welcome-isolated.json" }
+  ],
+  "catalog_check_file": "catalog_check.json"
+}
+```
+
+**Every numbered file** (`01`–`05`) has the same shape — the full RAG +
+critic audit trail for that one generated piece:
+
+| Field | What it holds |
+|---|---|
+| `content_type` | `item_affordance` \| `relationship_backstory` \| `task_premise` |
+| `query` | the exact RAG query string sent to `rag.py` |
+| `retrieved` | the chunk(s) it pulled back from `gdd.txt` — `chunk_id`, `heading`, `text`, TF-IDF `score` |
+| `raw_output` | what the content agent generated, before the critic touched it |
+| `passed_critic` | `false` if the critic changed anything |
+| `critic_violations` | list of specific issues caught (empty if none) |
+| `critic_commentary` | the critic's one-line verdict |
+| `final_output` | the corrected text — what the game/Phaser client actually uses |
+| `meta` | structured fields (`item_name`, `resident`/`other`, `building`, `connection_kind`, etc.) so a client doesn't have to re-parse `final_output`'s prose |
+
+**`catalog_check.json`** — the batch-level check across every task file
+(not per-file, since redundancy across *different* tasks can't be seen
+by checking one task at a time):
+```json
+{
+  "checked_tasks": ["mend_fallout", "welcome_isolated"],
+  "violations": []
+}
+```
 
 ## Game-Anchored Source
 
