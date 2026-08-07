@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from agents.base import BaseAgent
-from models import Resident, Sliders
+from definitions.models import Resident, Sliders
 
 
 class CharacterPersonalityAgent(BaseAgent):

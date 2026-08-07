@@ -4,8 +4,9 @@ of the lifetime task catalog through Game Completion -- and writes every
 generated piece to its own file under output/crew/, one file per
 generated piece plus a manifest.json indexing all of them in order.
 
-Usage:
-    python3 main.py
+Usage (from anywhere -- output/ is always resolved relative to this
+project's root, not the caller's working directory):
+    python3 executable/main.py
 
 No API key or third-party package is required -- set ANTHROPIC_API_KEY or
 OPENAI_API_KEY (and install the matching SDK) to have agents call a real
@@ -21,10 +22,22 @@ import re
 import sys
 from dataclasses import asdict
 
-from crew import GachoBadiCrew
-from models import Building, Item, Resident, Sliders
+# This file now lives in executable/, one level below the project root --
+# api/, definitions/, agents/, and output/ are siblings of executable/, not
+# children of it. Add the root to sys.path so `definitions.models` and
+# `api.llm_client` (and, transitively, `agents.*` inside crew.py) resolve
+# no matter what directory this script is invoked from. `crew` itself
+# needs no such help -- crew.py lives right next to this file in
+# executable/, which Python already puts on sys.path for a directly-run
+# script.
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
-OUTPUT_DIR = os.path.join("output", "crew")
+from crew import GachoBadiCrew
+from definitions.models import Building, Item, Resident, Sliders
+
+OUTPUT_DIR = os.path.join(ROOT_DIR, "output", "crew")
 
 
 def slugify(text: str, max_words: int = 4) -> str:

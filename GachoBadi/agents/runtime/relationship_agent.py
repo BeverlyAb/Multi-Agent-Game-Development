@@ -4,7 +4,7 @@ from itertools import combinations
 from typing import List
 
 from agents.base import BaseAgent
-from models import Resident
+from definitions.models import Resident
 
 
 class RelationshipAgent(BaseAgent):

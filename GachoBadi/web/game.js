@@ -1,22 +1,17 @@
-// Phaser 3 front end for GachoBadi's Dynamic Content Pipeline
-// (run_content_pipeline.py -> output/content_pipeline/*.json, one file
-// per generated piece plus manifest.json and catalog_check.json).
+// Phaser 3 front end for GachoBadi's (now-removed) Dynamic Content
+// Pipeline. The pipeline itself, its Consistency Critic Agent, and its
+// output/content_pipeline/ directory are gone -- this client only ever
+// runs against the JSON snapshot embedded in index.html (#pipeline-data)
+// below, frozen from the pipeline's last run, since there's no live
+// source left to fetch from.
 //
-// Unlike UntitledGooseGame_Multi_Agent/web (which plays the *runtime crew's*
-// output), this client plays the *content pipeline's* RAG-grounded,
-// critic-checked generations as an actual scene: the memento's affordance
-// spec becomes a real pick-up-able prop, the Relationship Agent's authored
-// backstory becomes Hazel/Otto's intro caption, and the task premise's
-// (critic-corrected) goose-verb plan becomes the goose's own five-verb
-// controls (Honk/Grab/Pick up/Duck/Dash) with the same "task counts once
-// its plan is satisfied" mechanic the GDD describes -- see gdd.txt's
-// "How a task is confirmed complete."
-//
-// The Consistency Critic panel shows every record's pass/fail and, for the
-// task premise, the exact lore break it caught (an Untitled-Goose-Game
-// verb, "Run," left over from agents/dynamic_content/task_premise_content_agent.py's
-// CONNECTION_KINDS table) and the corrected text -- the same audit trail
-// as output/content_pipeline/, just visible in the running game.
+// This client plays that snapshot's RAG-grounded generations as an actual
+// scene: the memento's affordance spec becomes a real pick-up-able prop,
+// the Relationship Agent's authored backstory becomes Hazel/Otto's intro
+// caption, and the task premise's goose-verb plan becomes the goose's own
+// five-verb controls (Honk/Grab/Drop/Duck/Dash) with the same "task
+// counts once its plan is satisfied" mechanic the GDD describes -- see
+// gdd.txt's "How a task is confirmed complete."
 
 const WORLD_W = 960, WORLD_H = 640;
 const TASK_RADIUS = 170; // how close the goose must be to the task's building to "count" a verb
@@ -85,7 +80,7 @@ function parseTaskPlan(taskRecord) {
   const verbs = [];
   let reactionLine = "";
   lines.slice(1).forEach((line) => {
-    const verbMatch = line.match(/^Goose:\s*(Honk|Grab|Pick up|Duck|Dash)\b/i);
+    const verbMatch = line.match(/^Goose:\s*(Honk|Grab|Drop|Duck|Dash)\b/i);
     if (verbMatch) {
       const verb = verbMatch[1];
       if (!verbs.some((v) => v.toLowerCase() === verb.toLowerCase())) verbs.push(verb);
@@ -229,14 +224,13 @@ class PipelineScene extends Phaser.Scene {
       d: Phaser.Input.Keyboard.KeyCodes.D,
       honk: Phaser.Input.Keyboard.KeyCodes.SPACE,
       grab: Phaser.Input.Keyboard.KeyCodes.E,
-      pickup: Phaser.Input.Keyboard.KeyCodes.R,
+      drop: Phaser.Input.Keyboard.KeyCodes.R,
       duck: Phaser.Input.Keyboard.KeyCodes.Q,
       dash: Phaser.Input.Keyboard.KeyCodes.SHIFT,
     });
 
     this.buildTaskHud();
     this.buildLoreHud();
-    this.buildCriticHud();
   }
 
   spawnResident(name, role, x, y) {
@@ -302,48 +296,6 @@ class PipelineScene extends Phaser.Scene {
     if (this.taskRecord) addBlock("Task Premise Content Agent", this.taskRecord.final_output);
   }
 
-  buildCriticHud() {
-    const panel = window.hudTabs.critic.panel;
-    panel.innerHTML = "";
-    const title = document.createElement("div");
-    title.style.fontWeight = "bold";
-    title.textContent = "CONSISTENCY CRITIC AGENT";
-    panel.appendChild(title);
-    (this.pipelineData.records || []).forEach((r) => {
-      const row = document.createElement("div");
-      row.style.marginTop = "6px";
-      const status = document.createElement("div");
-      status.className = r.passed_critic ? "critic-pass" : "critic-fail";
-      status.textContent = `${r.content_type}: ${r.passed_critic ? "passed" : `corrected (${r.critic_violations.length} issue(s))`}`;
-      row.appendChild(status);
-      r.critic_violations.forEach((v) => {
-        const vline = document.createElement("div");
-        vline.style.fontSize = "12px";
-        vline.textContent = `- ${v}`;
-        row.appendChild(vline);
-      });
-      panel.appendChild(row);
-    });
-
-    const catalogCheck = this.pipelineData.catalog_check;
-    if (catalogCheck) {
-      const row = document.createElement("div");
-      row.style.marginTop = "6px";
-      const status = document.createElement("div");
-      const clean = !catalogCheck.violations || catalogCheck.violations.length === 0;
-      status.className = clean ? "critic-pass" : "critic-fail";
-      status.textContent = `catalog check (${(catalogCheck.checked_tasks || []).join(", ")}): ${clean ? "clean" : `${catalogCheck.violations.length} issue(s)`}`;
-      row.appendChild(status);
-      (catalogCheck.violations || []).forEach((v) => {
-        const vline = document.createElement("div");
-        vline.style.fontSize = "12px";
-        vline.textContent = `- ${v}`;
-        row.appendChild(vline);
-      });
-      panel.appendChild(row);
-    }
-  }
-
   popText(x, y, msg, color) {
     const t = this.add.text(x, y, msg, {
       fontFamily: "monospace", fontSize: "16px", color: color || "#ffffff",
@@ -402,7 +354,7 @@ class PipelineScene extends Phaser.Scene {
     this.registerVerb("Grab");
   }
 
-  doPickUp() {
+  doDrop() {
     if (this.carrying) {
       this.carrying = false;
       this.memento.x = this.goose.x + this.goose.facing * 20;
@@ -410,7 +362,7 @@ class PipelineScene extends Phaser.Scene {
       this.memento.droppedAt = this.time.now;
       this.popText(this.goose.x, this.goose.y - 30, "set the memento down", "#9be564");
     }
-    this.registerVerb("Pick up");
+    this.registerVerb("Drop");
   }
 
   doDuck() {
@@ -464,7 +416,7 @@ class PipelineScene extends Phaser.Scene {
 
     if (Phaser.Input.Keyboard.JustDown(this.keys.honk)) this.doHonk();
     if (Phaser.Input.Keyboard.JustDown(this.keys.grab)) this.doGrab();
-    if (Phaser.Input.Keyboard.JustDown(this.keys.pickup)) this.doPickUp();
+    if (Phaser.Input.Keyboard.JustDown(this.keys.drop)) this.doDrop();
     if (Phaser.Input.Keyboard.JustDown(this.keys.duck)) this.doDuck();
     if (Phaser.Input.Keyboard.JustDown(this.keys.dash)) this.doDash();
   }

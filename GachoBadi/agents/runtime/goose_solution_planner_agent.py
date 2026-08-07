@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 from agents.base import BaseAgent
-from models import Building, Task, VerbPlan
+from definitions.models import Building, Task, VerbPlan
 
 
 class GooseSolutionPlannerAgent(BaseAgent):

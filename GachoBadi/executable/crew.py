@@ -6,8 +6,19 @@ Mechanics and Game Completion sections -- not just one illustrative tick.
 """
 from __future__ import annotations
 
+import os
+import sys
 from dataclasses import asdict
 from typing import List
+
+# Same reasoning as executable/main.py: this file lives in executable/,
+# one level below the project root, so agents/, api/, and definitions/
+# (all siblings of executable/) need the root added to sys.path before
+# they're importable. Guarded so importing crew directly (not just via
+# main.py, which already does this before importing crew) still works.
+_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _ROOT_DIR not in sys.path:
+    sys.path.insert(0, _ROOT_DIR)
 
 from agents.dev_time.scene_orchestrator import SceneOrchestratorAgent
 from agents.runtime.character_personality_agent import CharacterPersonalityAgent
@@ -19,8 +30,8 @@ from agents.runtime.newscaster_agent import NewscasterAgent
 from agents.runtime.relationship_agent import RelationshipAgent
 from agents.runtime.task_creator_agent import TaskCreatorAgent, build_catalog
 from agents.runtime.writer_agent import WriterAgent
-from llm_client import LLMClient
-from models import Building, Item, Resident, Task
+from api.llm_client import LLMClient
+from definitions.models import Building, Item, Resident, Task
 
 
 class GachoBadiCrew:

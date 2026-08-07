@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 
 from agents.base import BaseAgent
-from models import Building
+from definitions.models import Building
 
 
 class IslandLayoutAgent(BaseAgent):

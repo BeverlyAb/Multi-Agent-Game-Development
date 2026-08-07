@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 from agents.base import BaseAgent
-from models import Building, ChainReaction, Resident, Screenplay, StagedAction, Task, VerbPlan
+from definitions.models import Building, ChainReaction, Resident, Screenplay, StagedAction, Task, VerbPlan
 
 
 class DirectorAgent(BaseAgent):

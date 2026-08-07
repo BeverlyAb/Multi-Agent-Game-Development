@@ -11,7 +11,7 @@ executes, so the crew always produces output.
 """
 from __future__ import annotations
 
-from llm_client import LLMClient
+from api.llm_client import LLMClient
 
 
 class BaseAgent:

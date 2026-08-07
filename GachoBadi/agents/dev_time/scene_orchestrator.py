@@ -4,7 +4,7 @@ from agents.base import BaseAgent
 from agents.dev_time.building_designer_agent import BuildingDesignerAgent
 from agents.dev_time.character_appearance_agent import CharacterAppearanceAgent
 from agents.dev_time.island_layout_agent import IslandLayoutAgent
-from llm_client import LLMClient
+from api.llm_client import LLMClient
 
 
 class SceneOrchestratorAgent(BaseAgent):

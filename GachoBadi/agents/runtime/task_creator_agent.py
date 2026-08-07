@@ -4,7 +4,7 @@ import math
 from typing import List, Tuple
 
 from agents.base import BaseAgent
-from models import Building, Resident, Task
+from definitions.models import Building, Resident, Task
 
 
 def build_catalog(residents: List[Resident], buildings: List[Building]) -> List[Tuple[str, str, str]]:

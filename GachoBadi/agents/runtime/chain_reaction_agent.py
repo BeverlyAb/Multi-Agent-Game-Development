@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 from agents.base import BaseAgent
-from models import Building, ChainReaction, Item, Resident, StagedAction, Task
+from definitions.models import Building, ChainReaction, Item, Resident, StagedAction, Task
 
 
 class ChainReactionAgent(BaseAgent):

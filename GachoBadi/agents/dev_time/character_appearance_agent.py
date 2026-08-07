@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from agents.base import BaseAgent
-from models import Resident
+from definitions.models import Resident
 
 
 class CharacterAppearanceAgent(BaseAgent):

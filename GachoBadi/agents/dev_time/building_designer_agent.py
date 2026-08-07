@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from agents.base import BaseAgent
-from models import Building
+from definitions.models import Building
 
 
 class BuildingDesignerAgent(BaseAgent):
