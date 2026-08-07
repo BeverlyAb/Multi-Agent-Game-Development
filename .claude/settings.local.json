@@ -16,7 +16,9 @@
       "Bash(ls -la UnderTale_Multi_Agent/output)",
       "Bash(ls -la UnderTale_Multi_Agent/__pycache__)",
       "Bash(echo \"gdd.txt diff exit=$?\")",
-      "Bash(echo \"gdd copy.txt diff exit=$?\")"
+      "Bash(echo \"gdd copy.txt diff exit=$?\")",
+      "Bash(node --check game.js)",
+      "Bash(node -e ' *)"
     ]
   }
 }

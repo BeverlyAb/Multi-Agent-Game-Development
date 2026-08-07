@@ -1,174 +1,157 @@
-# Gachō Badi (Goose Buddy) — AI Architecture Crew
+# MultiAgent Game Development
 
-**This is the AI crew for my capstone game, *Gachō Badi (Goose Buddy)***
-(GDD at `../gdd-review-kit/gdd.txt`). It's Tomodachi Life meets Untitled
-Goose Game: the player controls a goose that pulls off indirect,
-open-ended antics on custom residents and buildings — but unlike
-Untitled Goose Game's chaos-for-its-own-sake, every task here nudges two
-or more residents toward connection (friendship, community belonging, or
-romance). Tasks appear in sets of 5-9; resolving 75% of a set unlocks up
-to 2 more residents and 2 more buildings from a fixed roster, which
-opens the next set, until the island is united. There is no in-game
-currency anywhere in this loop.
+# Gachō Badi (Goose Buddy)
 
-This folder is a working, dependency-free implementation of the eleven
-agents described in that GDD's **AI Architecture** section (Draft #6),
-wired together as a coordinating crew rather than left as a spec. Three
-of those eleven — Relationship Agent, Goose Solution Planner Agent, and
-Newscaster Agent — were folded in after building this repo's Tomodachi
-Life and Untitled Goose Game reference crews surfaced two gaps the
-original 8-agent list didn't cover: nothing tracked how residents felt
-about each other, and nothing guaranteed a task was actually solvable
-with the goose's own moves.
+**GDD Draft #10**
 
-Draft #5 added, in response to a design review board's findings, an
-explicit goal-state completion check and a one-way "tasks are consumed,
-not repeatable" rule; Draft #6 removed the credit economy Draft #5 had
-introduced and replaced it with the task-set/75%-threshold unlock
-described above (see the GDD's Game Mechanics section for both). This
-demo crew is a single illustrative tick, not a persistent runtime, so it
-does not yet implement the goal-state check, task retirement, or the
-task-set/threshold cycle across multiple runs — the Task Creator Agent
-here generates one task per invocation without tracking which pairings
-have already been resolved or how large a "set" is. Wiring that state
-machine in is follow-up work, not something this README claims is
-already built.
+> **Revision note (Draft #10):** closes both BLOCKING findings from the Draft #9 design review board (2 blocking, down from 12; `review-board.html`), plus the three Major findings the board ranked immediately behind them, and resolves both of Draft #9's previously-unresolved disagreements in the process. Specifically: (1) fixes the true-ending completion gate so it counts a task toward the lifetime total whether it was resolved or retired — the exact same reachability bug Draft #9 had already fixed for the 75% pacing gate, just recurring one checkpoint later — while giving the ending an authored narrative answer instead of a silent flag-flip: a resolved pair gets an epilogue callback to their Relationship Agent backstory, a retired pair gets an honest one-line acknowledgment that their thread stayed open, so retirement counting toward completion never reads as an unearned success; (2) closes the async-fallback race that let a task's resolution record finalize and permanently retire on the generic placeholder alone before its authored backstory line ever attached, by requiring the authored line to attach before a resolution counts toward either threshold — the placeholder still plays immediately for responsiveness, it just stops being able to become the permanent counted record except in a genuine, retried generation failure; (3) replaces the unsupported "rising complexity" claim with an honest one: the goose's verb toolkit is explicitly flat by design, complexity grows in breadth (more simultaneous pairwise relationships per task) not mechanical difficulty, multi-resident premises check multiple existing pairwise records at once instead of requiring a new merged data structure, and the Task Creator's set order is stated to deliberately reserve higher-tension relationship states for later sets rather than greedily spending the richest material first; (4) gives the harmony ending an authored closing sequence and states explicitly that the island stays freely explorable afterward instead of just stopping; (5) states that the ~30-40 task premises are pre-authored content the Task Creator selects and assembles, not runtime-generated text, and adds a stated basis (reused architecture, not new systems) plus a descoping contingency for the Week 4-12 estimate. Together, (1)+(4) resolve the disagreement over whether fixing the reachability bug would hollow out the ending further — the fix is narrative, not a math-only patch — and (2) resolves the disagreement over whether the runtime/dev-time split is decorative: the async race it prevents is proof the split, and its safeguards, are load-bearing.
 
-## What this crew produces
+## Executive Summary
 
-Given a small island snapshot (a few residents with personality sliders,
-a few interactive buildings), one run of the crew produces:
+Gachō Badi is a finite, completable game, not an endless sandbox — every system in this document is designed around that commitment, because an earlier review found the economy math, the completion condition, and the pitch's own language each silently assuming a different answer.
 
-- **Personality + Relationship content**:
-  - a **personality profile** per resident, derived from their
-    movement/speech/energy/intelligence sliders
-  - a **relationship map** between every pair of residents (e.g. "close
-    friends," "drifted apart," "friendly rivals") that gates which tasks
-    are possible
-- **Island Prep content** (dispatched by the `Scene Orchestrator`):
-  - a plain-language **appearance spec** per resident, built from that
-    personality
-  - a **building design spec** per building, calling out its interactive
-    feature (a hose that spouts water, a gate that opens/closes, ...)
-  - an **island layout** assigning each building a physical location
-- **Runtime Tick output**, using that prepped state:
-  - an **open-ended task list** (the Task Creator Agent, one of the
-    GDD's two "One Wow" agents) — each task is written to nudge a
-    specific resident pair toward connection, using their actual mapped
-    relationship
-  - a **screenplay** (dialogue + directional cues) for the active task,
-    from the Writer Agent
-  - a **verb plan** — an indirect solution using only the goose's own
-    moves (honk, grab, pick up, duck, dash) and never dialogue, from the
-    Goose Solution Planner Agent
-  - **staged actions** — what the goose and residents actually do in
-    engine, at a real island location — from the Director Agent, the
-    GDD's other "One Wow" agent
-  - a **news bulletin** headline recapping the task, from the Newscaster
-    Agent
+Tomodachi Life meets Untitled Goose Game to form Gachō Badi. Players arrive on an island that is already fully populated — a fixed cast of residents and buildings the goose gets to know and reconnect, not a blank canvas the player builds or customizes. The goose is not a neutral outside visitor: it is established as the island's own goose, already living among this cast before play begins, which is the in-fiction reason it intervenes at all — it already belongs here, and it's the one who notices when the community it lives in has drifted apart. It combines the resident-interaction and relationship "drama" of Tomodachi Life with the goal/task based gameplay and simple directional maneuverability of Untitled Goose Game — but where Untitled Goose Game's goose causes chaos for its own sake, Gachō Badi's goose is a quiet community-builder. Every task the goose completes nudges residents a little closer together — not only into romance, but into friendships, mended neighborly ties, and a stronger sense of belonging on the island — and the island only reaches harmony once the goose has helped everyone on it connect.
 
-Everything is printed to the terminal as it's produced and written as
-structured JSON to `output/run.json` so a game engine (or a grader) can
-inspect exactly what each agent handed the next one.
+Main gameplay is to explore an already-populated island and use the Goose to draw residents and locations together. All residents and core buildings are present from the beginning, so the player immediately sees a living community rather than an empty island waiting to be unlocked. The runtime agents configure that community at the start of a game: personalities are generated, roles are assigned from the fixed roster, relationships (and their authored backstories) are established, and the Item Interaction Agent loads the supported affordances and consequences for every interactive object. The Goose Solution Planner then becomes the central gameplay gatekeeper, using that world model to ensure that every task can be solved through existing goose verbs and real object interactions before it reaches the player. Unlike Untitled Goose Game, the goose's antics are not mischief for its own sake — every task is a small act of connection: reuniting old friends, welcoming an isolated resident into a group, mending a neighborly falling-out, or nudging two residents toward romance through indirect physical-comedy problem solving. The game ends once all available tasks are completed and the island is united.
 
-See [`DIAGRAM.md`](DIAGRAM.md) for the full agent map and data flow.
+## Game Mechanics (player-facing actions and loop)
 
-## The eleven agents — role, input, output
+The player directly drives the goose — the same directional buttons and honk/pick up/duck/dash commands are the only way to move or act for the entire game. All residents and core buildings are already placed on the island when play begins. The player never directly controls a resident and does not unlock or place residents during progression; instead, completing tasks reveals additional task sets, relationship complications, and island-wide story moments involving the cast that is already present.
 
-Each agent has exactly one job, and each one's output is a field another
-agent requires — remove any single agent and the pipeline raises a clear
-error instead of degrading silently. See "Why every agent is
-load-bearing" in [`DIAGRAM.md`](DIAGRAM.md) for the proof (including how
-to reproduce the break yourself).
+A lone goose moves among the island's full resident cast. In the tutorial-like opening, the residents are visible but only a small area and a few low-complexity tasks are active. The goose, controlled through directional buttons and interaction commands such as honk, pick up, duck, and dash, learns the basic verbs through simple tasks before the first relationship-focused task set becomes active.
 
-| Agent | Input | Output |
-|---|---|---|
-| Character Personality Agent | slider values (movement/speech/energy/intelligence) | `resident.traits` + summary |
-| Relationship Agent | residents *(need `.traits`)* | `resident.relationships` (mutates in place) |
-| Island Layout Agent | list of buildings | `building.location` (mutates in place) |
-| Character Appearance Agent | resident *(requires `.traits`)* | `resident.appearance` (mutates in place) |
-| Building Designer Agent | building *(requires `.location`)* | `building.interactive_feature`, enriched, + `building.designed = True` (mutates in place) |
-| Scene Orchestrator | a request kind (`appearance`/`building`/`layout`) + payload | dispatches to the matching agent above, returns its result |
-| Task Creator Agent ("One Wow") | residents *(need `.traits` + `.relationships`)* + buildings *(need `.location` + `.designed`)* | task list |
-| Writer Agent | a task + residents *(need `.appearance`)* + buildings *(need `.location` + `.designed`)* | screenplay (dialogue + directional cues) |
-| Goose Solution Planner Agent | a task + buildings *(need `.location` + `.designed`)* | verb plan (honk/grab/pick up/duck/dash only — no dialogue) |
-| Director Agent ("One Wow") | screenplay + verb plan + task + buildings | staged actions — the actual gameplay |
-| Newscaster Agent | staged actions + task | news bulletin (headline) |
+At initialization, the existing Character Personality Agent assigns each resident a coherent personality (e.g. irritable, friendly, cowardly) and a role (e.g. baker, teacher, gym instructor) from the fixed authored role pool. **Role and building are independent lists, not a 1:1 pairing:** a role only flavors a resident's personality, dialogue, and default hangout spot — it does not gate which buildings that resident's tasks can use. A baker is usually seen near the bakery, but the poet (with no single obviously-matching building) is exactly as usable as every other role, since any resident can be the subject of a task staged at any of the 6 buildings, including ones with no obviously-matching role, like the mailbox stand. This is a deliberate simplification: an earlier review found the document implying a strict role-building compatibility rule that the roster itself couldn't satisfy — rather than expand the roster to patch that gap, the fix is removing the false requirement, since the actual task-generation logic never needed it in the first place. The Relationship Agent then establishes the starting social network, and the Task Creator Agent selects tasks that fit the combined personality, role, relationship, building, and goose-verb constraints. Buildings retain interactive architecture that residents and the goose can use, such as a gate that opens and closes, a hose that sprays water, or a mailbox that holds mail. The Item Interaction / World Affordance Agent owns the rules behind those interactions: whether the goose can grab, drag, drop, hide, activate, or redirect an object; which residents recognize or own it; which physical and emotional state changes it can cause; and which task goal conditions those changes may satisfy.
 
-Implementation: [`agents.py`](agents.py) (agent definitions, with each
-agent's required input validated at the top of its `run()`),
-[`models.py`](models.py) (shared data passed between agents),
-[`crew.py`](crew.py) (orchestration, in the order the dependencies above
-require), [`main.py`](main.py) (entry point).
+Tasks are actions that the goose must perform on residents or buildings, framed around bringing residents together rather than causing them trouble. For example, the task can be for the goose to get two residents who've drifted apart to reconnect. This is an open-ended solution, which more often than not, requires an indirect interaction. One possible solution is to grab a memento one resident dropped and return it to them in front of the friend they've lost touch with, giving the two a reason to talk. Another solution is to honk at a resident carrying two coffees so they notice their neighbor sitting alone and offer to share one, warming the resident up to a neighbor they'd drifted from. Note that the availability of tasks is dependent on the residents and architecture available and that most tasks can be completed in any order (i.e. most tasks are non-sequential).
 
-## Why raw orchestration instead of the `crewai` package
+**How items participate in tasks:** every interactive object has an explicit affordance record maintained by the Item Interaction Agent. A memento can identify an owner, a shared-memory association, valid goose actions such as grab/carry/drop/hide, valid islander reactions such as notice/retrieve/discuss, and the state change produced when the right residents see it together. A hose can expose actions such as grab nozzle, drag, activate, redirect, and release; physical effects such as wet targets, puddles, or moved loose objects; and personality-dependent reactions such as irritation, laughter, avoidance, or investigation. The Goose Solution Planner may only use interactions listed in this world model, preventing it from inventing unsupported puzzle solutions. **No task-critical item can become permanently unrecoverable:** every object carries an authored reset rule (for example, an item left dropped or hidden outside of active use drifts back to its owner or origin building after a short time), enforced automatically by the Item Interaction Agent, so a memento the goose drops somewhere obscure is never actually lost. If a task's required item still somehow becomes unusable — a genuine authoring or state-tracking bug, not intended play — the Goose Solution Planner treats it exactly like an unavailable resident or building: re-plan or retire the task outright, never leave the player stuck hunting for something the game itself misplaced.
 
-The crew is plain Python with no third-party dependencies, structured the
-way CrewAI structures a crew (each agent has a `role`/`goal`/`backstory`
-and a single `run()` task; a `Crew` class sequences them and passes
-output forward as input). This was a deliberate choice over installing
-`crewai`: it guarantees the assignment requirement — "3+ agents
-coordinate and produce output without crashing" — holds on any machine
-with Python 3.9+, with no package install and no API key.
+**How personality actually shapes a task:** personality isn't flavor text sitting on top of a task — it's what makes the same relationship play out differently between different residents. The Character Personality Agent's traits (from the movement/speech/energy/intelligence sliders) feed the Task Creator Agent directly, alongside the Relationship Agent's labels: the relationship decides who a task is about and why (e.g. two residents who've "drifted apart"), while personality decides what kind of indirect approach actually fits them. A resident who reads as reserved and cowardly needs to be won over gently, so their task's goal state is built around a quiet gesture the goose can leave for them, never a direct confrontation. A resident who reads as candid and excitable can have that same "reconnect two drifted-apart residents" premise resolved through a loud, public reaction instead, since that's in-character rather than distressing for them. The Goose Solution Planner Agent then has to find a verb sequence that actually fits whichever version got generated — a gentle solution won't be planned for a task that calls for a public spectacle, and vice versa.
 
-Each agent calls out through [`llm_client.py`](llm_client.py), which supports
-three providers:
+**Scoping the task system concretely:** the island uses a fixed, pre-authored roster of 6 residents, 6 roles (baker, teacher, gym instructor, poet, shopkeeper, gardener), and 6 building types (bakery, school, gym, boutique, mailbox stand, garden shed). Every resident and building is present from the start. During initialization, the Character Personality Agent assigns personality and role combinations, the Relationship Agent builds the pairwise social state and its authored backstories, and the Task Creator Agent validates that the cast supports the authored task catalog. Rather than surfacing every possible task at once, the Task Creator Agent generates sets of 5-9 active tasks. Once the player resolves 75% of the current set (rounded up — e.g. 6 of 8), the next set becomes available using the same full cast but with deeper relationships, more residents per situation, or more demanding combinations of buildings and goose verbs. **A task counts toward that 75% whether the player resolves it or the Goose Solution Planner retires it outright** after it becomes unsolvable (see below) — either way it leaves the active set, so a run of bad luck can never make the threshold mathematically unreachable. **The remaining, unresolved fraction of a set is never hidden:** it stays on one running, always-visible task list alongside every new set that opens, so nothing the player hasn't finished ever disappears from view or silently piles up unseen. Across the fixed roster, the game contains roughly 30-40 one-time tasks, pre-authored the same way the resident roster and roles are — the Task Creator Agent's runtime job is to select and assemble an eligible premise against the current cast's traits, relationship states, and building availability, not to generate new premise text from scratch each playthrough; only the Writer Agent's dialogue lines and the Relationship Agent's backstory lines are generated per-playthrough, against that fixed premise. The 75% threshold controls pacing only; the true ending is reached once every generated task has left the active list, whether by resolution or by outright retirement — the same reachability guarantee already stated above for the 75% gate applies here too, so a bad-luck run of unsolvable tasks can never make the true ending mathematically unreachable either (see Game Completion, below, for how resolution and retirement are still told differently rather than treated as identical outcomes).
 
-1. **Anthropic (Claude)** — used if `ANTHROPIC_API_KEY` is set and
-   `anthropic` is installed. Checked first.
-2. **OpenAI** — used if `OPENAI_API_KEY` is set and `openai` is installed
-   (and Anthropic wasn't selected).
-3. **mock** — a deterministic local generator built from the same
-   structured inputs (resident traits, relationships, building features,
-   task description). Used whenever no provider is configured, *or* if a
-   real call fails for any reason (no network, bad key, rate limit) — the
-   failure is caught per-call and that one call falls back, the run
-   continues.
+**Task completion is a one-way door:** once a task is marked complete, it is retired and does not regenerate, and the resident/building pairing it used will not produce that same task again. This is the specific rule the review board flagged as undocumented and load-bearing — Player Psychologist and Adversarial QA each predicted a different failure (overwhelming backlog vs. an infinitely repeatable, trivializing loop) depending on which way this rule went, and this is the answer: tasks are consumed, not repeatable. That makes the current set — and the ~30-40-task lifetime total — a real, shrinking, reachable list rather than one that could be replayed indefinitely for the same handful of resolutions. The Task Creator Agent could still write flavor text indefinitely, but it only ever gets to author each pairing's task once.
 
-So the same code path demonstrates real multi-agent LLM coordination on
-whichever provider you have credentials for, and still runs to
-completion and produces correct, inspectable output when you don't.
+**How a task is confirmed complete:** every task the Task Creator Agent generates carries an explicit, checkable goal state (e.g. "resident A and resident B are both present at the same building with a positive reaction flag set"), not just a text description. The Director Agent polls the world state against that goal condition after every goose action; the moment it's satisfied, the task is marked resolved and retired per the rule above, which counts toward the 75% threshold for the current set. This is the missing subsystem the review board's Issue 02 called out — previously nothing in the architecture confirmed an emergent, physics-driven chain of actions actually satisfied a task, which was the root cause of three separate symptoms the board identified (unsolvable tasks, an exploitable repeat loop, and permanent softlocks). Tying completion to an explicit goal state instead of a scripted outcome closes all three: the repeat-loop concern is closed by the one-way-door rule above; softlocks are closed because if a task's required resident, building, or item becomes unreachable after generation, the Goose Solution Planner Agent re-plans against current world state or the task is retired outright, rather than leaving the player stuck — and that outright retirement counts toward the 75% threshold exactly like a resolution, so this path can never stall progression, only move a single task onto the always-visible backlog described above.
 
-## Running it
+**How the goose's actions turn into a resident's reaction without a breakable scripted scene:** the Director Agent does not run a fixed, linear cutscene that the player can interrupt mid-way. Instead, the Writer Agent's dialogue and the Goose Solution Planner's verb plan are both conditional on the same goal-state check described above — a resident's line only plays while its trigger condition (proximity, a completed goose action, a positive reaction flag) is currently true, and stops the instant the player moves the goose away or the condition stops holding. There is no locked scene to break out of, so there is no undefined "abort" case: every frame either satisfies the current condition (and the reaction plays) or it doesn't (and nothing does), which is a continuous check rather than a one-time script translation.
 
-```bash
-cd GachoBadi
-python3 main.py
-```
+There is no failure state and no resource anxiety anywhere in this loop, by design: task sets and relationship history only ever add up; they never decay or expire, in keeping with the game's cozy, community-building tone. An earlier review flagged that a "no sink" decision like this needed to be stated as a choice rather than left implicit — it's stated here, and it applies just as much now that there's no economy to have a sink in the first place.
 
-No setup required — this uses the local mock provider.
+Pacing across a playthrough follows the task-set structure directly rather than needing separately-authored difficulty tiers or a growing goose verb set: the goose's toolkit is deliberately frozen for the whole game, so no task is claimed to be mechanically harder to execute than any other — this document does not assert rising execution difficulty. What escalates instead is breadth: the First Playable Slice (below) starts with a single task drawn from 1 resident pair and 1 building, and each subsequent threshold (once 75% of a set resolves) activates a 5-9-task set that draws on more of the fixed roster's pairwise relationships at once than earlier sets could, simply because more of the cast has been introduced to each other by then. A later, multi-resident task checks two or three of the Relationship Agent's existing pairwise records simultaneously — each contributing its own backstory beat and its own goal-state condition, evaluated together — rather than requiring a new merged relationship structure, so breadth is a matter of checking more existing records at once, not inventing a new one. The Task Creator's set-generation order is also deliberately paced, not greedy: earlier sets draw on single, lower-tension pairwise states (plain acquaintance, a simple falling-out), while higher-tension states (a long-standing rivalry, a budding crush) and multi-pair premises are reserved for later sets on purpose, so the richest relationship material is spent last, not exhausted first purely because it happened to be the most compelling to write.
 
-### Running on Claude
+The creativity comes from the open-ended solutions to each task, not from an endless supply of tasks — there are many different physical ways to solve any given task, but the total number of tasks is the fixed, bounded catalog described above.
 
-```bash
-pip install anthropic
-export ANTHROPIC_API_KEY=...
-python3 main.py
-```
+### Game loop
 
-### Running on OpenAI
+The goose works through the current 5-9-task set drawn from the full resident cast and all available locations. Once 75% of that set is resolved, the next task set becomes active. Later sets increase social and mechanical complexity by using established relationship history, additional participants, and more involved combinations of interactive buildings and goose verbs — not by adding new residents. The cycle continues until every one-time task set is exhausted.
 
-```bash
-pip install openai
-export OPENAI_API_KEY=...
-python3 main.py
-```
+### Game Completion
 
-### Forcing a provider / model
+Once every generated task has left the active list — resolved or retired, per the rule stated above — the game plays a short, authored closing sequence rather than just checking a box: every resident whose task resolved gets a one-line epilogue callback to the Relationship Agent backstory the Writer Agent already referenced when that task resolved, now recontextualized as closure, while every resident whose task was instead retired gets an honest one-line acknowledgment that their thread stayed open (for example, "the mailbox mix-up between Hazel and the gardener was never quite sorted out") — so retirement counting toward the ending is never told as an identical, unearned success next to an actual reconciliation. The island is then declared to have reached harmony, and a short cast-wide scene names every resident once. Play does not simply stop the instant the last task clears: the island remains freely explorable afterward in a no-more-tasks epilogue state, so the player can keep walking the goose around the now-connected community rather than hitting a hard wall. Because the full roster is present from the beginning and every task is consumed by resolution or retirement rather than regenerated, this end state is a reachable, finite stopping point — reachable specifically because retirement counts toward it exactly like resolution does, just narrated honestly rather than silently.
 
-If both keys happen to be set, Anthropic wins by default. Override with:
+## Scope & First Playable Slice
 
-```bash
-export LLM_PROVIDER=anthropic   # or: openai | mock
-export ANTHROPIC_MODEL=claude-sonnet-5   # optional, this is the default
-export OPENAI_MODEL=gpt-4o-mini          # optional, this is the default
-```
+This is a semester project, not a shipped game, so attempting the full runtime pipeline against an open-ended roster from day one isn't realistic — this section exists because an earlier review correctly flagged that the GDD had no timeline or scoping acknowledgment. The first playable slice is a single vertical scenario: one resident archetype (a baker, "Hazel"), one building ("Hazel's Bakery"), and the one task chain needed to reconnect Hazel with a single drifted-apart neighbor. The target is core gameplay — goose movement, one resolvable task, and one screenplay-plus-verb-plan-driven moment — working end to end within 3 weeks. Everything else (task sets, the 75%-reveal threshold, full-roster initialization, extra task variety, visual polish, story or level content) is deliberately deferred until after that core loop is proven, not attempted alongside it.
 
-`main.py`'s summary line reports which provider actually ran
-(`LLM provider in use : anthropic (live API calls)`, etc.), so you can
-confirm which one was used without reading the source.
+- **Week 1:** basic goose movement and verb execution plus the Item Interaction Agent working for a small authored prop set: one memento, one movable object, and one building feature such as a hose or mailbox. The Goose Solution Planner must use only those registered affordances to produce at least one valid solution path.
+- **Week 2:** Character Personality Agent, Relationship Agent, and Task Creator Agent working for 2 hardcoded residents (Hazel and one drifted-apart neighbor). The Task Creator proposes the social problem, but the Goose Solution Planner approves, modifies, or rejects it based on the current item/world affordances.
+- **Week 3:** Writer Agent and Director Agent stage the approved task end-to-end in engine, with honk/grab/duck/dash controls, item state changes, resident reactions, and the goal-state completion check wired to mark the task resolved. Character appearance and island-layout polish are deferred until this goose-solvable gameplay loop works.
 
-Output lands in `output/run.json` and is also logged to the terminal as
-each agent runs, so you can see the hand-off between agents in real
-time (e.g. `[Task Creator Agent] generated 3 task(s)` immediately
-followed by `[Writer Agent] wrote screenplay for task #1`).
+Everything past week 3 is additive, not load-bearing: the Newscaster Agent, the task-set/75%-threshold reveal cycle, full-roster initialization, task variety, resident/building aesthetics, and any extra levels or story content get built on top of a core loop that already works, not as a prerequisite for it. If that 3-week core loop isn't fun with one resident and one building, more content won't fix that — so no time is spent on embellishment before that checkpoint.
+
+**Provisional schedule past the 3-week checkpoint** (contingent on that checkpoint succeeding — none of this work starts before then, per the paragraph above):
+
+- **Weeks 4-6:** scale initialization to the full 6-resident/6-building cast and the complete Item Interaction affordance graph, then generate and play through one full 5-9-task set end-to-end.
+- **Weeks 7-9:** author and validate the remaining task sets in sequence, including the item-loss-recovery and role/building edge cases described elsewhere in this document.
+- **Weeks 10-12:** run a full playthrough of all ~30-40 tasks against the complete roster, validate the asynchronous pre-generation and fallback behavior under real API latency (see Technical Strategy, below), and do a polish pass.
+
+This is a rough, unvalidated estimate, not a committed schedule — its purpose is to replace "no timeline exists" with a stated, checkable one, per an earlier review's finding. The stated basis for weeks 4-12 costing less per week than weeks 1-3: the task premises are pre-authored content rather than runtime-generated text (see "Scoping the task system concretely," above), and the agent architecture, the goal-state check, the async pre-generation pipeline, and the Item Interaction schema are all built and validated once, in weeks 1-3, then reused unchanged — what scales afterward is the amount of authored content and the size of the cast it runs against, not the number of new systems. If weeks 4-6 surface a genuine new system-level problem rather than more content work, the contingency is to descope task variety or defer the remaining resident/building rollout, not let the schedule slip, since the 3-week core loop — not full-roster breadth — is the one load-bearing checkpoint this document commits to.
+
+**Team, platform, audience, and monetization:** this is a solo-developer course/portfolio project (one designer-programmer, the author), not a commercial release — no monetization is planned. Primary target platform is PC (keyboard or gamepad, matching the directional-button and honk/grab/duck/dash controls described above); a touch-control mobile port is a post-3-week-core-loop stretch goal, not part of the initial scope. The intended audience is players of cozy, low-stakes life-sim and physical-comedy games — the crossover audience of Tomodachi Life and Untitled Goose Game players this pitch is explicitly built from.
+
+## AI Architecture
+
+*(what each agent does in the game, described through its effect on gameplay)*
+
+> **Note:** this section was rewritten after building working, tested reference crews for both parent games (a Tomodachi Life crew and an Untitled Goose Game crew — see `../TomodachiLife_Multi_Agent` and `../UntitledGooseGame_Multi_Agent`). Building those surfaced three gaps the original 8-agent list did not cover: nothing tracked how residents felt about each other, nothing guaranteed a task was solvable with the goose's own moves, and nothing owned the runtime interaction rules for props and building features. This version adds the Relationship Agent, Goose Solution Planner, and Item Interaction / World Affordance Agent to close those gaps while preserving the roles that still held up. The Relationship Agent and Newscaster Agent below also directly answer a Design Review Board finding that the "drama"/relationship pitch had no tracking system and no reward loop independent of the (since-removed) task economy: the Relationship Agent is that tracking system, and the Newscaster Agent's bulletins are an independent reward loop — the player gets a visible social payoff (an island headline) regardless of where they are in the current task set.
+
+These twelve agents split into two groups that run at different times. Eight **Runtime Gameplay Agents** generate and manage what the player sees during play; the other four form a **Dev-Time Content Pipeline** used to author the fixed residents, buildings, interactive props, and island layout before the game ships. At the beginning of a new game, the full pre-authored cast and all core buildings are loaded at once. The runtime Character Personality Agent assigns each resident a personality and a task-compatible role from the authored pool, the Relationship Agent establishes the starting social graph, and the Task Creator Agent performs a compatibility pass before exposing the first task set. The Scene Orchestrator and its sub-agents still remain dev-time tools: they create the assets and legal role/building options, while runtime agents select and coordinate among those existing options.
+
+Three of the eight runtime agents are marked **"One Wow"** below. That label means a single bad generation from that agent is immediately visible to the player and breaks the island's illusion — a task that makes no sense, or a resident who doesn't react to the goose at all — so these three get first claim on polish and testing budget. The other agents' mistakes are more forgivable because their output gets filtered through a "One Wow" agent before the player ever sees it.
+
+**Architectural principle — gameplay before aesthetics:** the Goose Solution Planner is the highest-priority runtime agent because the defining technical problem is generating believable social puzzles that the player can solve through goose actions. The Item Interaction Agent supplies the planner with the legal actions and consequences of every prop and building feature. The Task Creator proposes social situations; the planner approves, modifies, or rejects them. Character appearance, building styling, and island beautification are secondary and receive development effort only after the planner can consistently produce valid, testable solution paths.
+
+### Runtime Gameplay Agents (run during play)
+
+#### Goose Solution Planner Agent — Primary Runtime Agent *("One Wow")*
+**Player sees:** every challenge behaves like a coherent goose puzzle. The player can always reach at least one legitimate solution using supported goose actions and object interactions, while often discovering additional emergent approaches. The planner also provides a progressively specific in-game hint when requested.
+**How:** serves as the central reasoning and quality-control agent. It reads the current world state, resident personalities, roles, relationships, building access, item affordances, and available goose verbs. For every candidate task, it produces at least one valid indirect solution path, checks that every step is executable, predicts the necessary resident and object state changes, and confirms that the path reaches the task's explicit goal condition. It may approve, modify, or reject a candidate from the Task Creator. It cannot invent object behaviors that are absent from the Item Interaction Agent's world model. If the world changes after generation — a required resident, building, or item becomes unavailable — it re-plans from the current state or retires the task rather than allowing a softlock, and that retirement counts toward the 75% pacing threshold exactly like a resolution.
+
+#### Item Interaction / World Affordance Agent — Planner-Critical Runtime Agent *("One Wow")*
+**Player sees:** mementos, hoses, gates, mailboxes, tools, food, furniture, and movable props behave consistently and produce understandable chains of cause and effect. Residents recognize possessions and sentimental items, react to physical effects, and interact with objects according to their personalities and roles. No task-critical item can ever become permanently lost.
+**How:** owns the authoritative gameplay schema for every interactive item and building feature. Each object record defines goose affordances (for example grab, carry, drag, drop, hide, activate, redirect), islander affordances, ownership, sentimental or role associations, physical properties, valid targets, preconditions, state transitions, resident reaction triggers, task-relevant effects, and an authored reset rule that returns a dropped or hidden item to its owner or origin building after a short time. It updates object state during play and exposes legal interactions to the Goose Solution Planner and Director. This agent answers, "What can happen when this object is used?"; the Goose Solution Planner answers, "How can the goose combine those possibilities to solve the task?"
+
+#### Task Creator Agent — *"One Wow"*
+**Player sees:** the actual to-do list on screen — sets of 5-9 socially meaningful tasks involving residents already living on the island. Each task has a checkable goal condition and is shown only after the Goose Solution Planner has proved that a supported solution exists. Resolving 75% of a set reveals the next, more complex set.
+**How:** proposes candidate social situations from the full cast's roles, personalities, relationships, buildings, and available props. Personality determines what approach fits a resident, role determines a resident's default hangout spot (not which buildings their tasks can use — see Game Mechanics, above), and relationships (and their authored backstories) determine who the task concerns and why. The Task Creator does not certify solvability. Every candidate is submitted to the Goose Solution Planner, which approves it, modifies its constraints, or rejects it. Only approved tasks enter the player-facing set. Once resolved, a task is retired; once 75% of a set is retired — by resolution or by outright unsolvability — the next set is generated from the same full cast with greater relational or mechanical complexity.
+
+#### Director Agent
+**Player sees:** the live gameplay moment — residents move, notice objects, react, speak, and change behavior while the player controls the goose. The task ticks off only when its actual world-state goal is satisfied.
+**How:** executes and monitors the approved interaction logic rather than inventing it. It combines the Writer's conditional dialogue, the Goose Solution Planner's validated path, and the Item Interaction Agent's state transitions. After every goose action it checks object states, resident triggers, proximity, and the task goal condition. It also enforces each resident's personality and role behavior.
+
+#### Character Personality Agent
+**Player sees:** every resident acting consistently with a defined personality — the same baker tuned as excitable reacts differently to a honk or spray of water than a reserved teacher.
+**How:** takes the user's input or initialization seed for movement, speech, energy, and intelligence, then creates a coherent personality. It selects a role from the fixed authored role pool based on personality fit; role selection is independent of building access (see Game Mechanics, above), so every role in the pool, including poet, is always assignable. It cannot invent unsupported jobs.
+
+#### Relationship Agent *(new)*
+**Player sees:** residents who clearly used to know each other, avoid each other, compete, or share affection before the goose intervenes — and, once a task involving them resolves, a specific, remembered reason why, not just a label flip.
+**How:** reads resident personalities and generates both a pairwise social state (close friends, drifted apart, friendly rivals, a budding crush) and a short one-line backstory for how that state came to be (e.g. "drifted apart after a mixed-up mail delivery"). The Writer Agent is required to reference that backstory in the task that resolves the relationship — a label alone is never sufficient content for a task — so the payoff is an authored moment, not a state-machine transition the player has to take on faith. Its social graph and backstories supply the Task Creator with believable problems and supply the Item Interaction Agent with ownership or shared-memory associations where relevant. This closes an earlier review's finding that the reconciliation payoff had no authored "why."
+
+#### Writer Agent
+**Player sees:** dialogue bubbles and reaction lines that fit the residents, relationship, object, and current event — including, for any task that resolves a relationship, a line that references the Relationship Agent's specific backstory for why that pair drifted apart or grew close, never a generic reconciliation line.
+**How:** generates text-based dialogue and action cues from the resident personalities, relationships (and their authored backstories), and current world-state triggers. Lines remain conditional rather than playing as an uninterruptible script.
+
+#### Newscaster Agent *(new)*
+**Player sees:** a short island bulletin or overheard-gossip recap after a task resolves, making the island feel as though it remembers the goose's actions.
+**How:** summarizes the completed task and resulting relationship or world-state change as a headline, providing a social reward distinct from task progression.
+
+### Dev-Time Content Pipeline (runs only during development — never live during play; see the note above)
+
+#### Scene Orchestrator
+**Player sees:** nothing directly — this is purely a build-time tool. It's prompted by the programmer/designer when adding a new resident or building to the fixed roster, and dispatches to whichever of the three sub-agents below matches the request, handing back code and placement instructions.
+
+#### Character Appearance Agent
+**Player sees:** what a new resident actually looks like once the designer adds them to the roster.
+**How:** generates visual traits during development only. It has no authority over task generation, item behavior, or solution planning and is deferred until the core goose puzzle loop is validated.
+
+#### Building Designer Agent
+**Player sees:** the visual shell and authored components of a building.
+**How:** creates building assets and registers interactive components such as gates, hoses, and mailboxes. The actual runtime behavior of those components is owned by the Item Interaction Agent, and their usefulness in a puzzle is evaluated by the Goose Solution Planner.
+
+#### Island Layout Agent
+**Player sees:** where a new building physically sits on the island map.
+**How:** places authored buildings and navigation spaces during development. Layout must support goose reachability and validated solution paths; visual composition is secondary to gameplay access.
+
+## Technical Strategy (agent roles, token budget, API constraints)
+
+Token budgets below are rough, unvalidated planning estimates, not measured data.
+
+**Constraints and risks:** all runtime agents share a single API account's rate limit, so the full-cast initialization pass is staged rather than run as an uncontrolled burst. The Personality Agent assigns resident profiles first, the Relationship Agent computes pairwise states second, and the Item Interaction Agent loads a compact affordance graph for the island. The Task Creator then proposes tasks, but the Goose Solution Planner receives first claim on runtime reasoning budget and must validate every candidate before any writing, staging, or aesthetic work proceeds. Only compact resident summaries — not full generation transcripts — are passed between agents to keep prompts under roughly 2,000 input tokens. The First Playable Slice still validates only 2 residents and 1 building in engine, but the target architecture loads the complete authored roster at the start of the full game. **To keep live play from ever blocking on a network call:** as soon as a task enters the current visible set, its screenplay (Writer Agent) and verb plan (Goose Solution Planner) are generated asynchronously in the background, before the player has a chance to attempt it — never on-demand when the goose triggers it. If the player reaches a task before its generation finishes (most likely right when a new set first opens), a short, generic scripted placeholder reaction plays immediately — the resident notices the goose, nothing more — until the real content swaps in silently. The goal-state check itself never depends on an LLM call, since it only polls simple world-state flags the Director Agent already holds, so a slow or rate-limited API account degrades content freshness, never core responsiveness — but that responsiveness guarantee is not allowed to cost a task its authored payoff outright. **A task's resolution record does not finalize, and does not count toward either the 75% threshold or the true-ending tally, until the Relationship Agent's authored backstory line has attached to it.** If the player satisfies the goal state before that line finishes generating, the placeholder plays for feedback but the task holds in a brief, uncounted "confirmed, pending its line" state instead of retiring outright — ordinarily no longer than the async call already in flight takes to return — and the count advances the instant the authored line attaches. Only if generation genuinely fails after a retry, not merely runs slow, does the scripted placeholder become the permanent counted record for that task; that failure path is the same explicit, rare fallback described above, not the routine one, so the ordinary case never lets an uncontested placeholder retire a task ahead of its authored content.
+
+| Priority | Agent | Input Budget | Output Budget | Invocation Pattern |
+|---|---|---|---|---|
+| Medium | Personality Agent | 300–700 | 150–300 | Initialization for each resident; refresh only after major changes |
+| Medium | Relationship Agent | 400–900 | 150–400 | Once per resident pair, refreshed after major tasks |
+| Supporting | Writer Agent | 800–1,800 | 250–700 | Only after a task and solution path are approved |
+| High | Director Agent | 700–1,500 | 300–700 | Executes approved plans and checks live goal states |
+| High | Task Creator | 1,200–2,500 | 700–1,500 | Proposes candidate sets; cannot publish without planner approval |
+| Highest | Goose Solution Planner | 1,500–3,500 | 600–1,500 | First claim on reasoning budget; validates every task and re-plans on world changes |
+| Highest | Item Interaction Agent | 800–2,000 | 300–900 | Loads affordance graph at initialization; updates compact object state after interactions |
+| Supporting | Newscaster Agent | 300–700 | 100–300 | After each resolved task |
+| Low | Appearance Agent | 300–800 | 100–300 | Development only; deferred until gameplay validation |
+| Low | Building Designer | 800–1,800 | 300–900 | Authors assets and registers components; no runtime behavior ownership |
+| Low | Island Layout Agent | 1,000–2,500 | 300–1,000 | Development only; must preserve reachability |
+| Low | Scene Orchestrator | 3,000–12,000 | 2,000–8,000 | Development time only |
+
+*Approximate budgets per invocation.*
