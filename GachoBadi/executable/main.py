@@ -67,6 +67,8 @@ def build_island_seed():
     ]
     items = [
         Item(name="a family memento", kind="memento"),
+        Item(name="a battered kazoo", kind="kazoo"),
+        Item(name="a bundle of old letters", kind="keepsake"),
     ]
     return residents, buildings, items
 
@@ -101,7 +103,7 @@ def main() -> int:
         residents = crew.run_relationship_pass(residents)
         dev_time_result = crew.run_dev_time_pass(residents, buildings)
         item_interaction_result = crew.run_item_interaction_pass(buildings, items)
-        playthrough = crew.run_playthrough(residents, buildings)
+        playthrough = crew.run_playthrough(residents, buildings, items)
 
         os.makedirs(OUTPUT_DIR, exist_ok=True)
         for existing in os.listdir(OUTPUT_DIR):

@@ -6,6 +6,7 @@
     "target_resident": "Otto",
     "other_resident": "Hazel",
     "involves_building": "Front Gate",
+    "involves_item": "a bundle of old letters",
     "goal_state": "Otto and Hazel are both present at Front Gate with a positive reaction flag set on Hazel",
     "status": "resolved",
     "retire_reason": ""
@@ -27,7 +28,7 @@
     "lines": [
       "* SCENE: town square.",
       "* Goose: Honk near Front Gate.",
-      "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+      "* Goose: Grab a bundle of old letters.",
       "* Goose: carries it toward Otto.",
       "* Objective resolves: Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over."
     ]

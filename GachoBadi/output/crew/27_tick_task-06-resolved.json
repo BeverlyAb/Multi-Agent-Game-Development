@@ -1,0 +1,68 @@
+{
+  "task": {
+    "task_id": 6,
+    "set_id": 1,
+    "description": "Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.",
+    "target_resident": "Hazel",
+    "other_resident": "Vic",
+    "involves_building": "Garden Hose Stand",
+    "involves_item": "a family memento",
+    "goal_state": "Hazel and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
+    "status": "resolved",
+    "retire_reason": ""
+  },
+  "screenplay": {
+    "task_id": 6,
+    "lines": [
+      "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+      "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+      "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+      "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Hazel: (follows up on what the goose left behind: just resets it where it belongs with a shrug)",
+      "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+      "(Task resolves: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.)"
+    ]
+  },
+  "verb_plan": {
+    "task_id": 6,
+    "lines": [
+      "* SCENE: east meadow.",
+      "* Goose: Grab near Garden Hose Stand.",
+      "* Goose: Drop a family memento.",
+      "* Goose: carries it toward Hazel.",
+      "* Objective resolves: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand."
+    ]
+  },
+  "chain": {
+    "task_id": 6,
+    "steps": [
+      {
+        "actor": "Hazel",
+        "action": "follows up on what the goose left behind: just resets it where it belongs with a shrug",
+        "location": "east meadow"
+      }
+    ],
+    "chain_effect": ""
+  },
+  "staged_actions": [
+    {
+      "actor": "Goose",
+      "action": "execute plan: * SCENE: east meadow.",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Hazel",
+      "action": "follows up on what the goose left behind: just resets it where it belongs with a shrug",
+      "location": "east meadow"
+    },
+    {
+      "actor": "Vic",
+      "action": "notice, warm up, and reconnect",
+      "location": "east meadow"
+    }
+  ],
+  "news": {
+    "task_id": 6,
+    "headline": "ISLAND BULLETIN: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand."
+  }
+}

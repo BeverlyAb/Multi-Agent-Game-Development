@@ -1,0 +1,19 @@
+{
+  "item": "a battered kazoo",
+  "goose_actions": [
+    "Honk",
+    "Duck"
+  ],
+  "possible_outcomes": [
+    {
+      "resident_action": "can't help laughing and joins in with a honk of their own",
+      "chain_effect": "the laughter draws a second resident over to see what's so funny"
+    },
+    {
+      "resident_action": "winces, then can't help smiling anyway",
+      "chain_effect": ""
+    }
+  ],
+  "reset_rule": "if dropped or hidden outside of active use, a battered kazoo drifts back to its owner or origin after a short time -- it can never become permanently lost.",
+  "spec": "a battered kazoo (kazoo): the goose can honk/duck it; a resident who receives it might can't help laughing and joins in with a honk of their own (the laughter draws a second resident over to see what's so funny); or winces, then can't help smiling anyway -- exactly which one happens can vary. if dropped or hidden outside of active use, a battered kazoo drifts back to its owner or origin after a short time -- it can never become permanently lost."
+}

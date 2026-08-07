@@ -38,23 +38,36 @@ class ChainReactionAgent(BaseAgent):
             two-step chain), the Building it involves (needs
             .possible_outcomes, set by ItemInteractionAgent -- an empty
             list means this affordance has no resident follow-up at all,
-            which is common and not an error), and the current resident
+            which is common and not an error), the current resident
             roster (to resolve .other_resident to an actual Resident to
-            draw in).
+            draw in), and, if the task has one, the Item it involves
+            (needs .designed + .possible_outcomes) -- its outcomes are
+            pooled alongside the building's rather than replacing them,
+            so an item riding along only ever adds more of what could
+            plausibly happen next, never fewer.
     Output: a ChainReaction consumed by WriterAgent (narrates each step)
             and DirectorAgent (stages each step and folds the second step,
             when present, into what used to be a generic "other_resident
-            notices" beat). Zero steps when the building has no registered
-            possible_outcomes; one step when the randomly-picked outcome
-            has no chain_effect or there's no other_resident to draw in;
-            two steps only when both are present -- a task is never
-            required to chain, per gdd.txt's "most tasks are non-sequential"
-            framing, and even a chain-capable building doesn't chain every
-            time it's picked.
+            notices" beat). Zero steps when neither the building nor the
+            item has a registered outcome; one step when the randomly-
+            picked outcome has no chain_effect or there's no other_resident
+            to draw in; two steps only when both are present -- a task is
+            never required to chain, per gdd.txt's "most tasks are
+            non-sequential" framing, and even a chain-capable
+            building/item doesn't chain every time it's picked.
     """
 
-    def run(self, task: Task, building: Optional[Building], residents: List[Resident]) -> ChainReaction:
-        if building is None or not building.possible_outcomes:
+    def run(
+        self,
+        task: Task,
+        building: Optional[Building],
+        residents: List[Resident],
+        item: Optional[Item] = None,
+    ) -> ChainReaction:
+        outcomes = list(building.possible_outcomes) if building is not None else []
+        if item is not None and item.designed and item.possible_outcomes:
+            outcomes = outcomes + list(item.possible_outcomes)
+        if not outcomes:
             self._log(f"task #{task.task_id}: no registered resident outcome -- no chain to stage")
             return ChainReaction(task_id=task.task_id, steps=[])
 
@@ -63,9 +76,9 @@ class ChainReactionAgent(BaseAgent):
         # -- seeded, so a given seed still replays identically end to end,
         # but a different seed (or a later draw in the same run) can land
         # on a different, equally-legal outcome for the exact same
-        # building/task.
-        outcome = self.llm.choice(building.possible_outcomes)
-        location = building.location or "the island"
+        # building/item/task.
+        outcome = self.llm.choice(outcomes)
+        location = building.location if building is not None and building.location else "the island"
         steps: List[StagedAction] = [
             StagedAction(
                 actor=task.target_resident,

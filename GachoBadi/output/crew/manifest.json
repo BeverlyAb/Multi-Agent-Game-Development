@@ -87,92 +87,100 @@
       "file": "17_item_interaction_item_a-family-memento.json"
     },
     {
-      "content_type": "task_set",
-      "file": "18_task_set_set-1.json"
+      "content_type": "item_interaction_item",
+      "file": "18_item_interaction_item_a-battered-kazoo.json"
+    },
+    {
+      "content_type": "item_interaction_item",
+      "file": "19_item_interaction_item_a-bundle-of-old.json"
     },
     {
       "content_type": "task_set",
-      "file": "19_task_set_set-2.json"
+      "file": "20_task_set_set-1.json"
+    },
+    {
+      "content_type": "task_set",
+      "file": "21_task_set_set-2.json"
     },
     {
       "content_type": "tick",
-      "file": "20_tick_task-01-resolved.json"
+      "file": "22_tick_task-01-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "21_tick_task-02-resolved.json"
+      "file": "23_tick_task-02-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "22_tick_task-03-resolved.json"
+      "file": "24_tick_task-03-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "23_tick_task-04-resolved.json"
+      "file": "25_tick_task-04-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "24_tick_task-05-resolved.json"
+      "file": "26_tick_task-05-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "25_tick_task-06-resolved.json"
+      "file": "27_tick_task-06-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "26_tick_task-07-resolved.json"
+      "file": "28_tick_task-07-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "27_tick_task-10-resolved.json"
+      "file": "29_tick_task-10-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "28_tick_task-11-resolved.json"
+      "file": "30_tick_task-11-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "29_tick_task-12-resolved.json"
+      "file": "31_tick_task-12-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "30_tick_task-13-resolved.json"
+      "file": "32_tick_task-13-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "31_tick_task-14-resolved.json"
+      "file": "33_tick_task-14-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "32_tick_task-15-resolved.json"
+      "file": "34_tick_task-15-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "33_tick_task-16-resolved.json"
+      "file": "35_tick_task-16-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "34_tick_task-08-resolved.json"
+      "file": "36_tick_task-08-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "35_tick_task-09-resolved.json"
+      "file": "37_tick_task-09-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "36_tick_task-17-resolved.json"
+      "file": "38_tick_task-17-resolved.json"
     },
     {
       "content_type": "tick",
-      "file": "37_tick_task-18-resolved.json"
+      "file": "39_tick_task-18-resolved.json"
     },
     {
       "content_type": "completion",
-      "file": "38_completion_harmony.json"
+      "file": "40_completion_harmony.json"
     },
     {
       "content_type": "verification",
-      "file": "39_verification_18-unresolved.json"
+      "file": "41_verification_18-unresolved.json"
     }
   ]
 }

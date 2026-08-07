@@ -6,6 +6,7 @@
     "target_resident": "Hazel",
     "other_resident": "Vic",
     "involves_building": "Hazel's Bakery",
+    "involves_item": "a battered kazoo",
     "goal_state": "Hazel and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
     "status": "resolved",
     "retire_reason": ""
@@ -17,7 +18,8 @@
       "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
-      "Hazel: (follows up on what the goose left behind: tidies up without much thought and moves on)",
+      "Hazel: (follows up on what the goose left behind: can't help laughing and joins in with a honk of their own)",
+      "Vic: (is drawn over by it -- the laughter draws a second resident over to see what's so funny)",
       "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.)"
     ]
@@ -27,7 +29,7 @@
     "lines": [
       "* SCENE: north dock.",
       "* Goose: Grab near Hazel's Bakery.",
-      "* Goose: Drop Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: Honk a battered kazoo.",
       "* Goose: carries it toward Hazel.",
       "* Objective resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk."
     ]
@@ -37,11 +39,16 @@
     "steps": [
       {
         "actor": "Hazel",
-        "action": "follows up on what the goose left behind: tidies up without much thought and moves on",
+        "action": "follows up on what the goose left behind: can't help laughing and joins in with a honk of their own",
+        "location": "north dock"
+      },
+      {
+        "actor": "Vic",
+        "action": "is drawn over by it -- the laughter draws a second resident over to see what's so funny",
         "location": "north dock"
       }
     ],
-    "chain_effect": ""
+    "chain_effect": "the laughter draws a second resident over to see what's so funny"
   },
   "staged_actions": [
     {
@@ -51,12 +58,12 @@
     },
     {
       "actor": "Hazel",
-      "action": "follows up on what the goose left behind: tidies up without much thought and moves on",
+      "action": "follows up on what the goose left behind: can't help laughing and joins in with a honk of their own",
       "location": "north dock"
     },
     {
       "actor": "Vic",
-      "action": "notice, warm up, and reconnect",
+      "action": "is drawn over by it -- the laughter draws a second resident over to see what's so funny",
       "location": "north dock"
     }
   ],

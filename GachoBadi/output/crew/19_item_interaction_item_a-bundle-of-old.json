@@ -1,0 +1,19 @@
+{
+  "item": "a bundle of old letters",
+  "goose_actions": [
+    "Grab",
+    "Dash"
+  ],
+  "possible_outcomes": [
+    {
+      "resident_action": "recognizes the handwriting right away and sits down to read them",
+      "chain_effect": "seeing them absorbed in it draws a second resident over to ask what they found"
+    },
+    {
+      "resident_action": "tucks them away for safekeeping without opening them",
+      "chain_effect": ""
+    }
+  ],
+  "reset_rule": "if dropped or hidden outside of active use, a bundle of old letters drifts back to its owner or origin after a short time -- it can never become permanently lost.",
+  "spec": "a bundle of old letters (keepsake): the goose can grab/dash it; a resident who receives it might recognizes the handwriting right away and sits down to read them (seeing them absorbed in it draws a second resident over to ask what they found); or tucks them away for safekeeping without opening them -- exactly which one happens can vary. if dropped or hidden outside of active use, a bundle of old letters drifts back to its owner or origin after a short time -- it can never become permanently lost."
+}

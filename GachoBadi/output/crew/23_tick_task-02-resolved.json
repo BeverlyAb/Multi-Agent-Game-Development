@@ -1,39 +1,40 @@
 {
   "task": {
-    "task_id": 5,
+    "task_id": 2,
     "set_id": 1,
-    "description": "Bring Hazel and Vic together at the Front Gate despite being close friends.",
+    "description": "Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate.",
     "target_resident": "Hazel",
-    "other_resident": "Vic",
+    "other_resident": "Otto",
     "involves_building": "Front Gate",
-    "goal_state": "Hazel and Vic are both present at Front Gate with a positive reaction flag set on Vic",
+    "involves_item": "a bundle of old letters",
+    "goal_state": "Hazel and Otto are both present at Front Gate with a positive reaction flag set on Otto",
     "status": "resolved",
     "retire_reason": ""
   },
   "screenplay": {
-    "task_id": 5,
+    "task_id": 2,
     "lines": [
       "INT./EXT. FRONT GATE - TOWN SQUARE",
       "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
-      "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+      "(They are drifted apart with Otto -- Hazel and Otto: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Front Gate)",
       "Hazel: (follows up on what the goose left behind: comes over to see what the fuss was about)",
-      "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
-      "(Task resolves: Bring Hazel and Vic together at the Front Gate despite being close friends.)"
+      "Hazel: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+      "(Task resolves: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate.)"
     ]
   },
   "verb_plan": {
-    "task_id": 5,
+    "task_id": 2,
     "lines": [
       "* SCENE: town square.",
       "* Goose: Honk near Front Gate.",
-      "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+      "* Goose: Grab a bundle of old letters.",
       "* Goose: carries it toward Hazel.",
-      "* Objective resolves: Bring Hazel and Vic together at the Front Gate despite being close friends."
+      "* Objective resolves: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate."
     ]
   },
   "chain": {
-    "task_id": 5,
+    "task_id": 2,
     "steps": [
       {
         "actor": "Hazel",
@@ -55,13 +56,13 @@
       "location": "town square"
     },
     {
-      "actor": "Vic",
+      "actor": "Otto",
       "action": "notice, warm up, and reconnect",
       "location": "town square"
     }
   ],
   "news": {
-    "task_id": 5,
-    "headline": "ISLAND BULLETIN: Bring Hazel and Vic together at the Front Gate despite being close friends."
+    "task_id": 2,
+    "headline": "ISLAND BULLETIN: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate."
   }
 }

@@ -4,109 +4,109 @@
       "agent": "Goose Solution Planner Agent",
       "task_id": 1,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 2,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['duck', 'honk']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 3,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'drop', 'grab']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 4,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 5,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['duck', 'honk']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 6,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'drop', 'grab']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 7,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 10,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 11,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['duck', 'honk']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 12,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'drop', 'grab']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 13,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 14,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['duck', 'honk']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 15,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'drop', 'grab']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 16,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['drop', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 8,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['duck', 'honk']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 9,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'drop', 'grab']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 17,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['duck', 'honk']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'duck', 'grab', 'honk']"
     },
     {
       "agent": "Goose Solution Planner Agent",
       "task_id": 18,
       "rule": "no_unregistered_verb",
-      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'grab']"
+      "message": "line uses verb 'carries', which is not in the registered set ['dash', 'drop', 'grab']"
     }
   ]
 }

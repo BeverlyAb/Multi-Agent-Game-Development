@@ -6,6 +6,7 @@
     "target_resident": "Otto",
     "other_resident": "Vic",
     "involves_building": "Garden Hose Stand",
+    "involves_item": "a family memento",
     "goal_state": "Otto and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
     "status": "resolved",
     "retire_reason": ""
@@ -17,7 +18,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
-      "Otto: (follows up on what the goose left behind: just resets it where it belongs with a shrug)",
+      "Otto: (follows up on what the goose left behind: holds onto it quietly and remembers who it belonged to)",
       "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.)"
     ]
@@ -27,7 +28,7 @@
     "lines": [
       "* SCENE: east meadow.",
       "* Goose: Grab near Garden Hose Stand.",
-      "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+      "* Goose: Drop a family memento.",
       "* Goose: carries it toward Otto.",
       "* Objective resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand."
     ]
@@ -37,7 +38,7 @@
     "steps": [
       {
         "actor": "Otto",
-        "action": "follows up on what the goose left behind: just resets it where it belongs with a shrug",
+        "action": "follows up on what the goose left behind: holds onto it quietly and remembers who it belonged to",
         "location": "east meadow"
       }
     ],
@@ -51,7 +52,7 @@
     },
     {
       "actor": "Otto",
-      "action": "follows up on what the goose left behind: just resets it where it belongs with a shrug",
+      "action": "follows up on what the goose left behind: holds onto it quietly and remembers who it belonged to",
       "location": "east meadow"
     },
     {

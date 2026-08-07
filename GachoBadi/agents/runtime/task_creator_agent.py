@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import math
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from agents.base import BaseAgent
-from definitions.models import Building, Resident, Task
+from definitions.models import Building, Item, Resident, Task
 
 
 def build_catalog(residents: List[Resident], buildings: List[Building]) -> List[Tuple[str, str, str]]:
@@ -82,10 +82,19 @@ class TaskCreatorAgent(BaseAgent):
         residents: List[Resident],
         buildings: List[Building],
         size: int = SET_SIZE_MAX,
+        items: Optional[List[Item]] = None,
     ) -> List[Task]:
         """Slices catalog[offset:offset+size] (clamped to SET_SIZE_MIN..MAX
         and to what's left) and turns each premise slot into a Task with a
-        checkable goal_state, rather than inventing the premise fresh."""
+        checkable goal_state, rather than inventing the premise fresh.
+
+        `items`, if given, are assigned round-robin over the catalog's
+        global task_id (not reset per set) so the same item doesn't always
+        land on the same relative slot within every set -- each task gets
+        at most one riding-along item, which GooseSolutionPlannerAgent and
+        ChainReactionAgent fold in alongside the involved building's own
+        registered actions/outcomes. None (the default) reproduces the
+        pre-item behavior exactly."""
         tasks: List[Task] = []
         residents_by_name = {r.name: r for r in residents}
         buildings_by_name = {b.name: b for b in buildings}
@@ -139,6 +148,19 @@ class TaskCreatorAgent(BaseAgent):
                 f"{resident.name} and {other.name} are both present at {building.name} "
                 f"with a positive reaction flag set on {other.name}"
             )
+            # +1 phase shift, not a plain (offset + i) % len(items): the
+            # catalog's building index also cycles as (offset + i) %
+            # len(buildings) (build_catalog's innermost loop), so with the
+            # currently-seeded roster (3 buildings, 3 items) a same-index
+            # mapping would always pair each building with the ONE item
+            # whose kind happens to share its exact goose_actions pair --
+            # e.g. the shop building (Grab/Drop) would always land on the
+            # memento item (also Grab/Drop), adding nothing. This offset
+            # instead pairs each building with a DIFFERENT item's pair
+            # (verified additive for the current 3/3 roster in
+            # executable/main.py's build_island_seed -- re-check this if
+            # that roster's size or ordering ever changes).
+            item = items[(offset + i + 1) % len(items)] if items else None
             tasks.append(
                 Task(
                     task_id=offset + i + 1,
@@ -147,6 +169,7 @@ class TaskCreatorAgent(BaseAgent):
                     target_resident=resident.name,
                     other_resident=other.name,
                     involves_building=building.name,
+                    involves_item=item.name if item else None,
                     goal_state=goal_state,
                 )
             )

@@ -289,6 +289,9 @@ class CrewScene extends Phaser.Scene {
 
     this.buildingName = (this.task && this.task.involves_building) || "";
     const buildingInfo = data.buildings[this.buildingName] || {};
+    this.buildingInfo = buildingInfo;
+    this.itemName = (this.task && this.task.involves_item) || "";
+    this.itemInfo = this.itemName ? (data.items[this.itemName] || null) : null;
     const targetName = (this.task && this.task.target_resident) || "";
     const otherName = (this.task && this.task.other_resident) || "";
 
@@ -319,14 +322,18 @@ class CrewScene extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(30);
     }
 
-    const itemEntry = Object.values(data.items)[0] || null;
-    const itemName = (itemEntry && itemEntry.item) || "a lost memento";
+    // The physical grab/drop prop always represents THIS task's own
+    // involves_item when it has one (falling back to whatever's first in
+    // the roster for a task with none), rather than always the same
+    // roster item regardless of task -- see buildTaskHud()/buildLoreHud()
+    // for where its name and goose_actions actually get surfaced.
+    const propLabel = this.itemName || Object.keys(data.items)[0] || "a lost memento";
     this.memento = this.physics.add.sprite(220, 470, "memento");
     this.memento.setImmovable(true);
     this.memento.homeX = this.memento.x;
     this.memento.homeY = this.memento.y;
     this.memento.droppedAt = 0;
-    this.mementoLabel = this.add.text(this.memento.x, this.memento.y - 20, itemName, {
+    this.mementoLabel = this.add.text(this.memento.x, this.memento.y - 20, propLabel, {
       fontFamily: "monospace", fontSize: "11px", color: "#fff6cf",
     }).setOrigin(0.5);
     this.carrying = false;
@@ -415,10 +422,19 @@ class CrewScene extends Phaser.Scene {
       premise.textContent = this.task.description;
       premise.style.marginBottom = "6px";
       panel.appendChild(premise);
+      const buildingVerbs = (this.buildingInfo && this.buildingInfo.goose_actions) || [];
       this.requiredVerbList.forEach((verb) => {
         const line = document.createElement("div");
         const done = this.doneVerbs.has(verb.toLowerCase());
-        line.textContent = `${done ? "☑" : "☐"} ${verb} near the ${this.buildingName || "building"}`;
+        // A verb this task only has BECAUSE of its involves_item (not
+        // already legal at the building alone) reads as acting on that
+        // item, not "near" the building -- see GooseSolutionPlannerAgent's
+        // merge, which is exactly what requiredVerbList here reflects.
+        const fromItem = this.itemInfo && !buildingVerbs.some((v) => v.toLowerCase() === verb.toLowerCase())
+          && (this.itemInfo.goose_actions || []).some((v) => v.toLowerCase() === verb.toLowerCase());
+        line.textContent = fromItem
+          ? `${done ? "☑" : "☐"} ${verb} ${this.itemName}`
+          : `${done ? "☑" : "☐"} ${verb} near the ${this.buildingName || "building"}`;
         if (done) line.className = "task-verb-done";
         panel.appendChild(line);
       });
@@ -451,9 +467,9 @@ class CrewScene extends Phaser.Scene {
 
     if (!this.tick) return;
     const data = this.crewData;
-    const buildingInfo = data.buildings[this.buildingName] || {};
-    addBlock("Building Designer Agent", buildingInfo.design);
-    addBlock("Item Interaction Agent", buildingInfo.affordance_spec);
+    addBlock("Building Designer Agent", this.buildingInfo.design);
+    addBlock("Item Interaction Agent (building)", this.buildingInfo.affordance_spec);
+    if (this.itemInfo) addBlock(`Item Interaction Agent (${this.itemName})`, this.itemInfo.spec);
     if (this.tick.screenplay) addBlock("Writer / Director Agent", this.tick.screenplay.lines.join("\n"));
     if (this.tick.chain && this.tick.chain.steps.length) {
       addBlock("Chain Reaction Agent", this.tick.chain.steps.map((s) => `${s.actor}: ${s.action}`).join("\n"));

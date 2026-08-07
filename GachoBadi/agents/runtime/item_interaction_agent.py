@@ -79,9 +79,17 @@ class ItemInteractionAgent(BaseAgent):
     }
     DEFAULT_BUILDING_POSSIBLE_OUTCOMES = [VerbOutcome("notices it and reacts in character", "")]
 
+    # Deliberately not all sharing the same pair -- across the seeded
+    # roster (executable/main.py's build_island_seed) these three kinds'
+    # goose_actions union covers all five verbs, so an item riding along
+    # with a task can genuinely widen that task's legal set beyond
+    # whatever its building.kind alone would offer (see
+    # GooseSolutionPlannerAgent.run()'s merge).
     ITEM_ACTIONS = {
         "memento": ["Grab", "Drop"],
         "garden tool": ["Grab", "Dash"],
+        "kazoo": ["Honk", "Duck"],
+        "keepsake": ["Grab", "Dash"],
     }
     DEFAULT_ITEM_ACTIONS = ["Grab"]
 
@@ -99,6 +107,20 @@ class ItemInteractionAgent(BaseAgent):
                 "the visible result of using it draws a second resident over to see what's going on",
             ),
             VerbOutcome("sets it aside for later without using it", ""),
+        ],
+        "kazoo": [
+            VerbOutcome(
+                "can't help laughing and joins in with a honk of their own",
+                "the laughter draws a second resident over to see what's so funny",
+            ),
+            VerbOutcome("winces, then can't help smiling anyway", ""),
+        ],
+        "keepsake": [
+            VerbOutcome(
+                "recognizes the handwriting right away and sits down to read them",
+                "seeing them absorbed in it draws a second resident over to ask what they found",
+            ),
+            VerbOutcome("tucks them away for safekeeping without opening them", ""),
         ],
     }
     DEFAULT_ITEM_POSSIBLE_OUTCOMES = [VerbOutcome("picks it up and reacts in character", "")]

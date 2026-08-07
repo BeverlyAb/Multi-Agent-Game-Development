@@ -6,6 +6,7 @@
     "target_resident": "Otto",
     "other_resident": "Hazel",
     "involves_building": "Garden Hose Stand",
+    "involves_item": "a family memento",
     "goal_state": "Otto and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
     "status": "resolved",
     "retire_reason": ""
@@ -28,7 +29,7 @@
     "lines": [
       "* SCENE: east meadow.",
       "* Goose: Grab near Garden Hose Stand.",
-      "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+      "* Goose: Drop a family memento.",
       "* Goose: carries it toward Otto.",
       "* Objective resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk."
     ]

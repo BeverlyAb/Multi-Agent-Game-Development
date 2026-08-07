@@ -6,6 +6,7 @@
     "target_resident": "Vic",
     "other_resident": "Hazel",
     "involves_building": "Hazel's Bakery",
+    "involves_item": "a battered kazoo",
     "goal_state": "Vic and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
     "status": "resolved",
     "retire_reason": ""
@@ -27,7 +28,7 @@
     "lines": [
       "* SCENE: north dock.",
       "* Goose: Grab near Hazel's Bakery.",
-      "* Goose: Drop Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: Honk a battered kazoo.",
       "* Goose: carries it toward Vic.",
       "* Objective resolves: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over."
     ]

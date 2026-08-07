@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import sys
 from dataclasses import asdict
-from typing import List
+from typing import List, Optional
 
 # Same reasoning as executable/main.py: this file lives in executable/,
 # one level below the project root, so agents/, api/, and definitions/
@@ -141,7 +141,24 @@ class GachoBadiCrew:
         print("\n=== ITEM INTERACTION PASS: Item Interaction / World Affordance Agent ===")
         return self.item_interaction_agent.run(buildings, items)
 
-    def _resolve_or_retire(self, task: Task, residents: List[Resident], buildings: List[Building]) -> dict:
+    @staticmethod
+    def _legal_verbs_for(building: Optional[Building], item: Optional[Item]) -> List[str]:
+        """Mirrors GooseSolutionPlannerAgent.run()'s own merge exactly --
+        duplicated here (rather than imported) because this is context the
+        WORKFLOW's guardrail needs to know BEFORE that agent runs, not a
+        result read back after (same reason _flatten_chain is duplicated
+        from generic/demo_verify.py's flatten_chain instead of imported).
+        If that agent's merge logic ever changes, this must change with
+        it, or no_unregistered_verb will start flagging legitimate item
+        verbs as unregistered."""
+        verbs = list(building.goose_actions) if building else []
+        if item is not None and item.designed and item.goose_actions:
+            verbs = list(dict.fromkeys(verbs + item.goose_actions))
+        return verbs
+
+    def _resolve_or_retire(
+        self, task: Task, residents: List[Resident], buildings: List[Building], items: List[Item]
+    ) -> dict:
         """Runs one task through Goose Solution Planner -> Chain Reaction ->
         Writer -> Director -> Newscaster, per gdd.txt's approval-gate rule:
         the planner may retire a candidate instead of staging it, and that
@@ -160,12 +177,13 @@ class GachoBadiCrew:
         silently veto content the crew's own hard-fail agents already
         accepted."""
         building = next((b for b in buildings if b.name == task.involves_building), None)
+        item = next((i for i in items if i.name == task.involves_item), None) if task.involves_item else None
         if self.verify and building is not None:
             self._goose_guard.context = {
-                "legal_verbs": building.goose_actions,
+                "legal_verbs": self._legal_verbs_for(building, item),
                 "task_description": task.description,
             }
-        verb_plan = self.goose_planner.run(task, buildings)
+        verb_plan = self.goose_planner.run(task, buildings, items)
         if self.verify and self._goose_guard.result().calls:
             self._record_unresolved(
                 "Goose Solution Planner Agent", task.task_id, self._goose_guard.result().calls[-1]
@@ -182,13 +200,14 @@ class GachoBadiCrew:
                 "news": None,
             }
 
-        chain = self.chain_reaction_agent.run(task, building, residents)
+        chain = self.chain_reaction_agent.run(task, building, residents, item)
         if self.verify:
             chain_review = verify_output(
                 self._flatten_chain(chain),
                 constraints=CHAIN_REACTION_CONSTRAINTS,
                 context={
                     "building": building,
+                    "item": item,
                     "target_resident": task.target_resident,
                     "other_resident": task.other_resident,
                 },
@@ -212,7 +231,9 @@ class GachoBadiCrew:
             "news": news,
         }
 
-    def run_playthrough(self, residents: List[Resident], buildings: List[Building]) -> dict:
+    def run_playthrough(
+        self, residents: List[Resident], buildings: List[Building], items: Optional[List[Item]] = None
+    ) -> dict:
         """The full task-set loop: reveal a 5-9-task set from the lifetime
         catalog, resolve/retire tasks until 75% of the set has left "open"
         status, reveal the next set, and repeat until the catalog is
@@ -227,8 +248,13 @@ class GachoBadiCrew:
         registered goose_actions (see run_personality_pass,
         run_relationship_pass, run_dev_time_pass, and
         run_item_interaction_pass) -- every agent below validates this and
-        raises if a prior agent was skipped.
+        raises if a prior agent was skipped. `items`, if given, should
+        likewise already be enriched by run_item_interaction_pass
+        (.designed + .goose_actions/.possible_outcomes); omitting it (the
+        default) reproduces the pre-item behavior exactly, since every
+        item lookup below degrades to "no item" when the list is empty.
         """
+        items = items or []
         print("\n=== PLAYTHROUGH: task sets, 75% threshold, backlog, completion ===")
         catalog = build_catalog(residents, buildings)
         all_tasks: List[Task] = []
@@ -260,7 +286,7 @@ class GachoBadiCrew:
                     "building_pool": [b.name for b in buildings],
                 }
                 calls_before = len(self._task_creator_guard.result().calls)
-            tasks = self.task_creator.generate_set(catalog, offset, set_id, residents, buildings, size=size)
+            tasks = self.task_creator.generate_set(catalog, offset, set_id, residents, buildings, size=size, items=items)
             if self.verify:
                 # generate_set() may have made more than one generate()
                 # call per task (retries), so collapse to the LAST
@@ -280,7 +306,7 @@ class GachoBadiCrew:
             for task in tasks:
                 if settled >= threshold:
                     break  # rest of this set stays "open" on the always-visible backlog
-                tick_records.append(self._resolve_or_retire(task, residents, buildings))
+                tick_records.append(self._resolve_or_retire(task, residents, buildings, items))
                 settled += 1
 
             all_tasks.extend(tasks)
@@ -304,7 +330,7 @@ class GachoBadiCrew:
         if backlog:
             print(f"\n  --- backlog mop-up: {len(backlog)} task(s) still open, resolving toward the true ending ---")
         for task in backlog:
-            tick_records.append(self._resolve_or_retire(task, residents, buildings))
+            tick_records.append(self._resolve_or_retire(task, residents, buildings, items))
 
         completion = self._build_completion(all_tasks, residents)
         print(f"\n  {completion['headline']}")

@@ -8,6 +8,7 @@
       "target_resident": "Otto",
       "other_resident": "Vic",
       "involves_building": "Hazel's Bakery",
+      "involves_item": "a battered kazoo",
       "goal_state": "Otto and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
       "status": "open",
       "retire_reason": ""
@@ -19,6 +20,7 @@
       "target_resident": "Otto",
       "other_resident": "Vic",
       "involves_building": "Front Gate",
+      "involves_item": "a bundle of old letters",
       "goal_state": "Otto and Vic are both present at Front Gate with a positive reaction flag set on Vic",
       "status": "open",
       "retire_reason": ""
@@ -30,6 +32,7 @@
       "target_resident": "Otto",
       "other_resident": "Vic",
       "involves_building": "Garden Hose Stand",
+      "involves_item": "a family memento",
       "goal_state": "Otto and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
       "status": "open",
       "retire_reason": ""
@@ -41,6 +44,7 @@
       "target_resident": "Vic",
       "other_resident": "Hazel",
       "involves_building": "Hazel's Bakery",
+      "involves_item": "a battered kazoo",
       "goal_state": "Vic and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
       "status": "open",
       "retire_reason": ""
@@ -52,6 +56,7 @@
       "target_resident": "Vic",
       "other_resident": "Hazel",
       "involves_building": "Front Gate",
+      "involves_item": "a bundle of old letters",
       "goal_state": "Vic and Hazel are both present at Front Gate with a positive reaction flag set on Hazel",
       "status": "open",
       "retire_reason": ""
@@ -63,6 +68,7 @@
       "target_resident": "Vic",
       "other_resident": "Hazel",
       "involves_building": "Garden Hose Stand",
+      "involves_item": "a family memento",
       "goal_state": "Vic and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
       "status": "open",
       "retire_reason": ""
@@ -74,6 +80,7 @@
       "target_resident": "Vic",
       "other_resident": "Otto",
       "involves_building": "Hazel's Bakery",
+      "involves_item": "a battered kazoo",
       "goal_state": "Vic and Otto are both present at Hazel's Bakery with a positive reaction flag set on Otto",
       "status": "open",
       "retire_reason": ""
@@ -85,6 +92,7 @@
       "target_resident": "Vic",
       "other_resident": "Otto",
       "involves_building": "Front Gate",
+      "involves_item": "a bundle of old letters",
       "goal_state": "Vic and Otto are both present at Front Gate with a positive reaction flag set on Otto",
       "status": "open",
       "retire_reason": ""
@@ -96,6 +104,7 @@
       "target_resident": "Vic",
       "other_resident": "Otto",
       "involves_building": "Garden Hose Stand",
+      "involves_item": "a family memento",
       "goal_state": "Vic and Otto are both present at Garden Hose Stand with a positive reaction flag set on Otto",
       "status": "open",
       "retire_reason": ""

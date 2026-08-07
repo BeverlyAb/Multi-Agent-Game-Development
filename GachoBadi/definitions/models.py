@@ -99,6 +99,14 @@ class Task:
     target_resident: str
     other_resident: Optional[str]  # the resident on the other side of the relationship, if any
     involves_building: Optional[str]
+    # Set by TaskCreatorAgent.generate_set() (round-robin over the seeded
+    # item roster) when at least one Item exists -- GooseSolutionPlannerAgent
+    # and ChainReactionAgent both fold this item's own registered
+    # goose_actions/possible_outcomes in alongside the building's, so a
+    # task's legal verbs and possible chain outcomes aren't limited to
+    # whatever one building.kind happens to offer. None means this task has
+    # no item riding along, which is a legitimate, common case, not an error.
+    involves_item: Optional[str] = None
     # An explicit, checkable condition ("resident A and resident B are both
     # present at the same building with a positive reaction flag set"),
     # not just a text description -- see gdd.txt's "How a task is confirmed

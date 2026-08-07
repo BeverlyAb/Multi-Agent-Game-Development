@@ -16,6 +16,7 @@ implementation.
 context dict this file's detectors expect:
   {
     "building": Building,              # the task's building, for its possible_outcomes
+    "item": Optional[Item],            # the task's involves_item, if any, for its own possible_outcomes
     "target_resident": str,            # task.target_resident
     "other_resident": Optional[str],   # task.other_resident
   }
@@ -37,13 +38,20 @@ TOKEN_BUDGET = TokenBudget(**_CONFIG["token_budget"])
 def outcome_is_registered(output: str, context: Dict) -> List[Finding]:
     """The core guarantee this agent's own docstring claims. Checks that
     the staged resident_action text actually matches one of
-    building.possible_outcomes verbatim -- if this ever fires, something
+    building.possible_outcomes OR (if the task has one) the involved
+    item's own possible_outcomes verbatim -- if this ever fires, something
     downstream (or a future edit to this agent) picked or fabricated an
     outcome the Item Interaction Agent never certified, the same failure
     mode the Goose Solution Planner's no_unregistered_verb check exists
-    to prevent on the goose's own side."""
+    to prevent on the goose's own side.
+
+    context dict: {"building": Building, "item": Optional[Item], ...} --
+    "item" is optional and defaults to None via .get() for callers (e.g.
+    the existing demo fixture) that never pass one."""
     building = context.get("building")
-    outcomes = getattr(building, "possible_outcomes", None) if building is not None else None
+    item = context.get("item")
+    outcomes = list(getattr(building, "possible_outcomes", None) or []) if building is not None else []
+    outcomes += list(getattr(item, "possible_outcomes", None) or []) if item is not None else []
     if not outcomes:
         return []
     registered = {o.resident_action for o in outcomes}
