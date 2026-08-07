@@ -8,16 +8,14 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import List
 
-from agents import (
-    CharacterPersonalityAgent,
-    DirectorAgent,
-    GooseSolutionPlannerAgent,
-    NewscasterAgent,
-    RelationshipAgent,
-    SceneOrchestratorAgent,
-    TaskCreatorAgent,
-    WriterAgent,
-)
+from agents.dev_time.scene_orchestrator import SceneOrchestratorAgent
+from agents.runtime.character_personality_agent import CharacterPersonalityAgent
+from agents.runtime.director_agent import DirectorAgent
+from agents.runtime.goose_solution_planner_agent import GooseSolutionPlannerAgent
+from agents.runtime.newscaster_agent import NewscasterAgent
+from agents.runtime.relationship_agent import RelationshipAgent
+from agents.runtime.task_creator_agent import TaskCreatorAgent
+from agents.runtime.writer_agent import WriterAgent
 from llm_client import LLMClient
 from models import Building, Resident
 

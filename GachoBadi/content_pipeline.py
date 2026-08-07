@@ -2,7 +2,7 @@
 
 Reads the GDD (gdd.txt) as the knowledge base, retrieves grounding
 context per content request, generates content with agents adapted from
-UntitledGooseGame_Multi_Agent (see content_agents.py), and runs every
+UntitledGooseGame_Multi_Agent (see agents/dynamic_content/), and runs every
 output through a Consistency Critic Agent before it's accepted. See
 CONTENT_PIPELINE_README.md for what this generates, whether it sounds
 like the game, and what the critic actually caught.
@@ -12,12 +12,10 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import List
 
-from content_agents import (
-    ConsistencyCriticAgent,
-    ItemAffordanceContentAgent,
-    RelationshipBackstoryContentAgent,
-    TaskPremiseContentAgent,
-)
+from agents.dynamic_content.consistency_critic_agent import ConsistencyCriticAgent
+from agents.dynamic_content.item_affordance_content_agent import ItemAffordanceContentAgent
+from agents.dynamic_content.relationship_backstory_content_agent import RelationshipBackstoryContentAgent
+from agents.dynamic_content.task_premise_content_agent import TaskPremiseContentAgent
 from llm_client import LLMClient
 from rag import GDDKnowledgeBase, RetrievedChunk
 

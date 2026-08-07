@@ -13,7 +13,8 @@
 //
 // The Consistency Critic panel shows every record's pass/fail and, for the
 // task premise, the exact lore break it caught (an Untitled-Goose-Game
-// verb, "Run," left over from content_agents.py's CONNECTION_KINDS table)
+// verb, "Run," left over from agents/dynamic_content/task_premise_content_agent.py's
+// CONNECTION_KINDS table)
 // and the corrected text -- the same audit trail as
 // output/content_pipeline_run.json, just visible in the running game.
 

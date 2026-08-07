@@ -16,7 +16,7 @@ import json
 import os
 import sys
 
-from content_agents import ConsistencyCriticAgent
+from agents.dynamic_content.consistency_critic_agent import ConsistencyCriticAgent
 from content_pipeline import ContentPipeline
 
 

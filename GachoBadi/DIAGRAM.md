@@ -8,8 +8,10 @@ residents felt about each other, and nothing guaranteed a task was
 actually solvable with the goose's own moves. Three stages: a
 **Personality + Relationship** pass, an **Island Prep** stage (dispatched
 by the Scene Orchestrator), and a **Runtime Tick**. Every arrow below is
-a real field being read/written in [`agents.py`](agents.py) /
-[`crew.py`](crew.py) — none are decorative.
+a real field being read/written in [`agents/runtime/`](agents/runtime) /
+[`agents/dev_time/`](agents/dev_time) / [`crew.py`](crew.py) — none are
+decorative. (Each agent now lives in its own file under `agents/` —
+one class per module — rather than one shared `agents.py`.)
 
 ```mermaid
 flowchart TB

@@ -1,11 +1,13 @@
 # Gachō Badi — Dynamic Content Pipeline (Assignment #4)
 
 **Game:** *Gachō Badi (Goose Buddy)*. This is a second, separate pipeline
-alongside the AI Architecture crew in this folder (`agents.py`/`crew.py`/
-`main.py`, Assignment #3's deliverable, untouched by this work) — it
-targets Assignment #4's rubric specifically: a RAG pipeline that reads
-the GDD, generates content the game actually needs, and runs a
-Consistency Critic Agent over the result.
+alongside the AI Architecture crew in this folder (`agents/runtime/`,
+`agents/dev_time/`, `crew.py`, `main.py` — Assignment #3's deliverable,
+functionally untouched by this work) — it targets Assignment #4's rubric
+specifically: a RAG pipeline that reads the GDD, generates content the
+game actually needs, and runs a Consistency Critic Agent over the
+result. Its own four agents live in `agents/dynamic_content/`, one file
+per agent, alongside the crew's.
 
 Run it with:
 
@@ -64,14 +66,14 @@ an actual retrieved sentence from the actual GDD.
 
 ## Agents integrated from `UntitledGooseGame_Multi_Agent`
 
-Three of the four agents in `content_agents.py` are adapted from that
-crew's agents rather than written from scratch, each one aimed at a real
-gap between GachoBadi's GDD and GachoBadi's own code:
+Three of the four agents in `agents/dynamic_content/` are adapted from
+that crew's agents rather than written from scratch, each one aimed at a
+real gap between GachoBadi's GDD and GachoBadi's own code:
 
 | This pipeline's agent | Adapted from (UGG) | Gap it fills |
 |---|---|---|
-| Item Interaction Content Agent | Prop Designer Agent | The GDD (Draft #8+) describes an Item Interaction / World Affordance Agent that `agents.py`/`crew.py` never actually implemented — `Readme.md`'s own caveat admits this. |
-| Relationship Backstory Content Agent | Villager Routine Agent | `RelationshipAgent` in `agents.py` only assigns a label (e.g. "drifted apart"); Draft #9 made the one-line authored "why" behind that label mandatory, and nothing generates it. |
+| Item Interaction Content Agent | Prop Designer Agent | The GDD (Draft #8+) describes an Item Interaction / World Affordance Agent that `agents/runtime/`/`crew.py` never actually implemented — `Readme.md`'s own caveat admits this. |
+| Relationship Backstory Content Agent | Villager Routine Agent | `RelationshipAgent` (`agents/runtime/relationship_agent.py`) only assigns a label (e.g. "drifted apart"); Draft #9 made the one-line authored "why" behind that label mandatory, and nothing generates it. |
 | Task Premise Content Agent | Checklist Creator Agent | Draft #10 states the ~30-40 task premises are meant to be pre-authored content; the runtime `TaskCreatorAgent` only round-robins 5 generic templates — there's no authored catalog matching the GDD's own connection-type taxonomy. |
 | Consistency Critic Agent | *(not adapted — see below)* | Exists because the borrowing above is itself a risk. |
 
@@ -125,8 +127,9 @@ Otto: startles, then laughs off the disagreement with Hazel
 ## Consistency Checking — what the Critic actually caught
 
 The task-premise output above used the goose verb **"Run"** — left over
-from `CONNECTION_KINDS["mend_fallout"]` in `content_agents.py`, which
-was adapted from UGG's `ChecklistCreatorAgent.OBJECTIVE_KINDS["distract_and_swap"]`
+from `CONNECTION_KINDS["mend_fallout"]` in
+`agents/dynamic_content/task_premise_content_agent.py`, which was
+adapted from UGG's `ChecklistCreatorAgent.OBJECTIVE_KINDS["distract_and_swap"]`
 without updating its verb list. Gachō Badi's five goose verbs are
 Honk/Grab/Pick up/Duck/Dash — "Run" isn't one of them. This is the exact
 failure mode the agent-mapping table above predicts, left in the code on
