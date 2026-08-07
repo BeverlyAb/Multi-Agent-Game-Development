@@ -1,0 +1,33 @@
+{
+  "game": "Gacho Badi (Goose Buddy)",
+  "allowed_verbs": [
+    "Dash",
+    "Duck",
+    "Grab",
+    "Honk",
+    "Pick up"
+  ],
+  "records": [
+    {
+      "content_type": "item_affordance",
+      "file": "01_item_affordance_a-lost-memento.json"
+    },
+    {
+      "content_type": "relationship_backstory",
+      "file": "02_relationship_backstory_hazel-otto.json"
+    },
+    {
+      "content_type": "task_premise",
+      "file": "03_task_premise_mend-fallout.json"
+    },
+    {
+      "content_type": "item_affordance",
+      "file": "04_item_affordance_a-chipped-garden-trowel.json"
+    },
+    {
+      "content_type": "task_premise",
+      "file": "05_task_premise_welcome-isolated.json"
+    }
+  ],
+  "catalog_check_file": "catalog_check.json"
+}

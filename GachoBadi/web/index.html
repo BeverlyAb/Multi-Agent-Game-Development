@@ -102,64 +102,181 @@ plan still needs -- perform them near the named building.</div>
 </script>
 
 <!--
-  Fallback copy of ../output/content_pipeline_run.json, embedded so this
-  page also works when opened directly as a file:// URL (no server, no
-  CORS-able fetch). game.js tries to fetch the live file first (see
-  loadPipelineData) and only falls back to this embedded copy if that
-  fetch is blocked or missing. Regenerate this block by re-running
-  `python3 run_content_pipeline.py` and pasting the new
-  output/content_pipeline_run.json contents in below.
+  Fallback copy of everything under ../output/content_pipeline/
+  (manifest.json + every per-record file + catalog_check.json, reassembled
+  into one object), embedded so this page also works when opened directly
+  as a file:// URL (no server, no CORS-able fetch). game.js tries to fetch
+  the live files first (see loadPipelineData) and only falls back to this
+  embedded copy if that fetch is blocked or missing. Regenerate this block
+  by re-running `python3 run_content_pipeline.py` and reassembling
+  output/content_pipeline/manifest.json + its referenced files + its
+  catalog_check.json into the shape below.
 -->
 <script id="pipeline-data" type="application/json">
 {
   "game": "Gacho Badi (Goose Buddy)",
-  "allowed_verbs": ["Dash", "Duck", "Grab", "Honk", "Pick up"],
+  "allowed_verbs": [
+    "Dash",
+    "Duck",
+    "Grab",
+    "Honk",
+    "Pick up"
+  ],
   "records": [
     {
       "content_type": "item_affordance",
       "query": "item interaction affordance memento goose actions reset rule no permanent loss",
       "retrieved": [
-        { "chunk_id": 20, "heading": "Game Mechanics (player-facing actions and loop)", "text": "How items participate in tasks: every interactive object has an explicit affordance record maintained by the Item Interaction Agent...", "score": 51.759 },
-        { "chunk_id": 51, "heading": "Item Interaction / World Affordance Agent — Planner-Critical Runtime Agent (\"One Wow\")", "text": "Player sees: mementos, hoses, gates, mailboxes, tools, food, furniture, and movable props behave consistently...", "score": 31.343 }
+        {
+          "chunk_id": 14,
+          "heading": "Game Mechanics (player-facing actions and loop)",
+          "text": "How items participate in tasks: every interactive object has an explicit affordance record maintained by the Item Interaction Agent. A memento can identify an owner, a shared-memory association, valid goose actions such as grab/carry/drop/hide, valid islander reactions such as notice/retrieve/discuss, and the state change produced when the right residents see it together. A hose can expose actions such as grab nozzle, drag, activate, redirect, and release; physical effects such as wet targets, puddles, or moved loose objects; and personality-dependent reactions such as irritation, laughter, avoidance, or investigation. The Goose Solution Planner may only use interactions listed in this world model, preventing it from inventing unsupported puzzle solutions. No task-critical item can become permanently unrecoverable: every object carries an authored reset rule (for example, an item left dropped or hidden outside of active use drifts back to its owner or origin building after a short time), enforced automatically by the Item Interaction Agent, so a memento the goose drops somewhere obscure is never actually lost. If a task's required item still somehow becomes unusable \u2014 a genuine authoring or state-tracking bug, not intended play \u2014 the Goose Solution Planner treats it exactly like an unavailable resident or building: re-plan or retire the task outright, never leave the player stuck hunting for something the game itself misplaced.",
+          "score": 51.745
+        },
+        {
+          "chunk_id": 45,
+          "heading": "Item Interaction / World Affordance Agent \u2014 Planner-Critical Runtime Agent (\"One Wow\")",
+          "text": "Player sees: mementos, hoses, gates, mailboxes, tools, food, furniture, and movable props behave consistently and produce understandable chains of cause and effect. Residents recognize possessions and sentimental items, react to physical effects, and interact with objects according to their personalities and roles. No task-critical item can ever become permanently lost. How: owns the authoritative gameplay schema for every interactive item and building feature. Each object record defines goose affordances (for example grab, carry, drag, drop, hide, activate, redirect), islander affordances, ownership, sentimental or role associations, physical properties, valid targets, preconditions, state transitions, resident reaction triggers, task-relevant effects, and an authored reset rule that returns a dropped or hidden item to its owner or origin building after a short time. It updates object state during play and exposes legal interactions to the Goose Solution Planner and Director. This agent answers, \"What can happen when this object is used?\"; the Goose Solution Planner answers, \"How can the goose combine those possibilities to solve the task?\"",
+          "score": 31.649
+        }
       ],
       "raw_output": "a lost memento (memento): identifies an owner and a shared-memory association; the goose can grab/carry/drop/hide it; residents can notice/retrieve/discuss it; it drifts back to its owner or origin building if left obscure outside of active use. No task-critical item can become permanently unrecoverable, per the GDD's Item Interaction Agent guarantee.",
       "passed_critic": true,
       "critic_violations": [],
       "critic_commentary": "Checked against 2 retrieved GDD chunk(s); no lore breaks or tone drift found.",
       "final_output": "a lost memento (memento): identifies an owner and a shared-memory association; the goose can grab/carry/drop/hide it; residents can notice/retrieve/discuss it; it drifts back to its owner or origin building if left obscure outside of active use. No task-critical item can become permanently unrecoverable, per the GDD's Item Interaction Agent guarantee.",
-      "meta": { "item_name": "a lost memento", "item_kind": "memento" }
+      "meta": {
+        "item_name": "a lost memento",
+        "item_kind": "memento"
+      }
     },
     {
       "content_type": "relationship_backstory",
       "query": "relationship agent authored backstory drifted apart why not just a label flip",
       "retrieved": [
-        { "chunk_id": 59, "heading": "Relationship Agent (new)", "text": "Player sees: residents who clearly used to know each other, avoid each other, compete, or share affection before the goose intervenes...", "score": 78.101 },
-        { "chunk_id": 4, "heading": "GDD Draft #10", "text": "Revision note (Draft #10): closes both BLOCKING findings from the Draft #9 design review board...", "score": 66.36 }
+        {
+          "chunk_id": 53,
+          "heading": "Relationship Agent (new)",
+          "text": "Player sees: residents who clearly used to know each other, avoid each other, compete, or share affection before the goose intervenes \u2014 and, once a task involving them resolves, a specific, remembered reason why, not just a label flip. How: reads resident personalities and generates both a pairwise social state (close friends, drifted apart, friendly rivals, a budding crush) and a short one-line backstory for how that state came to be (e.g. \"drifted apart after a mixed-up mail delivery\"). The Writer Agent is required to reference that backstory in the task that resolves the relationship \u2014 a label alone is never sufficient content for a task \u2014 so the payoff is an authored moment, not a state-machine transition the player has to take on faith. Its social graph and backstories supply the Task Creator with believable problems and supply the Item Interaction Agent with ownership or shared-memory associations where relevant. This closes an earlier review's finding that the reconciliation payoff had no authored \"why.\"",
+          "score": 79.724
+        },
+        {
+          "chunk_id": 4,
+          "heading": "GDD Draft #10",
+          "text": "Revision note (Draft #10): closes both BLOCKING findings from the Draft #9 design review board (2 blocking, down from 12; review-board.html), plus the three Major findings the board ranked immediately behind them, and resolves both of Draft #9's previously-unresolved disagreements in the process. Specifically: (1) fixes the true-ending completion gate so it counts a task toward the lifetime total whether it was resolved or retired \u2014 the exact same reachability bug Draft #9 had already fixed for the 75% pacing gate, just recurring one checkpoint later \u2014 while giving the ending an authored narrative answer instead of a silent flag-flip: a resolved pair gets an epilogue callback to their Relationship Agent backstory, a retired pair gets an honest one-line acknowledgment that their thread stayed open, so retirement counting toward completion never reads as an unearned success; (2) closes the async-fallback race that let a task's resolution record finalize and permanently retire on the generic placeholder alone before its authored backstory line ever attached, by requiring the authored line to attach before a resolution counts toward either threshold \u2014 the placeholder still plays immediately for responsiveness, it just stops being able to become the permanent counted record except in a genuine, retried generation failure; (3) replaces the unsupported \"rising complexity\" claim with an honest one: the goose's verb toolkit is explicitly flat by design, complexity grows in breadth (more simultaneous pairwise relationships per task) not mechanical difficulty, multi-resident premises check multiple existing pairwise records at once instead of requiring a new merged data structure, and the Task Creator's set order is stated to deliberately reserve higher-tension relationship states for later sets rather than greedily spending the richest material first; (4) gives the harmony ending an authored closing sequence and states explicitly that the island stays freely explorable afterward instead of just stopping; (5) states that the ~30-40 task premises are pre-authored content the Task Creator selects and assembles, not runtime-generated text, and adds a stated basis (reused architecture, not new systems) plus a descoping contingency for the Week 4-12 estimate. Together, (1)+(4) resolve the disagreement over whether fixing the reachability bug would hollow out the ending further \u2014 the fix is narrative, not a math-only patch \u2014 and (2) resolves the disagreement over whether the runtime/dev-time split is decorative: the async race it prevents is proof the split, and its safeguards, are load-bearing.",
+          "score": 68.163
+        }
       ],
       "raw_output": "Hazel and Otto: drifted apart -- a missed birthday.",
       "passed_critic": true,
       "critic_violations": [],
       "critic_commentary": "Checked against 2 retrieved GDD chunk(s); no lore breaks or tone drift found.",
       "final_output": "Hazel and Otto: drifted apart -- a missed birthday.",
-      "meta": { "resident_a": "Hazel", "resident_b": "Otto", "relationship_label": "drifted apart" }
+      "meta": {
+        "resident_a": "Hazel",
+        "resident_b": "Otto",
+        "relationship_label": "drifted apart"
+      }
     },
     {
       "content_type": "task_premise",
       "query": "tasks are actions goose must perform on residents or buildings open-ended indirect interaction",
       "retrieved": [
-        { "chunk_id": 19, "heading": "Game Mechanics (player-facing actions and loop)", "text": "Tasks are actions that the goose must perform on residents or buildings, framed around bringing residents together rather than causing them trouble...", "score": 63.478 },
-        { "chunk_id": 14, "heading": "Executive Summary", "text": "Main gameplay is to explore an already-populated island and use the Goose to draw residents and locations together...", "score": 41.252 }
+        {
+          "chunk_id": 13,
+          "heading": "Game Mechanics (player-facing actions and loop)",
+          "text": "Tasks are actions that the goose must perform on residents or buildings, framed around bringing residents together rather than causing them trouble. For example, the task can be for the goose to get two residents who've drifted apart to reconnect. This is an open-ended solution, which more often than not, requires an indirect interaction. One possible solution is to grab a memento one resident dropped and return it to them in front of the friend they've lost touch with, giving the two a reason to talk. Another solution is to honk at a resident carrying two coffees so they notice their neighbor sitting alone and offer to share one, warming the resident up to a neighbor they'd drifted from. Note that the availability of tasks is dependent on the residents and architecture available and that most tasks can be completed in any order (i.e. most tasks are non-sequential).",
+          "score": 64.562
+        },
+        {
+          "chunk_id": 8,
+          "heading": "Executive Summary",
+          "text": "Main gameplay is to explore an already-populated island and use the Goose to draw residents and locations together. All residents and core buildings are present from the beginning, so the player immediately sees a living community rather than an empty island waiting to be unlocked. The runtime agents configure that community at the start of a game: personalities are generated, roles are assigned from the fixed roster, relationships (and their authored backstories) are established, and the Item Interaction Agent loads the supported affordances and consequences for every interactive object. The Goose Solution Planner then becomes the central gameplay gatekeeper, using that world model to ensure that every task can be solved through existing goose verbs and real object interactions before it reaches the player. Unlike Untitled Goose Game, the goose's antics are not mischief for its own sake \u2014 every task is a small act of connection: reuniting old friends, welcoming an isolated resident into a group, mending a neighborly falling-out, or nudging two residents toward romance through indirect physical-comedy problem solving. The game ends once all available tasks are completed and the island is united.",
+          "score": 41.707
+        }
       ],
-      "raw_output": "Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.\nGoose: Grab near the Hazel's Bakery.\nGoose: Run near the Hazel's Bakery.\nGoose: Honk near the Hazel's Bakery.\nOtto: startles, then laughs off the disagreement with Hazel",
+      "raw_output": "Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.\nGoose: Grab a lost memento, the same one Hazel and Otto argued over.\nGoose: Run it straight between them before either one can walk off.\nGoose: Honk until neither of them can keep pretending not to notice.\nOtto: goes quiet, then laughs -- the argument was never really about a lost memento",
       "passed_critic": false,
       "critic_violations": [
         "used goose verb 'Run', which is not one of Gacho Badi's five verbs (Dash, Duck, Grab, Honk, Pick up) -- consistent with it being carried over while adapting an Untitled Goose Game agent; replaced with 'Dash'."
       ],
       "critic_commentary": "Checked against 2 retrieved GDD chunk(s); found 1 issue(s), corrected in place.",
-      "final_output": "Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.\nGoose: Grab near the Hazel's Bakery.\nGoose: Dash near the Hazel's Bakery.\nGoose: Honk near the Hazel's Bakery.\nOtto: startles, then laughs off the disagreement with Hazel",
-      "meta": { "resident": "Hazel", "other": "Otto", "relationship_label": "drifted apart", "building": "Hazel's Bakery", "connection_kind": "mend_fallout" }
+      "final_output": "Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.\nGoose: Grab a lost memento, the same one Hazel and Otto argued over.\nGoose: Dash it straight between them before either one can walk off.\nGoose: Honk until neither of them can keep pretending not to notice.\nOtto: goes quiet, then laughs -- the argument was never really about a lost memento",
+      "meta": {
+        "resident": "Hazel",
+        "other": "Otto",
+        "relationship_label": "drifted apart",
+        "building": "Hazel's Bakery",
+        "connection_kind": "mend_fallout",
+        "item_name": "a lost memento"
+      }
+    },
+    {
+      "content_type": "item_affordance",
+      "query": "item interaction affordance garden tool goose actions reset rule no permanent loss",
+      "retrieved": [
+        {
+          "chunk_id": 14,
+          "heading": "Game Mechanics (player-facing actions and loop)",
+          "text": "How items participate in tasks: every interactive object has an explicit affordance record maintained by the Item Interaction Agent. A memento can identify an owner, a shared-memory association, valid goose actions such as grab/carry/drop/hide, valid islander reactions such as notice/retrieve/discuss, and the state change produced when the right residents see it together. A hose can expose actions such as grab nozzle, drag, activate, redirect, and release; physical effects such as wet targets, puddles, or moved loose objects; and personality-dependent reactions such as irritation, laughter, avoidance, or investigation. The Goose Solution Planner may only use interactions listed in this world model, preventing it from inventing unsupported puzzle solutions. No task-critical item can become permanently unrecoverable: every object carries an authored reset rule (for example, an item left dropped or hidden outside of active use drifts back to its owner or origin building after a short time), enforced automatically by the Item Interaction Agent, so a memento the goose drops somewhere obscure is never actually lost. If a task's required item still somehow becomes unusable \u2014 a genuine authoring or state-tracking bug, not intended play \u2014 the Goose Solution Planner treats it exactly like an unavailable resident or building: re-plan or retire the task outright, never leave the player stuck hunting for something the game itself misplaced.",
+          "score": 43.656
+        },
+        {
+          "chunk_id": 45,
+          "heading": "Item Interaction / World Affordance Agent \u2014 Planner-Critical Runtime Agent (\"One Wow\")",
+          "text": "Player sees: mementos, hoses, gates, mailboxes, tools, food, furniture, and movable props behave consistently and produce understandable chains of cause and effect. Residents recognize possessions and sentimental items, react to physical effects, and interact with objects according to their personalities and roles. No task-critical item can ever become permanently lost. How: owns the authoritative gameplay schema for every interactive item and building feature. Each object record defines goose affordances (for example grab, carry, drag, drop, hide, activate, redirect), islander affordances, ownership, sentimental or role associations, physical properties, valid targets, preconditions, state transitions, resident reaction triggers, task-relevant effects, and an authored reset rule that returns a dropped or hidden item to its owner or origin building after a short time. It updates object state during play and exposes legal interactions to the Goose Solution Planner and Director. This agent answers, \"What can happen when this object is used?\"; the Goose Solution Planner answers, \"How can the goose combine those possibilities to solve the task?\"",
+          "score": 31.649
+        }
+      ],
+      "raw_output": "a chipped garden trowel (garden tool): the goose can grab/carry/drop/hide it; residents can notice/retrieve/discuss it; it drifts back to its owner or origin if left obscure. No task-critical item can become permanently unrecoverable, per the GDD's Item Interaction Agent guarantee.",
+      "passed_critic": true,
+      "critic_violations": [],
+      "critic_commentary": "Checked against 2 retrieved GDD chunk(s); no lore breaks or tone drift found.",
+      "final_output": "a chipped garden trowel (garden tool): the goose can grab/carry/drop/hide it; residents can notice/retrieve/discuss it; it drifts back to its owner or origin if left obscure. No task-critical item can become permanently unrecoverable, per the GDD's Item Interaction Agent guarantee.",
+      "meta": {
+        "item_name": "a chipped garden trowel",
+        "item_kind": "garden tool"
+      }
+    },
+    {
+      "content_type": "task_premise",
+      "query": "tasks are actions goose must perform on residents or buildings open-ended indirect interaction",
+      "retrieved": [
+        {
+          "chunk_id": 13,
+          "heading": "Game Mechanics (player-facing actions and loop)",
+          "text": "Tasks are actions that the goose must perform on residents or buildings, framed around bringing residents together rather than causing them trouble. For example, the task can be for the goose to get two residents who've drifted apart to reconnect. This is an open-ended solution, which more often than not, requires an indirect interaction. One possible solution is to grab a memento one resident dropped and return it to them in front of the friend they've lost touch with, giving the two a reason to talk. Another solution is to honk at a resident carrying two coffees so they notice their neighbor sitting alone and offer to share one, warming the resident up to a neighbor they'd drifted from. Note that the availability of tasks is dependent on the residents and architecture available and that most tasks can be completed in any order (i.e. most tasks are non-sequential).",
+          "score": 64.562
+        },
+        {
+          "chunk_id": 8,
+          "heading": "Executive Summary",
+          "text": "Main gameplay is to explore an already-populated island and use the Goose to draw residents and locations together. All residents and core buildings are present from the beginning, so the player immediately sees a living community rather than an empty island waiting to be unlocked. The runtime agents configure that community at the start of a game: personalities are generated, roles are assigned from the fixed roster, relationships (and their authored backstories) are established, and the Item Interaction Agent loads the supported affordances and consequences for every interactive object. The Goose Solution Planner then becomes the central gameplay gatekeeper, using that world model to ensure that every task can be solved through existing goose verbs and real object interactions before it reaches the player. Unlike Untitled Goose Game, the goose's antics are not mischief for its own sake \u2014 every task is a small act of connection: reuniting old friends, welcoming an isolated resident into a group, mending a neighborly falling-out, or nudging two residents toward romance through indirect physical-comedy problem solving. The game ends once all available tasks are completed and the island is united.",
+          "score": 41.707
+        }
+      ],
+      "raw_output": "Nudge Vic to notice Hazel sitting alone near the Garden Hose Stand and invite them over.\nGoose: Honk twice at Hazel, sitting alone by the Garden Hose Stand.\nGoose: Grab the empty seat beside Hazel before anyone else takes it.\nHazel: startles, then shifts over to make room without being asked",
+      "passed_critic": true,
+      "critic_violations": [],
+      "critic_commentary": "Checked against 2 retrieved GDD chunk(s); no lore breaks or tone drift found.",
+      "final_output": "Nudge Vic to notice Hazel sitting alone near the Garden Hose Stand and invite them over.\nGoose: Honk twice at Hazel, sitting alone by the Garden Hose Stand.\nGoose: Grab the empty seat beside Hazel before anyone else takes it.\nHazel: startles, then shifts over to make room without being asked",
+      "meta": {
+        "resident": "Vic",
+        "other": "Hazel",
+        "relationship_label": "close friends",
+        "building": "Garden Hose Stand",
+        "connection_kind": "welcome_isolated",
+        "item_name": "a chipped garden trowel"
+      }
     }
-  ]
+  ],
+  "catalog_check": {
+    "checked_tasks": [
+      "mend_fallout",
+      "welcome_isolated"
+    ],
+    "violations": []
+  }
 }
 </script>
 

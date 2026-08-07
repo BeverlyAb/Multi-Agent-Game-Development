@@ -1,8 +1,9 @@
 // Phaser 3 front end for GachoBadi's Dynamic Content Pipeline
-// (run_content_pipeline.py -> output/content_pipeline_run.json).
+// (run_content_pipeline.py -> output/content_pipeline/*.json, one file
+// per generated piece plus manifest.json and catalog_check.json).
 //
 // Unlike UntitledGooseGame_Multi_Agent/web (which plays the *runtime crew's*
-// output), this client plays the *content pipeline's* three RAG-grounded,
+// output), this client plays the *content pipeline's* RAG-grounded,
 // critic-checked generations as an actual scene: the memento's affordance
 // spec becomes a real pick-up-able prop, the Relationship Agent's authored
 // backstory becomes Hazel/Otto's intro caption, and the task premise's
@@ -14,9 +15,8 @@
 // The Consistency Critic panel shows every record's pass/fail and, for the
 // task premise, the exact lore break it caught (an Untitled-Goose-Game
 // verb, "Run," left over from agents/dynamic_content/task_premise_content_agent.py's
-// CONNECTION_KINDS table)
-// and the corrected text -- the same audit trail as
-// output/content_pipeline_run.json, just visible in the running game.
+// CONNECTION_KINDS table) and the corrected text -- the same audit trail
+// as output/content_pipeline/, just visible in the running game.
 
 const WORLD_W = 960, WORLD_H = 640;
 const TASK_RADIUS = 170; // how close the goose must be to the task's building to "count" a verb
@@ -24,18 +24,32 @@ const MEMENTO_HOME_DISTANCE = 130; // how far the memento can drift before its r
 const MEMENTO_RESET_DELAY_MS = 4000;
 
 async function loadPipelineData() {
-  // Prefer the live file. IMPORTANT: this only resolves correctly if the
-  // http server's root is GachoBadi/ itself (`python3 -m http.server` run
-  // from GachoBadi, then open /web/index.html) -- serving from inside
-  // web/ makes the browser normalize "../output/..." to a path outside
-  // the server root and 404 (verified: a server rooted at web/ 404s this
-  // fetch and silently falls back to the embedded copy below every time,
-  // which still "works" but never reflects a fresh pipeline run). Falls
-  // back to the copy embedded in index.html either way, e.g. for a plain
-  // file:// double-click, where fetch() of a local file is blocked outright.
+  // Prefer the live files: fetch manifest.json, then every file it points
+  // to, and reassemble into the same {game, allowed_verbs, records,
+  // catalog_check} shape the rest of this file expects -- so only this
+  // function needs to know the output is now split across files.
+  // IMPORTANT: this only resolves correctly if the http server's root is
+  // GachoBadi/ itself (`python3 -m http.server` run from GachoBadi, then
+  // open /web/index.html) -- serving from inside web/ makes the browser
+  // normalize "../output/..." to a path outside the server root and 404
+  // (verified: a server rooted at web/ 404s this fetch and silently falls
+  // back to the embedded copy below every time, which still "works" but
+  // never reflects a fresh pipeline run). Falls back to the copy embedded
+  // in index.html either way, e.g. for a plain file:// double-click, where
+  // fetch() of a local file is blocked outright.
   try {
-    const res = await fetch("../output/content_pipeline_run.json", { cache: "no-store" });
-    if (res.ok) return await res.json();
+    const base = "../output/content_pipeline/";
+    const manifestRes = await fetch(base + "manifest.json", { cache: "no-store" });
+    if (manifestRes.ok) {
+      const manifest = await manifestRes.json();
+      const records = await Promise.all(
+        manifest.records.map((entry) => fetch(base + entry.file, { cache: "no-store" }).then((r) => r.json()))
+      );
+      const catalog_check = manifest.catalog_check_file
+        ? await fetch(base + manifest.catalog_check_file, { cache: "no-store" }).then((r) => r.json())
+        : null;
+      return { game: manifest.game, allowed_verbs: manifest.allowed_verbs, records, catalog_check };
+    }
   } catch (e) {
     // ignore -- fall through to embedded copy
   }
@@ -310,6 +324,24 @@ class PipelineScene extends Phaser.Scene {
       });
       panel.appendChild(row);
     });
+
+    const catalogCheck = this.pipelineData.catalog_check;
+    if (catalogCheck) {
+      const row = document.createElement("div");
+      row.style.marginTop = "6px";
+      const status = document.createElement("div");
+      const clean = !catalogCheck.violations || catalogCheck.violations.length === 0;
+      status.className = clean ? "critic-pass" : "critic-fail";
+      status.textContent = `catalog check (${(catalogCheck.checked_tasks || []).join(", ")}): ${clean ? "clean" : `${catalogCheck.violations.length} issue(s)`}`;
+      row.appendChild(status);
+      (catalogCheck.violations || []).forEach((v) => {
+        const vline = document.createElement("div");
+        vline.style.fontSize = "12px";
+        vline.textContent = `- ${v}`;
+        row.appendChild(vline);
+      });
+      panel.appendChild(row);
+    }
   }
 
   popText(x, y, msg, color) {

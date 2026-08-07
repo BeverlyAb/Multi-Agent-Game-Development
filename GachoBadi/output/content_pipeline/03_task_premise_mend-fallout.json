@@ -1,0 +1,33 @@
+{
+  "content_type": "task_premise",
+  "query": "tasks are actions goose must perform on residents or buildings open-ended indirect interaction",
+  "retrieved": [
+    {
+      "chunk_id": 13,
+      "heading": "Game Mechanics (player-facing actions and loop)",
+      "text": "Tasks are actions that the goose must perform on residents or buildings, framed around bringing residents together rather than causing them trouble. For example, the task can be for the goose to get two residents who've drifted apart to reconnect. This is an open-ended solution, which more often than not, requires an indirect interaction. One possible solution is to grab a memento one resident dropped and return it to them in front of the friend they've lost touch with, giving the two a reason to talk. Another solution is to honk at a resident carrying two coffees so they notice their neighbor sitting alone and offer to share one, warming the resident up to a neighbor they'd drifted from. Note that the availability of tasks is dependent on the residents and architecture available and that most tasks can be completed in any order (i.e. most tasks are non-sequential).",
+      "score": 64.562
+    },
+    {
+      "chunk_id": 8,
+      "heading": "Executive Summary",
+      "text": "Main gameplay is to explore an already-populated island and use the Goose to draw residents and locations together. All residents and core buildings are present from the beginning, so the player immediately sees a living community rather than an empty island waiting to be unlocked. The runtime agents configure that community at the start of a game: personalities are generated, roles are assigned from the fixed roster, relationships (and their authored backstories) are established, and the Item Interaction Agent loads the supported affordances and consequences for every interactive object. The Goose Solution Planner then becomes the central gameplay gatekeeper, using that world model to ensure that every task can be solved through existing goose verbs and real object interactions before it reaches the player. Unlike Untitled Goose Game, the goose's antics are not mischief for its own sake \u2014 every task is a small act of connection: reuniting old friends, welcoming an isolated resident into a group, mending a neighborly falling-out, or nudging two residents toward romance through indirect physical-comedy problem solving. The game ends once all available tasks are completed and the island is united.",
+      "score": 41.707
+    }
+  ],
+  "raw_output": "Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.\nGoose: Grab a lost memento, the same one Hazel and Otto argued over.\nGoose: Run it straight between them before either one can walk off.\nGoose: Honk until neither of them can keep pretending not to notice.\nOtto: goes quiet, then laughs -- the argument was never really about a lost memento",
+  "passed_critic": false,
+  "critic_violations": [
+    "used goose verb 'Run', which is not one of Gacho Badi's five verbs (Dash, Duck, Grab, Honk, Pick up) -- consistent with it being carried over while adapting an Untitled Goose Game agent; replaced with 'Dash'."
+  ],
+  "critic_commentary": "Checked against 2 retrieved GDD chunk(s); found 1 issue(s), corrected in place.",
+  "final_output": "Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.\nGoose: Grab a lost memento, the same one Hazel and Otto argued over.\nGoose: Dash it straight between them before either one can walk off.\nGoose: Honk until neither of them can keep pretending not to notice.\nOtto: goes quiet, then laughs -- the argument was never really about a lost memento",
+  "meta": {
+    "resident": "Hazel",
+    "other": "Otto",
+    "relationship_label": "drifted apart",
+    "building": "Hazel's Bakery",
+    "connection_kind": "mend_fallout",
+    "item_name": "a lost memento"
+  }
+}

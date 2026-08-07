@@ -11,9 +11,12 @@ cd GachoBadi
 python3 run_content_pipeline.py
 ```
 
-No API key required (deterministic fallback, see `llm_client.py`). Full
-output — query, retrieved chunk, raw generation, critic report,
-corrected text — is written to `output/content_pipeline_run.json`.
+No API key required (deterministic fallback, see `llm_client.py`). Every
+generated piece is written to its own file under `output/content_pipeline/`
+(e.g. `03_task_premise_mend-fallout.json`), alongside `catalog_check.json`
+and a `manifest.json` that lists what was generated and in what order —
+each file's query, retrieved chunk, raw generation, critic report, and
+corrected text in full.
 
 ## Game-Anchored Source
 
@@ -55,7 +58,7 @@ Goose: Run it straight between them before either one can walk off.
 Goose: Honk until neither of them can keep pretending not to notice.
 Otto: goes quiet, then laughs -- the argument was never really about a lost memento
 ```
-(Full, un-truncated triples for all five records in `output/content_pipeline_run.json`.)
+(Full, un-truncated triples for all five records under `output/content_pipeline/` — one file each.)
 
 ## Consistency Checking — what the Critic actually caught
 
