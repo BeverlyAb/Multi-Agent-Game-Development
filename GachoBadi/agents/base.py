@@ -1,7 +1,7 @@
-"""Shared base class for every agent in this package -- the Assignment #3
-crew's runtime/dev_time agents and Assignment #4's dynamic_content agents
-alike. One class, reused everywhere, so "agent" means the same shape
-(role/goal/backstory/run) no matter which subpackage it lives in.
+"""Shared base class for every agent in this package -- the runtime and
+dev_time agents alike. One class, reused everywhere, so "agent" means the
+same shape (role/goal/backstory/run) no matter which subpackage it lives
+in.
 
 Each class mirrors the CrewAI Agent shape (role/goal/backstory/run)
 without depending on the crewai package, so this runs anywhere Python 3

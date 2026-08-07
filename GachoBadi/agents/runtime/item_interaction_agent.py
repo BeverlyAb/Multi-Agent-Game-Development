@@ -14,10 +14,7 @@ class ItemInteractionAgent(BaseAgent):
     )
     backstory = (
         "The GDD (Draft #8 onward) makes this a Planner-Critical Runtime Agent -- gdd.txt's own "
-        "'How items participate in tasks' section -- but it was never actually implemented in "
-        "this crew's code, only in the separate Assignment #4 content pipeline "
-        "(agents/dynamic_content/item_affordance_content_agent.py). This is that agent, wired "
-        "into the actual runtime crew: it loads a compact affordance graph at initialization "
+        "'How items participate in tasks' section. It loads a compact affordance graph at initialization "
         "(Buildings' interactive_feature hints, plus standalone movable Items like a memento), "
         "which the Goose Solution Planner then treats as the only legal action set. Per Draft "
         "#11, that graph now also records what a RESIDENT (not just the goose) can do with the "

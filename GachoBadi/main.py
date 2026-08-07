@@ -1,8 +1,8 @@
 """Entry point: runs the Gacho Badi crew end-to-end -- personality,
 relationships, dev-time content, item interaction, and a full playthrough
 of the lifetime task catalog through Game Completion -- and writes every
-generated piece to its own file under output/crew/, the same one-file-
-per-output pattern as run_content_pipeline.py's output/content_pipeline/.
+generated piece to its own file under output/crew/, one file per
+generated piece plus a manifest.json indexing all of them in order.
 
 Usage:
     python3 main.py
@@ -60,8 +60,7 @@ def build_island_seed():
 
 class OutputWriter:
     """Writes one JSON file per generated piece and builds the manifest
-    entries describing where each one landed -- mirrors
-    run_content_pipeline.py's write_records()/manifest.json exactly."""
+    entries describing where each one landed."""
 
     def __init__(self, output_dir: str):
         self.output_dir = output_dir
