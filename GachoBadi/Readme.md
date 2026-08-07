@@ -193,6 +193,49 @@ buildings open-ended indirect interaction"`) pulled chunk #13 in instead
 — the version now in `content_pipeline.py` (see the comment at the call
 site for the before/after).
 
+## Bonus: the crew's own output (Assignment #3, for reference)
+
+`main.py` (the AI Architecture crew, not this pipeline) writes its own
+output the same way — one file per generated piece, plus a manifest —
+under `output/crew/`, not `output/content_pipeline/`:
+
+```
+output/crew/
+├── manifest.json                          <- index: catalog_size, set summaries, every file in order
+├── 01_personality_hazel.json              <- Character Personality Agent, one file per resident
+├── 02_personality_otto.json
+├── 03_personality_vic.json
+├── 04_relationship_hazel-otto.json        <- Relationship Agent, one file per pair (label + backstory)
+├── 05_relationship_hazel-vic.json
+├── 06_relationship_otto-vic.json
+├── 07_island_layout_layout.json           <- Island Layout Agent
+├── 08_building_design_hazel-s-bakery.json <- Building Designer Agent, one file per building
+├── 09_building_design_front-gate.json
+├── 10_building_design_garden-hose-stand.json
+├── 11_appearance_hazel.json               <- Character Appearance Agent, one file per resident
+├── 12_appearance_otto.json
+├── 13_appearance_vic.json
+├── 14_item_interaction_building_hazel-s-bakery.json  <- Item Interaction Agent, one file per building
+├── 15_item_interaction_building_front-gate.json
+├── 16_item_interaction_building_garden-hose-stand.json
+├── 17_item_interaction_item_a-family-memento.json    <- Item Interaction Agent, one file per item
+├── 18_task_set_set-1.json                 <- Task Creator Agent, the pre-resolution premises per set
+├── 19_task_set_set-2.json
+├── 20_tick_task-01-resolved.json          <- Goose Planner + Writer + Director + Newscaster, one file per task
+├── ...                                    <- (18 tick files total, one per task in the lifetime catalog)
+└── 38_completion_harmony.json             <- Game Completion: the deduplicated epilogue, one line per relationship thread
+```
+
+The `NN_task_set_*.json` files and the corresponding `NN_tick_task-*.json`
+files are deliberately separate, even for the same task: the task-set
+file is a snapshot taken the moment the Task Creator generated that
+premise (`"status": "open"`), before the Goose Solution Planner,
+Writer, Director, or Newscaster ever touch it; the tick file is what
+that task looks like afterward (`"status": "resolved"` or `"retired"`,
+plus the screenplay/verb plan/staged actions/news bulletin). Same task,
+two different agents' outputs, two different files — not the same data
+written twice.
+
 ## Bonus: playing it in Phaser
 
 `web/index.html` + `web/game.js` turn the same JSON into a scene (same
