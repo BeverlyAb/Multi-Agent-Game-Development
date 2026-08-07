@@ -149,8 +149,7 @@ def main() -> int:
                 {
                     "building": building.name,
                     "goose_actions": building.goose_actions,
-                    "resident_actions": building.resident_actions,
-                    "chain_effect": building.chain_effect,
+                    "possible_outcomes": [asdict(o) for o in building.possible_outcomes],
                     "spec": spec,
                 },
             )
@@ -161,8 +160,7 @@ def main() -> int:
                 {
                     "item": item.name,
                     "goose_actions": item.goose_actions,
-                    "resident_actions": item.resident_actions,
-                    "chain_effect": item.chain_effect,
+                    "possible_outcomes": [asdict(o) for o in item.possible_outcomes],
                     "reset_rule": item.reset_rule,
                     "spec": spec,
                 },

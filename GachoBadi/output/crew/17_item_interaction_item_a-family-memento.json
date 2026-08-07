@@ -4,10 +4,16 @@
     "Grab",
     "Drop"
   ],
-  "resident_actions": [
-    "hold onto it and remember who it belonged to"
+  "possible_outcomes": [
+    {
+      "resident_action": "recognizes it immediately and can't help showing someone else",
+      "chain_effect": "recognizing it draws a second resident over to see it too"
+    },
+    {
+      "resident_action": "holds onto it quietly and remembers who it belonged to",
+      "chain_effect": ""
+    }
   ],
-  "chain_effect": "",
   "reset_rule": "if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost.",
-  "spec": "a family memento (memento): the goose can grab/drop it; a resident who receives it can hold onto it and remember who it belonged to. if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost."
+  "spec": "a family memento (memento): the goose can grab/drop it; a resident who receives it might recognizes it immediately and can't help showing someone else (recognizing it draws a second resident over to see it too); or holds onto it quietly and remembers who it belonged to -- exactly which one happens can vary. if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost."
 }

@@ -32,6 +32,21 @@ class Resident:
 
 
 @dataclass
+class VerbOutcome:
+    """One possible way a resident's own follow-up on an object can go.
+    Set by ItemInteractionAgent (a short list per Building/Item); which
+    ONE of them actually happens for a given task is picked at random by
+    ChainReactionAgent itself -- a real goose's exact motion in front of a
+    resident isn't fully predictable even when the goose's own action was
+    legal and planned, and this is where that variability lives, entirely
+    downstream of (and untouched by) the Goose Solution Planner, which
+    only ever proves *a* legal verb sequence exists."""
+
+    resident_action: str  # what the target resident does with the object in this particular outcome
+    chain_effect: str = ""  # further consequence, if any -- empty means this outcome never cascades to a second resident
+
+
+@dataclass
 class Item:
     """A movable prop (e.g. a memento) -- distinct from a Building's fixed
     interactive_feature, but enriched by the same Item Interaction Agent
@@ -43,19 +58,14 @@ class Item:
     goose_actions: List[str] = field(default_factory=list)  # e.g. grab, carry, drop, hide
     reset_rule: str = ""  # the no-permanent-loss guarantee's mechanism
     designed: bool = False  # set by ItemInteractionAgent; required by GooseSolutionPlanner
-    # set by ItemInteractionAgent, consumed only by ChainReactionAgent: what
-    # a RESIDENT (not the goose) can do with this item once the goose has
-    # dropped it in front of them or delivered it -- e.g. "water nearby
-    # plants with it." Empty means this item has no resident follow-up at
-    # all, which is common (most tasks are non-sequential, per gdd.txt) and
-    # not an error.
-    resident_actions: List[str] = field(default_factory=list)
     # set by ItemInteractionAgent, consumed only by ChainReactionAgent: the
-    # further consequence a resident's own resident_actions use can cause --
-    # e.g. "draws a second resident over to admire the result." Empty means
-    # this affordance's resident follow-up is self-contained and never
-    # cascades to a second resident.
-    chain_effect: str = ""
+    # possible ways a resident can follow up once the goose has dropped or
+    # delivered this item -- ChainReactionAgent randomly picks ONE per task
+    # (see VerbOutcome), so the same item can play out differently between
+    # two tasks that both involve it. An empty list means this item has no
+    # resident follow-up at all, which is common (most tasks are
+    # non-sequential, per gdd.txt) and not an error.
+    possible_outcomes: List[VerbOutcome] = field(default_factory=list)
 
 
 @dataclass
@@ -71,13 +81,14 @@ class Building:
     # visual/authored) and ItemInteractionAgent (runtime, gameplay-legal
     # actions) own different halves of "what can happen at this building."
     goose_actions: List[str] = field(default_factory=list)
-    # See Item.resident_actions/chain_effect above -- same meaning, same
-    # ChainReactionAgent-only consumer, just for a building's fixed feature
-    # instead of a movable item (e.g. a resident who finds the garden hose
-    # can water the plants with it; that in turn can draw a second resident
-    # over to admire them).
-    resident_actions: List[str] = field(default_factory=list)
-    chain_effect: str = ""
+    # See Item.possible_outcomes above -- same meaning, same
+    # ChainReactionAgent-only consumer and random-pick behavior, just for a
+    # building's fixed feature instead of a movable item (e.g. sometimes
+    # the resident who finds the garden hose waters the garden with it,
+    # drawing a second resident over to admire it; other times they just
+    # coil it back up with no one else noticing -- same hose, same goose
+    # action, different outcome).
+    possible_outcomes: List[VerbOutcome] = field(default_factory=list)
 
 
 @dataclass

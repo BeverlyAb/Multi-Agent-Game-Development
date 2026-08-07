@@ -4,9 +4,15 @@
     "Honk",
     "Duck"
   ],
-  "resident_actions": [
-    "settle it back into their own routine"
+  "possible_outcomes": [
+    {
+      "resident_action": "comes over to see what the fuss was about",
+      "chain_effect": ""
+    },
+    {
+      "resident_action": "settles it back into their own routine, barely breaking stride",
+      "chain_effect": ""
+    }
   ],
-  "chain_effect": "",
-  "spec": "Front Gate (Front Gate (structure): features gate that can open and close.): the goose can honk/duck it; a resident who then finds or receives it can settle it back into their own routine. Residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
+  "spec": "Front Gate (Front Gate (structure): features gate that can open and close.): the goose can honk/duck it; a resident who then finds or receives it might comes over to see what the fuss was about; or settles it back into their own routine, barely breaking stride -- exactly which one happens can vary. Residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
 }

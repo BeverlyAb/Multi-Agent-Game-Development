@@ -4,9 +4,15 @@
     "Grab",
     "Dash"
   ],
-  "resident_actions": [
-    "pick it up and put it to use themselves"
+  "possible_outcomes": [
+    {
+      "resident_action": "picks it up and puts it to careful, deliberate use",
+      "chain_effect": "the calm result draws a second resident over to see what's going on"
+    },
+    {
+      "resident_action": "just resets it where it belongs with a shrug",
+      "chain_effect": ""
+    }
   ],
-  "chain_effect": "the visible result of using it draws a second resident over to see what's going on",
-  "spec": "Garden Hose Stand (Garden Hose Stand (prop): features hose that can spout water.): the goose can grab/dash it; a resident who then finds or receives it can pick it up and put it to use themselves, and the visible result of using it draws a second resident over to see what's going on. Residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
+  "spec": "Garden Hose Stand (Garden Hose Stand (prop): features hose that can spout water.): the goose can grab/dash it; a resident who then finds or receives it might picks it up and puts it to careful, deliberate use (the calm result draws a second resident over to see what's going on); or just resets it where it belongs with a shrug -- exactly which one happens can vary. Residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
 }

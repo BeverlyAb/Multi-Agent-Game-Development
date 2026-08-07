@@ -17,7 +17,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Front Gate)",
-      "Otto: (follows up on what the goose left behind: settle it back into their own routine)",
+      "Otto: (follows up on what the goose left behind: comes over to see what the fuss was about)",
       "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over.)"
     ]
@@ -37,7 +37,7 @@
     "steps": [
       {
         "actor": "Otto",
-        "action": "follows up on what the goose left behind: settle it back into their own routine",
+        "action": "follows up on what the goose left behind: comes over to see what the fuss was about",
         "location": "town square"
       }
     ],
@@ -51,7 +51,7 @@
     },
     {
       "actor": "Otto",
-      "action": "follows up on what the goose left behind: settle it back into their own routine",
+      "action": "follows up on what the goose left behind: comes over to see what the fuss was about",
       "location": "town square"
     },
     {

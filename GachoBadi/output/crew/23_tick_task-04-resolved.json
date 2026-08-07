@@ -17,7 +17,7 @@
       "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
-      "Hazel: (follows up on what the goose left behind: restock or tidy up with it)",
+      "Hazel: (follows up on what the goose left behind: tidies up without much thought and moves on)",
       "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.)"
     ]
@@ -37,7 +37,7 @@
     "steps": [
       {
         "actor": "Hazel",
-        "action": "follows up on what the goose left behind: restock or tidy up with it",
+        "action": "follows up on what the goose left behind: tidies up without much thought and moves on",
         "location": "north dock"
       }
     ],
@@ -51,7 +51,7 @@
     },
     {
       "actor": "Hazel",
-      "action": "follows up on what the goose left behind: restock or tidy up with it",
+      "action": "follows up on what the goose left behind: tidies up without much thought and moves on",
       "location": "north dock"
     },
     {

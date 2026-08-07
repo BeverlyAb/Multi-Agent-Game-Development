@@ -23,50 +23,61 @@ class ChainReactionAgent(BaseAgent):
         "in front of a resident, the resident is the one who actually waters the garden with "
         "it, and it's the garden coming back to life -- not the goose's own action directly -- "
         "that draws a second resident over to admire it. This agent is that missing middle "
-        "step. It never invents a resident action or a chain effect absent from the Item "
-        "Interaction Agent's schema (Building/Item .resident_actions / .chain_effect) -- the "
-        "same hard boundary the Goose Solution Planner already holds for goose_actions -- so a "
-        "chain reaction is exactly as findable as the affordance graph allows, never an ad-lib "
-        "the player can't reason about."
+        "step, and the one place in the crew where the goose's own unpredictability lives: "
+        "which of the Item Interaction Agent's registered possible_outcomes actually happens is "
+        "picked at random (seeded, so a given seed still replays identically), not because the "
+        "Goose Solution Planner's verb choice was wrong or ambiguous -- a real goose's exact "
+        "motion in front of a resident isn't fully determined by 'which verb was legal.' It "
+        "never invents an outcome absent from that registered list -- the same hard boundary "
+        "the Goose Solution Planner already holds for goose_actions -- so the *range* of what "
+        "can happen is still fully authored and inspectable, only *which one* is left to chance."
     )
 
     """
     Input:  the Task (needs .target_resident, and .other_resident for a
             two-step chain), the Building it involves (needs
-            .resident_actions and .chain_effect, set by ItemInteractionAgent
-            -- an empty resident_actions list means this affordance has no
-            resident follow-up at all, which is common and not an error),
-            and the current resident roster (to resolve .other_resident to
-            an actual Resident to draw in).
+            .possible_outcomes, set by ItemInteractionAgent -- an empty
+            list means this affordance has no resident follow-up at all,
+            which is common and not an error), and the current resident
+            roster (to resolve .other_resident to an actual Resident to
+            draw in).
     Output: a ChainReaction consumed by WriterAgent (narrates each step)
             and DirectorAgent (stages each step and folds the second step,
             when present, into what used to be a generic "other_resident
             notices" beat). Zero steps when the building has no registered
-            resident_actions; one step when it does but there's no
-            chain_effect or no other_resident to draw in; two steps only
-            when both are present -- a task is never required to chain,
-            per gdd.txt's "most tasks are non-sequential" framing.
+            possible_outcomes; one step when the randomly-picked outcome
+            has no chain_effect or there's no other_resident to draw in;
+            two steps only when both are present -- a task is never
+            required to chain, per gdd.txt's "most tasks are non-sequential"
+            framing, and even a chain-capable building doesn't chain every
+            time it's picked.
     """
 
     def run(self, task: Task, building: Optional[Building], residents: List[Resident]) -> ChainReaction:
-        if building is None or not building.resident_actions:
-            self._log(f"task #{task.task_id}: no registered resident action -- no chain to stage")
+        if building is None or not building.possible_outcomes:
+            self._log(f"task #{task.task_id}: no registered resident outcome -- no chain to stage")
             return ChainReaction(task_id=task.task_id, steps=[])
 
+        # This is the one random draw in the whole crew that isn't just
+        # flavor text: which registered outcome actually happens this time
+        # -- seeded, so a given seed still replays identically end to end,
+        # but a different seed (or a later draw in the same run) can land
+        # on a different, equally-legal outcome for the exact same
+        # building/task.
+        outcome = self.llm.choice(building.possible_outcomes)
         location = building.location or "the island"
-        resident_action = building.resident_actions[0]
         steps: List[StagedAction] = [
             StagedAction(
                 actor=task.target_resident,
-                action=f"follows up on what the goose left behind: {resident_action}",
+                action=f"follows up on what the goose left behind: {outcome.resident_action}",
                 location=location,
             )
         ]
 
         chain_effect = ""
         other = next((r for r in residents if r.name == task.other_resident), None) if task.other_resident else None
-        if building.chain_effect and other is not None:
-            chain_effect = building.chain_effect
+        if outcome.chain_effect and other is not None:
+            chain_effect = outcome.chain_effect
             steps.append(
                 StagedAction(
                     actor=other.name,
@@ -76,7 +87,7 @@ class ChainReactionAgent(BaseAgent):
             )
 
         self._log(
-            f"task #{task.task_id}: staged {len(steps)}-step chain"
+            f"task #{task.task_id}: rolled outcome '{outcome.resident_action}' -> staged {len(steps)}-step chain"
             + (f" ending in {other.name} being drawn in" if chain_effect and other else "")
         )
         return ChainReaction(task_id=task.task_id, steps=steps, chain_effect=chain_effect)

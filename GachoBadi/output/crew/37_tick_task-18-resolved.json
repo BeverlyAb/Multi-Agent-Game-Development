@@ -17,8 +17,8 @@
       "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Otto -- Otto and Vic: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
-      "Vic: (follows up on what the goose left behind: pick it up and put it to use themselves)",
-      "Otto: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
+      "Vic: (follows up on what the goose left behind: picks it up and puts it to careful, deliberate use)",
+      "Otto: (is drawn over by it -- the calm result draws a second resident over to see what's going on)",
       "Vic: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.)"
     ]
@@ -38,16 +38,16 @@
     "steps": [
       {
         "actor": "Vic",
-        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "action": "follows up on what the goose left behind: picks it up and puts it to careful, deliberate use",
         "location": "east meadow"
       },
       {
         "actor": "Otto",
-        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "action": "is drawn over by it -- the calm result draws a second resident over to see what's going on",
         "location": "east meadow"
       }
     ],
-    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+    "chain_effect": "the calm result draws a second resident over to see what's going on"
   },
   "staged_actions": [
     {
@@ -57,12 +57,12 @@
     },
     {
       "actor": "Vic",
-      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+      "action": "follows up on what the goose left behind: picks it up and puts it to careful, deliberate use",
       "location": "east meadow"
     },
     {
       "actor": "Otto",
-      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+      "action": "is drawn over by it -- the calm result draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

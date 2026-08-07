@@ -17,8 +17,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
-      "Otto: (follows up on what the goose left behind: pick it up and put it to use themselves)",
-      "Vic: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
+      "Otto: (follows up on what the goose left behind: just resets it where it belongs with a shrug)",
       "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.)"
     ]
@@ -38,16 +37,11 @@
     "steps": [
       {
         "actor": "Otto",
-        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
-        "location": "east meadow"
-      },
-      {
-        "actor": "Vic",
-        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "action": "follows up on what the goose left behind: just resets it where it belongs with a shrug",
         "location": "east meadow"
       }
     ],
-    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+    "chain_effect": ""
   },
   "staged_actions": [
     {
@@ -57,12 +51,12 @@
     },
     {
       "actor": "Otto",
-      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+      "action": "follows up on what the goose left behind: just resets it where it belongs with a shrug",
       "location": "east meadow"
     },
     {
       "actor": "Vic",
-      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+      "action": "notice, warm up, and reconnect",
       "location": "east meadow"
     }
   ],

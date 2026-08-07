@@ -17,7 +17,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
-      "Otto: (follows up on what the goose left behind: restock or tidy up with it)",
+      "Otto: (follows up on what the goose left behind: restocks the shelf themselves, pleased someone bothered)",
       "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.)"
     ]
@@ -37,7 +37,7 @@
     "steps": [
       {
         "actor": "Otto",
-        "action": "follows up on what the goose left behind: restock or tidy up with it",
+        "action": "follows up on what the goose left behind: restocks the shelf themselves, pleased someone bothered",
         "location": "north dock"
       }
     ],
@@ -51,7 +51,7 @@
     },
     {
       "actor": "Otto",
-      "action": "follows up on what the goose left behind: restock or tidy up with it",
+      "action": "follows up on what the goose left behind: restocks the shelf themselves, pleased someone bothered",
       "location": "north dock"
     },
     {

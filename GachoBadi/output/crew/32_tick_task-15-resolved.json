@@ -17,8 +17,8 @@
       "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
-      "Vic: (follows up on what the goose left behind: pick it up and put it to use themselves)",
-      "Hazel: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
+      "Vic: (follows up on what the goose left behind: picks it up and puts it to careful, deliberate use)",
+      "Hazel: (is drawn over by it -- the calm result draws a second resident over to see what's going on)",
       "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.)"
     ]
@@ -38,16 +38,16 @@
     "steps": [
       {
         "actor": "Vic",
-        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "action": "follows up on what the goose left behind: picks it up and puts it to careful, deliberate use",
         "location": "east meadow"
       },
       {
         "actor": "Hazel",
-        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "action": "is drawn over by it -- the calm result draws a second resident over to see what's going on",
         "location": "east meadow"
       }
     ],
-    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+    "chain_effect": "the calm result draws a second resident over to see what's going on"
   },
   "staged_actions": [
     {
@@ -57,12 +57,12 @@
     },
     {
       "actor": "Vic",
-      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+      "action": "follows up on what the goose left behind: picks it up and puts it to careful, deliberate use",
       "location": "east meadow"
     },
     {
       "actor": "Hazel",
-      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+      "action": "is drawn over by it -- the calm result draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

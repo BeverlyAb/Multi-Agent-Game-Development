@@ -17,8 +17,8 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
-      "Otto: (follows up on what the goose left behind: pick it up and put it to use themselves)",
-      "Hazel: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
+      "Otto: (follows up on what the goose left behind: picks it up and puts it to careful, deliberate use)",
+      "Hazel: (is drawn over by it -- the calm result draws a second resident over to see what's going on)",
       "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.)"
     ]
@@ -38,16 +38,16 @@
     "steps": [
       {
         "actor": "Otto",
-        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "action": "follows up on what the goose left behind: picks it up and puts it to careful, deliberate use",
         "location": "east meadow"
       },
       {
         "actor": "Hazel",
-        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "action": "is drawn over by it -- the calm result draws a second resident over to see what's going on",
         "location": "east meadow"
       }
     ],
-    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+    "chain_effect": "the calm result draws a second resident over to see what's going on"
   },
   "staged_actions": [
     {
@@ -57,12 +57,12 @@
     },
     {
       "actor": "Otto",
-      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+      "action": "follows up on what the goose left behind: picks it up and puts it to careful, deliberate use",
       "location": "east meadow"
     },
     {
       "actor": "Hazel",
-      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+      "action": "is drawn over by it -- the calm result draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

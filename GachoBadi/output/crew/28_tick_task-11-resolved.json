@@ -17,7 +17,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Front Gate)",
-      "Otto: (follows up on what the goose left behind: settle it back into their own routine)",
+      "Otto: (follows up on what the goose left behind: settles it back into their own routine, barely breaking stride)",
       "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate.)"
     ]
@@ -37,7 +37,7 @@
     "steps": [
       {
         "actor": "Otto",
-        "action": "follows up on what the goose left behind: settle it back into their own routine",
+        "action": "follows up on what the goose left behind: settles it back into their own routine, barely breaking stride",
         "location": "town square"
       }
     ],
@@ -51,7 +51,7 @@
     },
     {
       "actor": "Otto",
-      "action": "follows up on what the goose left behind: settle it back into their own routine",
+      "action": "follows up on what the goose left behind: settles it back into their own routine, barely breaking stride",
       "location": "town square"
     },
     {

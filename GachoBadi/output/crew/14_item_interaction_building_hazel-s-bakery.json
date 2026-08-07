@@ -4,9 +4,15 @@
     "Grab",
     "Drop"
   ],
-  "resident_actions": [
-    "restock or tidy up with it"
+  "possible_outcomes": [
+    {
+      "resident_action": "restocks the shelf themselves, pleased someone bothered",
+      "chain_effect": ""
+    },
+    {
+      "resident_action": "tidies up without much thought and moves on",
+      "chain_effect": ""
+    }
   ],
-  "chain_effect": "",
-  "spec": "Hazel's Bakery (Hazel's Bakery (shop): features oven that can overheat and puff flour.): the goose can grab/drop it; a resident who then finds or receives it can restock or tidy up with it. Residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
+  "spec": "Hazel's Bakery (Hazel's Bakery (shop): features oven that can overheat and puff flour.): the goose can grab/drop it; a resident who then finds or receives it might restocks the shelf themselves, pleased someone bothered; or tidies up without much thought and moves on -- exactly which one happens can vary. Residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
 }

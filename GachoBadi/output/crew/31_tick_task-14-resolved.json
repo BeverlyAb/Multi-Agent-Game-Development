@@ -17,7 +17,7 @@
       "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Front Gate)",
-      "Vic: (follows up on what the goose left behind: settle it back into their own routine)",
+      "Vic: (follows up on what the goose left behind: comes over to see what the fuss was about)",
       "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk.)"
     ]
@@ -37,7 +37,7 @@
     "steps": [
       {
         "actor": "Vic",
-        "action": "follows up on what the goose left behind: settle it back into their own routine",
+        "action": "follows up on what the goose left behind: comes over to see what the fuss was about",
         "location": "town square"
       }
     ],
@@ -51,7 +51,7 @@
     },
     {
       "actor": "Vic",
-      "action": "follows up on what the goose left behind: settle it back into their own routine",
+      "action": "follows up on what the goose left behind: comes over to see what the fuss was about",
       "location": "town square"
     },
     {
