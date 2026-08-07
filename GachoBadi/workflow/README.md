@@ -132,11 +132,23 @@ can't express.
 
 ```bash
 cd GachoBadi
-python3 workflow/demo_verify.py
+python3 workflow/demo_verify.py                                       # all registered agents (default)
+python3 workflow/demo_verify.py --agents none                         # zero -- just checks the harness loads
+python3 workflow/demo_verify.py --agents goose_solution_planner       # exactly one
+python3 workflow/demo_verify.py --agents task_creator,chain_reaction  # a chosen set
+python3 workflow/demo_verify.py --list                                # print available agent keys and exit
 ```
 
-Wraps three real agents against hand-built fixtures and prints the
-changelog:
+`--agents` accepts `all` (default), `none`/`''` (a deliberately valid,
+distinct choice, not an error), or a comma-separated subset of the keys
+`--list` prints. An unknown key exits with status 1 and lists the valid
+ones rather than silently running nothing or everything. Adding a new
+agent's demo to `AGENT_DEMOS` in `demo_verify.py` (alongside a new
+constraint spec, per "Adding a new agent" above) makes it immediately
+selectable by name — nothing else about `--agents` changes.
+
+Wraps whichever agents you select against hand-built fixtures and prints
+the changelog. With `--agents all` (or no flag):
 
 - **Goose Solution Planner** (input side) — on a fresh checkout with no
   `ANTHROPIC_API_KEY`/`OPENAI_API_KEY` set (the default "mock"

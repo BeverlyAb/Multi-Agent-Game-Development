@@ -1,6 +1,5 @@
-"""Runnable proof that the workflow is generic across agents: wraps
-THREE real agents from this crew -- deliberately spanning both of the
-workflow's entry points:
+"""Runnable proof that the workflow is generic across agents: wraps real
+agents from this crew, spanning both of the workflow's entry points --
 
   - GooseSolutionPlannerAgent and TaskCreatorAgent both call
     self.llm.generate() -- guarded via GuardedLLMClient (input side).
@@ -8,16 +7,24 @@ workflow's entry points:
     is no generate() call to intercept, so it's guarded via
     guarded_output.verify_output() instead (output side).
 
-Does not touch crew.py, main.py, or any agents/*.py file -- this is
-purely additive, run on its own fixtures.
+-- and lets you choose WHICH of them to actually run, via --agents. Does
+not touch crew.py, main.py, or any agents/*.py file -- this is purely
+additive, run on its own fixtures.
 
 Usage (from GachoBadi/, matching executable/main.py's own convention):
-    python3 workflow/demo_verify.py
+    python3 workflow/demo_verify.py                                  # all registered agents (default)
+    python3 workflow/demo_verify.py --agents none                    # zero agents -- just checks the harness loads
+    python3 workflow/demo_verify.py --agents goose_solution_planner   # exactly one
+    python3 workflow/demo_verify.py --agents task_creator,chain_reaction  # a chosen set
+    python3 workflow/demo_verify.py --list                           # print available agent keys and exit
 """
 from __future__ import annotations
 
+import argparse
 import os
 import sys
+from dataclasses import dataclass
+from typing import Callable, Dict, List, Optional
 
 # Same sys.path bootstrap as executable/main.py and executable/crew.py --
 # this file lives one level below the project root too.
@@ -39,9 +46,25 @@ from workflow.constraints.goose_solution_planner_constraints import GOOSE_SOLUTI
 from workflow.constraints.task_creator_constraints import TASK_CREATOR_CONSTRAINTS
 from workflow.guarded_llm_client import GuardedLLMClient
 from workflow.guarded_output import verify_output
+from workflow.verification_models import ReviewResult
 
 
-def build_fixtures():
+@dataclass
+class DemoContext:
+    """Everything a demo function might need, built once in main() and
+    handed to whichever demo functions --agents actually selects -- so
+    picking a subset never has to re-derive fixtures a skipped agent
+    would have needed anyway."""
+
+    base_llm: LLMClient
+    hazel: Resident
+    otto: Resident
+    bakery: Building
+    hose_stand: Building
+    task: Task
+
+
+def build_context() -> DemoContext:
     """Minimal, directly-constructed fixtures -- deliberately bypasses
     the real crew's personality/relationship/dev-time/item-interaction
     passes, since this demo is about the verification workflow, not
@@ -105,40 +128,34 @@ def build_fixtures():
         involves_building="Hazel's Bakery",
         goal_state="Hazel and Otto are both present at Hazel's Bakery with a positive reaction flag set",
     )
-    return hazel, otto, bakery, hose_stand, task
+    return DemoContext(
+        base_llm=LLMClient(seed=7), hazel=hazel, otto=otto, bakery=bakery, hose_stand=hose_stand, task=task
+    )
 
 
-def report(label: str, result) -> None:
-    print(f"  accepted_all: {result.accepted_all}  retried_count: {result.retried_count}")
-    for finding in result.unresolved():
-        print(f"  UNRESOLVED [{label}]: [{finding.rule}] {finding.message}")
-
-
-def run_goose_planner_demo(base_llm: LLMClient, bakery: Building, task: Task) -> None:
-    print("\n=== Guarding Goose Solution Planner Agent (input side: GuardedLLMClient) ===")
+def run_goose_planner_demo(ctx: DemoContext) -> ReviewResult:
     guarded = GuardedLLMClient(
-        base_llm,
+        ctx.base_llm,
         constraints=GOOSE_SOLUTION_PLANNER_CONSTRAINTS,
-        context={"legal_verbs": bakery.goose_actions, "task_description": task.description},
+        context={"legal_verbs": ctx.bakery.goose_actions, "task_description": ctx.task.description},
     )
     planner = GooseSolutionPlannerAgent(guarded)  # agent's own code: untouched
-    plan = planner.run(task, [bakery])
+    plan = planner.run(ctx.task, [ctx.bakery])
     print(f"  plan lines: {len(plan.lines) if plan else 0}")
-    report("Goose Solution Planner", guarded.result())
+    return guarded.result()
 
 
-def run_task_creator_demo(base_llm: LLMClient, hazel: Resident, otto: Resident, bakery: Building) -> None:
-    print("\n=== Guarding Task Creator Agent (input side: GuardedLLMClient) ===")
+def run_task_creator_demo(ctx: DemoContext) -> ReviewResult:
     guarded = GuardedLLMClient(
-        base_llm,
+        ctx.base_llm,
         constraints=TASK_CREATOR_CONSTRAINTS,
-        context={"resident_name": hazel.name, "other_name": otto.name, "building_name": bakery.name},
+        context={"resident_name": ctx.hazel.name, "other_name": ctx.otto.name, "building_name": ctx.bakery.name},
     )
     creator = TaskCreatorAgent(guarded)  # agent's own code: untouched
-    catalog = [(hazel.name, otto.name, bakery.name)]  # one-entry catalog -> one generate() call
-    tasks = creator.generate_set(catalog, offset=0, set_id=1, residents=[hazel, otto], buildings=[bakery])
+    catalog = [(ctx.hazel.name, ctx.otto.name, ctx.bakery.name)]  # one entry -> one generate() call
+    tasks = creator.generate_set(catalog, offset=0, set_id=1, residents=[ctx.hazel, ctx.otto], buildings=[ctx.bakery])
     print(f"  generated task: {tasks[0].description!r}" if tasks else "  no task generated")
-    report("Task Creator", guarded.result())
+    return guarded.result()
 
 
 def flatten_chain(chain: ChainReaction) -> str:
@@ -147,35 +164,97 @@ def flatten_chain(chain: ChainReaction) -> str:
     return "\n".join(f"{s.actor}: {s.action}" for s in chain.steps)
 
 
-def run_chain_reaction_demo(base_llm: LLMClient, hazel: Resident, otto: Resident, hose_stand: Building, task: Task) -> None:
-    print("\n=== Guarding Chain Reaction Agent (output side: verify_output) ===")
-    chain_agent = ChainReactionAgent(base_llm)  # agent's own code: untouched; no generate() to wrap anyway
-    chain = chain_agent.run(task, hose_stand, [hazel, otto])
+def run_chain_reaction_demo(ctx: DemoContext) -> ReviewResult:
+    chain_agent = ChainReactionAgent(ctx.base_llm)  # agent's own code: untouched; no generate() to wrap anyway
+    chain = chain_agent.run(ctx.task, ctx.hose_stand, [ctx.hazel, ctx.otto])
     output_text = flatten_chain(chain)
     print(f"  staged {len(chain.steps)} step(s): {output_text!r}")
-    result = verify_output(
+    return verify_output(
         output_text,
         constraints=CHAIN_REACTION_CONSTRAINTS,
         context={
-            "building": hose_stand,
-            "target_resident": task.target_resident,
-            "other_resident": task.other_resident,
+            "building": ctx.hose_stand,
+            "target_resident": ctx.task.target_resident,
+            "other_resident": ctx.task.other_resident,
         },
     )
-    report("Chain Reaction", result)
 
 
-def main() -> int:
-    print("Workflow demo -- guarding three real agents across both entry points")
+# The registry --agents selects from. Add a new agent's demo here (and to
+# workflow/constraints/, per README.md's "Adding a new agent") and it's
+# immediately selectable by name -- nothing else in this file changes.
+AGENT_DEMOS: Dict[str, Callable[[DemoContext], ReviewResult]] = {
+    "goose_solution_planner": run_goose_planner_demo,
+    "task_creator": run_task_creator_demo,
+    "chain_reaction": run_chain_reaction_demo,
+}
+
+
+def resolve_agent_keys(spec: str) -> List[str]:
+    """Turns --agents' raw string into an ordered list of registry keys.
+    Accepts 'all' (every registered agent), 'none'/'' (zero agents -- a
+    deliberately valid, distinct choice, not an error), or a
+    comma-separated subset. Preserves AGENT_DEMOS' own declaration order
+    rather than the order the user typed keys in, so output order is
+    always predictable regardless of --agents phrasing."""
+    normalized = spec.strip().lower()
+    if normalized in ("", "none"):
+        return []
+    if normalized == "all":
+        return list(AGENT_DEMOS.keys())
+    requested = {k.strip() for k in normalized.split(",") if k.strip()}
+    unknown = requested - AGENT_DEMOS.keys()
+    if unknown:
+        raise SystemExit(
+            f"Unknown agent key(s): {sorted(unknown)}. Available: {', '.join(AGENT_DEMOS)} (or 'all'/'none')."
+        )
+    return [k for k in AGENT_DEMOS if k in requested]
+
+
+def report(label: str, result: ReviewResult) -> None:
+    print(f"  accepted_all: {result.accepted_all}  retried_count: {result.retried_count}")
+    for finding in result.unresolved():
+        print(f"  UNRESOLVED [{label}]: [{finding.rule}] {finding.message}")
+
+
+def parse_args(argv: Optional[List[str]]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument(
+        "--agents",
+        default="all",
+        metavar="SPEC",
+        help=(
+            "Which agents to verify: 'all' (default), 'none' for zero, or a "
+            f"comma-separated subset of: {', '.join(AGENT_DEMOS)}"
+        ),
+    )
+    parser.add_argument("--list", action="store_true", help="Print available agent keys and exit.")
+    return parser.parse_args(argv)
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    args = parse_args(argv)
+    if args.list:
+        for key in AGENT_DEMOS:
+            print(key)
+        return 0
+
+    keys = resolve_agent_keys(args.agents)
+
+    print(f"Workflow demo -- guarding {len(keys)} agent(s): {keys if keys else '(none)'}")
     print("=" * 72)
-    clear_changelog()  # fresh log for this demo run
 
-    base_llm = LLMClient(seed=7)
-    hazel, otto, bakery, hose_stand, task = build_fixtures()
+    if not keys:
+        print("\nNo agents selected -- nothing to verify. Pass --agents <name[,name...]|all|none>.")
+        return 0
 
-    run_goose_planner_demo(base_llm, bakery, task)
-    run_task_creator_demo(base_llm, hazel, otto, bakery)
-    run_chain_reaction_demo(base_llm, hazel, otto, hose_stand, task)
+    clear_changelog()  # fresh log for this run
+    ctx = build_context()
+
+    for key in keys:
+        print(f"\n=== Guarding {key} ===")
+        result = AGENT_DEMOS[key](ctx)
+        report(key, result)
 
     entries = read_changelog()
     print(f"\n=== Changelog: {len(entries)} entr(y/ies) written to {LOG_PATH} ===")
