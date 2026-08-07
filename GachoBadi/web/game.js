@@ -43,9 +43,17 @@ async function loadPipelineData() {
   return JSON.parse(el.textContent);
 }
 
+// Keeps the FIRST record of each content_type, not the last. The pipeline
+// can generate more than one item_affordance/task_premise now (a second,
+// deliberately-different task feeds the catalog-level redundancy check --
+// see content_pipeline.py's check_catalog) -- overwriting by content_type
+// would silently swap in that second task's building/residents under the
+// scene the sprites and positions below were actually built around.
 function recordsByType(data) {
   const byType = {};
-  (data.records || []).forEach((r) => { byType[r.content_type] = r; });
+  (data.records || []).forEach((r) => {
+    if (!(r.content_type in byType)) byType[r.content_type] = r;
+  });
   return byType;
 }
 

@@ -50,12 +50,12 @@ because that borrowing risks leaking UGG's own verbs/tone in — see below.
 **Output (before critic):**
 ```
 Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.
-Goose: Grab near the Hazel's Bakery.
-Goose: Run near the Hazel's Bakery.
-Goose: Honk near the Hazel's Bakery.
-Otto: startles, then laughs off the disagreement with Hazel
+Goose: Grab a lost memento, the same one Hazel and Otto argued over.
+Goose: Run it straight between them before either one can walk off.
+Goose: Honk until neither of them can keep pretending not to notice.
+Otto: goes quiet, then laughs -- the argument was never really about a lost memento
 ```
-(Full, un-truncated triples for all three in `output/content_pipeline_run.json`.)
+(Full, un-truncated triples for all five records in `output/content_pipeline_run.json`.)
 
 ## Consistency Checking — what the Critic actually caught
 
@@ -72,16 +72,36 @@ isn't one of them. Left in on purpose so this catch is real, not staged:
     (Dash, Duck, Grab, Honk, Pick up) -- consistent with it being carried
     over while adapting an Untitled Goose Game agent; replaced with 'Dash'.
 corrected -> Help Hazel and Otto patch up a disagreement at the Hazel's Bakery.
-Goose: Grab near the Hazel's Bakery.
-Goose: Dash near the Hazel's Bakery.
-Goose: Honk near the Hazel's Bakery.
-Otto: startles, then laughs off the disagreement with Hazel
+Goose: Grab a lost memento, the same one Hazel and Otto argued over.
+Goose: Dash it straight between them before either one can walk off.
+Goose: Honk until neither of them can keep pretending not to notice.
+Otto: goes quiet, then laughs -- the argument was never really about a lost memento
 ```
 
-A second, independent check (banned tone words — "mischief," "chaos,"
-"prank" → "connection," "harmony," "gesture") didn't fire this run
-because nothing tripped it, but exists for the same reason: Gachō Badi
-is "quiet community-builder," never mischief-for-its-own-sake.
+Two more checks exist for the same reason but didn't fire this run
+(nothing tripped them, verified separately rather than just claimed):
+
+- **Banned tone words** ("mischief," "chaos," "prank" → "connection,"
+  "harmony," "gesture") — Gachō Badi is "quiet community-builder," never
+  mischief-for-its-own-sake.
+- **Redundant step targets** — earlier revisions of every
+  `CONNECTION_KINDS` template had every goose-verb step target the same
+  generic `"near the {building}"` phrase, so a plan like
+  `Grab near the bakery. / Dash near the bakery. / Honk near the bakery.`
+  read as a copy-paste with only the verb swapped. `ConsistencyCriticAgent._find_redundant_step_targets`
+  catches this (detection-only — a redundant target has no single
+  mechanical substitution, so the real fix is `TaskPremiseContentAgent`
+  authoring a distinct target per step, which is why every step above now
+  names the item, the other resident, or a specific detail instead of the
+  building three times).
+- **Catalog-level redundancy** (`ConsistencyCriticAgent.check_catalog_redundancy`)
+  — a single-task check can't see that two *different*, individually
+  fine tasks still reuse the same item or run the identical verb
+  sequence, which would make even bug-free tasks feel copy-pasted once
+  read as a catalog (Draft #10's ~30-40-task catalog, specifically). The
+  pipeline generates a second task (a different item, a different
+  connection kind, a different pair) specifically so this has more than
+  one task to compare: `{"checked_tasks": ["mend_fallout", "welcome_isolated"], "violations": []}`.
 
 ## Voice Judgment
 

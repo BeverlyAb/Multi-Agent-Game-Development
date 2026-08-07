@@ -27,11 +27,30 @@ def main() -> int:
         pipeline = ContentPipeline(gdd_path="gdd.txt", seed=7)
         print(f"Knowledge base loaded: {len(pipeline.kb.chunks)} chunks from gdd.txt")
 
-        records = [
-            pipeline.generate_item_affordance("a lost memento", "memento"),
-            pipeline.generate_relationship_backstory("Hazel", "Otto", "drifted apart"),
-            pipeline.generate_task_premise("Hazel", "Otto", "drifted apart", "Hazel's Bakery", "mend_fallout"),
-        ]
+        item_record = pipeline.generate_item_affordance("a lost memento", "memento")
+        backstory_record = pipeline.generate_relationship_backstory("Hazel", "Otto", "drifted apart")
+        # Chains the item agent's own output into the task premise call
+        # (instead of a second, independent "a lost memento" literal) so
+        # the task's goose-verb steps target the actual generated item.
+        task_record = pipeline.generate_task_premise(
+            "Hazel", "Otto", "drifted apart", "Hazel's Bakery", "mend_fallout",
+            item_name=item_record.meta["item_name"],
+        )
+
+        # A second, independently-authored task -- different item, different
+        # connection kind, different pair -- so the catalog-level critic
+        # check below has more than one task to compare (Cycle 2: a
+        # single-task check can't see redundancy that only shows up once
+        # the catalog is read as a whole).
+        second_item_record = pipeline.generate_item_affordance("a chipped garden trowel", "garden tool")
+        second_task_record = pipeline.generate_task_premise(
+            "Vic", "Hazel", "close friends", "Garden Hose Stand", "welcome_isolated",
+            item_name=second_item_record.meta["item_name"],
+        )
+
+        catalog_violations = pipeline.check_catalog([task_record, second_task_record])
+
+        records = [item_record, backstory_record, task_record, second_item_record, second_task_record]
 
         output = {
             "game": "Gacho Badi (Goose Buddy)",
@@ -40,6 +59,10 @@ def main() -> int:
             # truth instead of a second copy of the allowed verbs in JS.
             "allowed_verbs": sorted(ConsistencyCriticAgent.ALLOWED_VERBS),
             "records": ContentPipeline.to_jsonable(records),
+            "catalog_check": {
+                "checked_tasks": [r.meta.get("connection_kind") for r in (task_record, second_task_record)],
+                "violations": catalog_violations,
+            },
         }
 
         os.makedirs("output", exist_ok=True)
@@ -51,6 +74,8 @@ def main() -> int:
         for r in records:
             status = "passed critic" if r.passed_critic else f"corrected ({len(r.critic_violations)} issue(s))"
             print(f"  {r.content_type:22s} {status}")
+        catalog_status = "clean" if not catalog_violations else f"{len(catalog_violations)} issue(s)"
+        print(f"  {'catalog check':22s} {catalog_status}")
         print(f"LLM provider in use  : {pipeline.llm.provider} "
               f"({'live API calls' if pipeline.llm.provider != 'mock' else 'local deterministic fallback'})")
         print(f"Full run written to  : {os.path.abspath(out_path)}")

@@ -98,7 +98,13 @@ class ContentPipeline:
         return self._run_through_critic("relationship_backstory", query, hits, raw, meta)
 
     def generate_task_premise(
-        self, resident: str, other: str, relationship_label: str, building: str, connection_kind: str
+        self,
+        resident: str,
+        other: str,
+        relationship_label: str,
+        building: str,
+        connection_kind: str,
+        item_name: str = "a small kept memento",
     ) -> GenerationRecord:
         # Tuned from an earlier version of this query ("task creator connection
         # goose verbs honk grab pick up duck dash no dialogue"), which pulled
@@ -107,15 +113,42 @@ class ContentPipeline:
         query = "tasks are actions goose must perform on residents or buildings open-ended indirect interaction"
         hits = self._retrieve(query)
         context = "\n".join(h.chunk.text for h in hits)
-        raw = self.task_agent.run(resident, other, relationship_label, building, connection_kind, context)
+        # item_name is expected to come from a prior generate_item_affordance()
+        # call's meta -- the Task Premise Content Agent draws on that agent's
+        # own output for a concrete step target instead of naming the
+        # building three times with only the verb changed (see the
+        # Consistency Critic Agent's redundant-step check).
+        raw = self.task_agent.run(resident, other, relationship_label, building, connection_kind, context, item_name)
         meta = {
             "resident": resident,
             "other": other,
             "relationship_label": relationship_label,
             "building": building,
             "connection_kind": connection_kind,
+            "item_name": item_name,
         }
         return self._run_through_critic("task_premise", query, hits, raw, meta)
+
+    def check_catalog(self, task_records: List[GenerationRecord]) -> List[str]:
+        """Batch check across multiple already-generated task premises --
+        see ConsistencyCriticAgent.check_catalog_redundancy for why this
+        can't be folded into the per-task critic pass above."""
+        payload = [
+            {
+                "label": r.meta.get("connection_kind", r.content_type),
+                "item_name": r.meta.get("item_name"),
+                "text": r.final_output,
+            }
+            for r in task_records
+        ]
+        violations = self.critic.check_catalog_redundancy(payload)
+        if violations:
+            print(f"  [Consistency Critic Agent] caught {len(violations)} catalog-level issue(s):")
+            for v in violations:
+                print(f"    - {v}")
+        else:
+            print(f"  [Consistency Critic Agent] catalog check: no redundancy across {len(task_records)} task(s)")
+        return violations
 
     @staticmethod
     def to_jsonable(records: List[GenerationRecord]) -> list:
