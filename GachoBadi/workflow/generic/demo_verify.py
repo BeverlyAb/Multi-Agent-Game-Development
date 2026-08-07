@@ -41,6 +41,7 @@ from agents.runtime.goose_solution_planner_agent import GooseSolutionPlannerAgen
 from agents.runtime.task_creator_agent import TaskCreatorAgent
 from definitions.models import Building, ChainReaction, Resident, Sliders, Task, VerbOutcome
 from workflow.generic.changelog import clear_changelog, read_changelog, LOG_PATH
+from workflow.constraints.base import AgentConstraints
 from workflow.constraints.chain_reaction.constraints import CHAIN_REACTION_CONSTRAINTS
 from workflow.constraints.goose_solution_planner.constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
 from workflow.constraints.task_creator.constraints import TASK_CREATOR_CONSTRAINTS
@@ -133,10 +134,10 @@ def build_context() -> DemoContext:
     )
 
 
-def run_goose_planner_demo(ctx: DemoContext) -> ReviewResult:
+def run_goose_planner_demo(ctx: DemoContext, constraints: Optional[AgentConstraints] = None) -> ReviewResult:
     guarded = GuardedLLMClient(
         ctx.base_llm,
-        constraints=GOOSE_SOLUTION_PLANNER_CONSTRAINTS,
+        constraints=constraints or GOOSE_SOLUTION_PLANNER_CONSTRAINTS,
         context={"legal_verbs": ctx.bakery.goose_actions, "task_description": ctx.task.description},
     )
     planner = GooseSolutionPlannerAgent(guarded)  # agent's own code: untouched
@@ -145,10 +146,10 @@ def run_goose_planner_demo(ctx: DemoContext) -> ReviewResult:
     return guarded.result()
 
 
-def run_task_creator_demo(ctx: DemoContext) -> ReviewResult:
+def run_task_creator_demo(ctx: DemoContext, constraints: Optional[AgentConstraints] = None) -> ReviewResult:
     guarded = GuardedLLMClient(
         ctx.base_llm,
-        constraints=TASK_CREATOR_CONSTRAINTS,
+        constraints=constraints or TASK_CREATOR_CONSTRAINTS,
         context={"resident_name": ctx.hazel.name, "other_name": ctx.otto.name, "building_name": ctx.bakery.name},
     )
     creator = TaskCreatorAgent(guarded)  # agent's own code: untouched
@@ -164,14 +165,14 @@ def flatten_chain(chain: ChainReaction) -> str:
     return "\n".join(f"{s.actor}: {s.action}" for s in chain.steps)
 
 
-def run_chain_reaction_demo(ctx: DemoContext) -> ReviewResult:
+def run_chain_reaction_demo(ctx: DemoContext, constraints: Optional[AgentConstraints] = None) -> ReviewResult:
     chain_agent = ChainReactionAgent(ctx.base_llm)  # agent's own code: untouched; no generate() to wrap anyway
     chain = chain_agent.run(ctx.task, ctx.hose_stand, [ctx.hazel, ctx.otto])
     output_text = flatten_chain(chain)
     print(f"  staged {len(chain.steps)} step(s): {output_text!r}")
     return verify_output(
         output_text,
-        constraints=CHAIN_REACTION_CONSTRAINTS,
+        constraints=constraints or CHAIN_REACTION_CONSTRAINTS,
         context={
             "building": ctx.hose_stand,
             "target_resident": ctx.task.target_resident,

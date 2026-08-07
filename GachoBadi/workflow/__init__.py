@@ -18,12 +18,19 @@ shared vocabulary in definitions/models_verification.py), so "generic
 across all the agents" holds regardless of which entry point a given
 agent needs -- no agent's own code has to change either way.
 
-Three subpackages:
-  - generic/       the agent-AGNOSTIC engine (see generic/__init__.py)
-  - constraints/    one <agent>_constraints.{py,yaml} pair per guarded agent
+Four subpackages:
+  - generic/        the agent-AGNOSTIC engine (see generic/__init__.py)
+  - constraints/    one <agent>/constraints.{py,yaml} pair per guarded agent
   - definitions/    models_verification.py, this workflow's own shared
                     data model -- distinct from the game's own
                     definitions/models.py one level up
+  - goal_oriented/  the OUTER loop on top of the above two entry points --
+                    specify an outcome for one of the three registered
+                    agents and it repeatedly runs, checks, and (new here)
+                    edits that agent's own constraints.yaml, across full
+                    cycles, until the goal is met or found unreachable by
+                    constraint-tuning alone. See goal_oriented/__init__.py
+                    and README.md's "Goal-oriented agent" section.
 
 Wired into the live crew: executable/crew.py's GachoBadiCrew(verify=True)
 (the default) wraps GooseSolutionPlannerAgent and TaskCreatorAgent in a

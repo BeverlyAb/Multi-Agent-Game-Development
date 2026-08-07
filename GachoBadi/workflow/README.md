@@ -181,6 +181,62 @@ the changelog. With `--agents all` (or no flag):
   the seeded random draw picks, it's always one of the two registered on
   the fixture's "Garden Hose Stand" building.
 
+## Goal-oriented agent
+
+Everything above is the INNER loop: one run, one check, retry with
+feedback up to `max_retries`. `goal_oriented/` adds an OUTER loop on top
+of it -- you specify an outcome you want one of the three registered
+agents to have, and it repeatedly runs that agent, checks the goal,
+and -- new capability, not present anywhere else in this package -- edits
+that agent's own `constraints.yaml` and tries again, across full cycles,
+until the goal is met, a cycle cap is hit, or it detects that no amount
+of retuning will help.
+
+```bash
+cd GachoBadi
+python3 workflow/goal_oriented/run_goal.py --list
+python3 workflow/goal_oriented/run_goal.py --agent chain_reaction
+python3 workflow/goal_oriented/run_goal.py --agent goose_solution_planner \
+    --forbidden-rules no_unregistered_verb --description "never invent a goose verb"
+```
+
+A goal (`goal_oriented/goal.py`) is a small structured spec, not free
+text: `max_unresolved` (default 0 -- fully clean), `forbidden_rules`
+(rule names that may never go unresolved), `max_cycles`. `description`
+is a free-text label for the log only -- deliberately never parsed, for
+the same reason `constraints.yaml`/`constraints.py` are split the way
+they are (see "Why the YAML/Python split" below): a `max_unresolved`/
+`forbidden_rules` pair already says precisely what "good enough" means
+in terms `ReviewResult.unresolved()` already produces, without inventing
+a natural-language goal parser to re-derive the same thing more weakly.
+
+Each cycle: load that agent's `constraints.yaml` fresh, run it against
+the SAME fixture `generic/demo_verify.py` already uses (so only the
+constraints vary between cycles, never the input), and check the goal.
+If unmet, it bumps the most-frequently-unresolved rule's
+`priority_weights` entry and `max_retries` (capped, so it can't tune
+forever) and writes the file back -- backing up the hand-authored
+original alongside it as `constraints.yaml.orig` the first time it ever
+touches that file, never overwritten again after that. Every cycle,
+adjusted or not, is appended to `workflow/logs/goal_log.jsonl` (this
+loop's own audit trail, parallel to `generic/changelog.py`'s per-attempt
+one).
+
+**Why it gives up instead of always retuning to `max_cycles`:** constraint
+tuning has a real ceiling. This project's mock LLM provider
+(`api/llm_client.py`) returns its `fallback` string verbatim regardless
+of the prompt, so a `priority_weights`/`max_retries` change can only ever
+affect which attempt a REAL provider favors -- never a mock-provider
+agent's actual output. If a cycle's unresolved rules come back byte-for-
+byte identical to the previous (already adjusted) cycle's, that's this
+loop correctly detecting that ceiling -- e.g. `goose_solution_planner`'s
+known `"carries"` fallback verb (see "Running the demo" above) stalls
+after exactly 2 cycles rather than burning all 5, and says so plainly
+instead of silently retuning something that can't fix it. Getting past
+that ceiling needs a real LLM provider configured, or a code change to
+the agent's own fallback text -- not a constraint edit, which is exactly
+why this loop refuses to keep pretending one will work.
+
 ## Design decisions worth knowing about
 
 - **Why wrap `LLMClient`, not each agent's `.run()`?** Wrapping `.run()`

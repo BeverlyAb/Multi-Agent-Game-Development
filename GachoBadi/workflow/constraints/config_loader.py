@@ -70,3 +70,34 @@ def load_constraint_config(path: str) -> Dict[str, Any]:
     if _HAS_YAML:
         return yaml.safe_load(text) or {}
     return _minimal_yaml_parse(text)
+
+
+def _minimal_yaml_dump(data: Dict[str, Any]) -> str:
+    """Symmetric counterpart to _minimal_yaml_parse -- writes exactly the
+    same subset it reads (flat keys, at most one level of nested mapping,
+    scalars only). Not a general YAML serializer; if a config ever needs
+    lists or deeper nesting, install PyYAML rather than extending this."""
+    lines = []
+    for key, value in data.items():
+        if isinstance(value, dict):
+            lines.append(f"{key}:")
+            for sub_key, sub_value in value.items():
+                lines.append(f"  {sub_key}: {sub_value}")
+        else:
+            lines.append(f"{key}: {value}")
+    return "\n".join(lines) + "\n"
+
+
+def save_constraint_config(path: str, data: Dict[str, Any], header: str = "") -> None:
+    """Writes a constraint config back out -- used by the goal-oriented
+    agent (workflow/goal_oriented/) to tune an agent's priority_weights/
+    max_retries between cycles. `header` is prepended as '#'-commented
+    lines (e.g. an auto-tuned provenance note); everything else the
+    original file's authored comments carried is NOT preserved -- this is
+    a full overwrite, not a round-trip edit. Callers that care about the
+    hand-authored original should back it up first (see
+    goal_oriented/agent.py's _backup_once)."""
+    body = yaml.safe_dump(data, sort_keys=False) if _HAS_YAML else _minimal_yaml_dump(data)
+    text = ("\n".join(f"# {line}" for line in header.splitlines()) + "\n" + body) if header else body
+    with open(path, "w") as f:
+        f.write(text)
