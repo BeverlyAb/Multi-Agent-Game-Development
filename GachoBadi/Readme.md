@@ -1,5 +1,7 @@
 # Gachō Badi — Dynamic Content Pipeline (Assignment #4)
 
+![Demo: the pipeline's output played live in the Phaser web client](img/Demo_v2_char_drama.gif)
+
 A RAG pipeline that reads Gachō Badi's own GDD (`gdd.txt`) and generates
 three content types the game specifically needs, each checked by a
 Consistency Critic Agent before it's accepted. Separate from the AI
