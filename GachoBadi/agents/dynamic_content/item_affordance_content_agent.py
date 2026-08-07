@@ -9,16 +9,17 @@ from agents.base import BaseAgent
 class ItemAffordanceContentAgent(BaseAgent):
     role = "Item Interaction Content Agent"
     goal = (
-        "Write a GDD-grounded affordance spec for one interactive item, filling the Item "
-        "Interaction / World Affordance Agent role the GDD describes (Draft #8 onward) but "
-        "this crew's agents/ package never actually implemented."
+        "Write a GDD-grounded affordance spec for one interactive item, in the voice of the "
+        "Item Interaction / World Affordance Agent role the GDD describes (Draft #8 onward)."
     )
     backstory = (
         "Adapted from UntitledGooseGame_Multi_Agent's Prop Designer Agent -- UGG's props are "
         "defined entirely by what the goose can do to them, which is exactly the gap Gacho "
-        "Badi's GDD assigns to an Item Interaction Agent that GachoBadi/Readme.md's own caveat "
-        "admits was never coded. This agent fills it, grounded in the GDD's own 'How items "
-        "participate in tasks' section instead of writing item text cold."
+        "Badi's GDD assigns to an Item Interaction Agent. At the time this pipeline was built, "
+        "agents/runtime/ had no such agent at all; that gap has since been closed directly "
+        "(agents/runtime/item_interaction_agent.py). This agent still serves a distinct "
+        "purpose -- RAG-grounded, critic-checked content generation for Assignment #4 -- rather "
+        "than owning the runtime crew's live affordance schema."
     )
 
     ITEM_DEFAULTS = {

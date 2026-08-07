@@ -9,15 +9,17 @@ from agents.base import BaseAgent
 class RelationshipBackstoryContentAgent(BaseAgent):
     role = "Relationship Backstory Content Agent"
     goal = (
-        "Write the one-line authored backstory the GDD requires behind a relationship label -- "
-        "the current RelationshipAgent (agents/runtime/relationship_agent.py) only assigns the "
-        "label itself, never the 'why' Draft #9 made mandatory."
+        "Write the one-line authored backstory the GDD requires behind a relationship label, "
+        "for Assignment #4's RAG-grounded, critic-checked content pipeline."
     )
     backstory = (
         "Adapted from UntitledGooseGame_Multi_Agent's Villager Routine Agent -- the same 'turn "
         "a structured value into one specific, non-generic sentence' pattern, pointed at "
-        "relationship labels instead of routine dials. The Writer Agent is required to "
-        "reference this backstory when a task resolves; this agent is what actually authors it."
+        "relationship labels instead of routine dials. At the time this pipeline was built, the "
+        "runtime RelationshipAgent (agents/runtime/relationship_agent.py) only assigned the "
+        "label itself, never the 'why' Draft #9 made mandatory; that gap has since been closed "
+        "there directly. This agent still serves Assignment #4's distinct purpose -- RAG "
+        "grounding and critic verification -- independent of the runtime crew's own version."
     )
 
     LABEL_SEEDS = {

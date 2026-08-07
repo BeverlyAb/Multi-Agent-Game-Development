@@ -1,4 +1,7 @@
-"""Entry point: runs the Gacho Badi crew end-to-end and writes output/run.json.
+"""Entry point: runs the Gacho Badi crew end-to-end -- personality,
+relationships, dev-time content, item interaction, and a full playthrough
+of the lifetime task catalog through Game Completion -- and writes
+output/run.json.
 
 Usage:
     python3 main.py
@@ -15,11 +18,19 @@ import os
 import sys
 
 from crew import GachoBadiCrew
-from models import Building, Resident, Sliders
+from models import Building, Item, Resident, Sliders
 
 
 def build_island_seed():
-    """A small island snapshot pulled straight from the GDD's examples."""
+    """A small island snapshot pulled straight from the GDD's examples.
+
+    Deliberately smaller than the shipped 6-resident/6-building roster
+    (gdd.txt's own Scope & First Playable Slice section: the full roster
+    is explicitly deferred past the first playable slice) -- but every
+    mechanic below (sets, the 75% threshold, retirement, the backlog,
+    completion) is the same code path the full roster would run, just
+    over a smaller catalog.
+    """
     residents = [
         Resident(name="Hazel", role="baker", sliders=Sliders(movement=30, speech=70, energy=60, intelligence=55)),
         Resident(name="Otto", role="teacher", sliders=Sliders(movement=20, speech=40, energy=35, intelligence=90)),
@@ -30,7 +41,10 @@ def build_island_seed():
         Building(name="Front Gate", kind="structure", interactive_feature="gate that can open and close"),
         Building(name="Garden Hose Stand", kind="prop", interactive_feature="hose that can spout water"),
     ]
-    return residents, buildings
+    items = [
+        Item(name="a family memento", kind="memento"),
+    ]
+    return residents, buildings, items
 
 
 def main() -> int:
@@ -38,18 +52,20 @@ def main() -> int:
     print("=" * 55)
 
     try:
-        residents, buildings = build_island_seed()
+        residents, buildings, items = build_island_seed()
         crew = GachoBadiCrew(seed=7)
 
         residents = crew.run_personality_pass(residents)
         residents = crew.run_relationship_pass(residents)
         dev_time_result = crew.run_dev_time_pass(residents, buildings)
-        tick_result = crew.run_game_tick(residents, buildings)
+        item_interaction_result = crew.run_item_interaction_pass(buildings, items)
+        playthrough = crew.run_playthrough(residents, buildings)
 
         output = {
             "game": "Gacho Badi (Goose Buddy)",
             "dev_time_pass": dev_time_result,
-            "game_tick": GachoBadiCrew.to_jsonable(tick_result),
+            "item_interaction_pass": item_interaction_result,
+            "playthrough": GachoBadiCrew.to_jsonable(playthrough),
         }
 
         os.makedirs("output", exist_ok=True)
@@ -57,15 +73,16 @@ def main() -> int:
         with open(out_path, "w") as f:
             json.dump(output, f, indent=2)
 
+        resolved = sum(1 for t in playthrough["final_tasks"] if t.status == "resolved")
+        retired = sum(1 for t in playthrough["final_tasks"] if t.status == "retired")
+
         print("\n=== SUMMARY ===")
-        print(f"Residents processed : {len(tick_result['personalities'])}")
-        print(f"Tasks generated      : {len(tick_result['tasks'])}")
-        if tick_result["screenplay"]:
-            print(f"Screenplay lines     : {len(tick_result['screenplay'].lines)}")
-            print(f"Verb plan lines      : {len(tick_result['verb_plan'].lines)}")
-            print(f"Staged actions       : {len(tick_result['staged_actions'])}")
-        if tick_result["news"]:
-            print(f"News headline        : {tick_result['news'].headline}")
+        print(f"Residents processed  : {len(playthrough['personalities'])}")
+        print(f"Lifetime catalog size: {playthrough['catalog_size']}")
+        print(f"Task sets played     : {len(playthrough['sets'])}")
+        print(f"Tasks resolved       : {resolved}")
+        print(f"Tasks retired        : {retired}")
+        print(f"Harmony reached      : {playthrough['completion']['harmony']}")
         print(f"LLM provider in use  : {crew.llm.provider} "
               f"({'live API calls' if crew.llm.provider != 'mock' else 'local deterministic fallback'})")
         print(f"Full run written to  : {os.path.abspath(out_path)}")

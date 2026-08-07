@@ -13,7 +13,17 @@
       "Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance."
     ]
   },
-  "game_tick": {
+  "item_interaction_pass": {
+    "building_specs": [
+      "Hazel's Bakery (Hazel's Bakery (shop): features oven that can overheat and puff flour.): the goose can grab/pick up it; residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone.",
+      "Front Gate (Front Gate (structure): features gate that can open and close.): the goose can honk/duck it; residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone.",
+      "Garden Hose Stand (Garden Hose Stand (prop): features hose that can spout water.): the goose can grab/dash it; residents notice and react according to their personality. No task-critical state here can become permanently unrecoverable -- it resets to a safe default if left alone."
+    ],
+    "item_specs": [
+      "a family memento (memento): the goose can grab/pick up it; residents can notice, retrieve, or discuss it. if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost."
+    ]
+  },
+  "playthrough": {
     "personalities": [
       {
         "name": "Hazel",
@@ -33,7 +43,12 @@
         "personality_summary": "Hazel the baker comes across as sedentary, candid, excitable, astute. (30/70/60/55 movement/speech/energy/intelligence)",
         "appearance": "Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance.",
         "relationships": {
-          "Otto": "drifted apart"
+          "Otto": "drifted apart",
+          "Vic": "close friends"
+        },
+        "relationship_backstories": {
+          "Otto": "Hazel and Otto: drifted apart -- a missed birthday.",
+          "Vic": "Hazel and Vic: close friends -- splitting a bakery order every week."
         }
       },
       {
@@ -54,7 +69,12 @@
         "personality_summary": "Otto the teacher comes across as sedentary, reserved, flat, astute. (20/40/35/90 movement/speech/energy/intelligence)",
         "appearance": "Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance.",
         "relationships": {
+          "Hazel": "drifted apart",
           "Vic": "drifted apart"
+        },
+        "relationship_backstories": {
+          "Hazel": "Hazel and Otto: drifted apart -- a missed birthday.",
+          "Vic": "Otto and Vic: drifted apart -- a missed birthday."
         }
       },
       {
@@ -75,77 +95,1232 @@
         "personality_summary": "Vic the gym instructor comes across as energetic, candid, excitable, dull. (90/80/95/45 movement/speech/energy/intelligence)",
         "appearance": "Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance.",
         "relationships": {
-          "Hazel": "close friends"
+          "Hazel": "close friends",
+          "Otto": "drifted apart"
+        },
+        "relationship_backstories": {
+          "Hazel": "Hazel and Vic: close friends -- splitting a bakery order every week.",
+          "Otto": "Otto and Vic: drifted apart -- a missed birthday."
         }
       }
     ],
-    "tasks": [
+    "catalog_size": 18,
+    "sets": [
+      {
+        "set_id": 1,
+        "size": 9,
+        "threshold": 7,
+        "settled_this_set": 7,
+        "still_open": 2
+      },
+      {
+        "set_id": 2,
+        "size": 9,
+        "threshold": 7,
+        "settled_this_set": 7,
+        "still_open": 2
+      }
+    ],
+    "ticks": [
+      {
+        "task": {
+          "task_id": 1,
+          "set_id": 1,
+          "description": "Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+          "target_resident": "Hazel",
+          "other_resident": "Otto",
+          "involves_building": "Hazel's Bakery",
+          "goal_state": "Hazel and Otto are both present at Hazel's Bakery with a positive reaction flag set on Otto",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 1,
+          "lines": [
+            "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+            "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Otto -- Hazel and Otto: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+            "Hazel: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 1,
+          "lines": [
+            "* SCENE: north dock.",
+            "* Goose: Grab near Hazel's Bakery.",
+            "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+            "* Goose: carries it toward Hazel.",
+            "* Objective resolves: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: north dock.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Hazel",
+            "action": "react and progress toward: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Otto",
+            "action": "notice, warm up, and reconnect",
+            "location": "north dock"
+          }
+        ],
+        "news": {
+          "task_id": 1,
+          "headline": "ISLAND BULLETIN: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+        }
+      },
+      {
+        "task": {
+          "task_id": 2,
+          "set_id": 1,
+          "description": "Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+          "target_resident": "Hazel",
+          "other_resident": "Otto",
+          "involves_building": "Front Gate",
+          "goal_state": "Hazel and Otto are both present at Front Gate with a positive reaction flag set on Otto",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 2,
+          "lines": [
+            "INT./EXT. FRONT GATE - TOWN SQUARE",
+            "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Otto -- Hazel and Otto: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Front Gate)",
+            "Hazel: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 2,
+          "lines": [
+            "* SCENE: town square.",
+            "* Goose: Honk near Front Gate.",
+            "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+            "* Goose: carries it toward Hazel.",
+            "* Objective resolves: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: town square.",
+            "location": "town square"
+          },
+          {
+            "actor": "Hazel",
+            "action": "react and progress toward: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+            "location": "town square"
+          },
+          {
+            "actor": "Otto",
+            "action": "notice, warm up, and reconnect",
+            "location": "town square"
+          }
+        ],
+        "news": {
+          "task_id": 2,
+          "headline": "ISLAND BULLETIN: Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate."
+        }
+      },
+      {
+        "task": {
+          "task_id": 3,
+          "set_id": 1,
+          "description": "Nudge Hazel to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+          "target_resident": "Hazel",
+          "other_resident": "Otto",
+          "involves_building": "Garden Hose Stand",
+          "goal_state": "Hazel and Otto are both present at Garden Hose Stand with a positive reaction flag set on Otto",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 3,
+          "lines": [
+            "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+            "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Otto -- Hazel and Otto: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+            "Hazel: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Nudge Hazel to notice Otto sitting alone near the Garden Hose Stand and invite them over.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 3,
+          "lines": [
+            "* SCENE: east meadow.",
+            "* Goose: Grab near Garden Hose Stand.",
+            "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+            "* Goose: carries it toward Hazel.",
+            "* Objective resolves: Nudge Hazel to notice Otto sitting alone near the Garden Hose Stand and invite them over."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: east meadow.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Hazel",
+            "action": "react and progress toward: Nudge Hazel to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Otto",
+            "action": "notice, warm up, and reconnect",
+            "location": "east meadow"
+          }
+        ],
+        "news": {
+          "task_id": 3,
+          "headline": "ISLAND BULLETIN: Nudge Hazel to notice Otto sitting alone near the Garden Hose Stand and invite them over."
+        }
+      },
+      {
+        "task": {
+          "task_id": 4,
+          "set_id": 1,
+          "description": "Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.",
+          "target_resident": "Hazel",
+          "other_resident": "Vic",
+          "involves_building": "Hazel's Bakery",
+          "goal_state": "Hazel and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 4,
+          "lines": [
+            "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+            "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+            "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+            "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 4,
+          "lines": [
+            "* SCENE: north dock.",
+            "* Goose: Grab near Hazel's Bakery.",
+            "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+            "* Goose: carries it toward Hazel.",
+            "* Objective resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: north dock.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Hazel",
+            "action": "react and progress toward: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Vic",
+            "action": "notice, warm up, and reconnect",
+            "location": "north dock"
+          }
+        ],
+        "news": {
+          "task_id": 4,
+          "headline": "ISLAND BULLETIN: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk."
+        }
+      },
+      {
+        "task": {
+          "task_id": 5,
+          "set_id": 1,
+          "description": "Bring Hazel and Vic together at the Front Gate despite being close friends.",
+          "target_resident": "Hazel",
+          "other_resident": "Vic",
+          "involves_building": "Front Gate",
+          "goal_state": "Hazel and Vic are both present at Front Gate with a positive reaction flag set on Vic",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 5,
+          "lines": [
+            "INT./EXT. FRONT GATE - TOWN SQUARE",
+            "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+            "GOOSE: (honks meaningfully near the Front Gate)",
+            "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+            "(Task resolves: Bring Hazel and Vic together at the Front Gate despite being close friends.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 5,
+          "lines": [
+            "* SCENE: town square.",
+            "* Goose: Honk near Front Gate.",
+            "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+            "* Goose: carries it toward Hazel.",
+            "* Objective resolves: Bring Hazel and Vic together at the Front Gate despite being close friends."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: town square.",
+            "location": "town square"
+          },
+          {
+            "actor": "Hazel",
+            "action": "react and progress toward: Bring Hazel and Vic together at the Front Gate despite being close friends.",
+            "location": "town square"
+          },
+          {
+            "actor": "Vic",
+            "action": "notice, warm up, and reconnect",
+            "location": "town square"
+          }
+        ],
+        "news": {
+          "task_id": 5,
+          "headline": "ISLAND BULLETIN: Bring Hazel and Vic together at the Front Gate despite being close friends."
+        }
+      },
+      {
+        "task": {
+          "task_id": 6,
+          "set_id": 1,
+          "description": "Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.",
+          "target_resident": "Hazel",
+          "other_resident": "Vic",
+          "involves_building": "Garden Hose Stand",
+          "goal_state": "Hazel and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 6,
+          "lines": [
+            "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+            "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+            "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+            "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 6,
+          "lines": [
+            "* SCENE: east meadow.",
+            "* Goose: Grab near Garden Hose Stand.",
+            "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+            "* Goose: carries it toward Hazel.",
+            "* Objective resolves: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: east meadow.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Hazel",
+            "action": "react and progress toward: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Vic",
+            "action": "notice, warm up, and reconnect",
+            "location": "east meadow"
+          }
+        ],
+        "news": {
+          "task_id": 6,
+          "headline": "ISLAND BULLETIN: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand."
+        }
+      },
+      {
+        "task": {
+          "task_id": 7,
+          "set_id": 1,
+          "description": "Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.",
+          "target_resident": "Otto",
+          "other_resident": "Hazel",
+          "involves_building": "Hazel's Bakery",
+          "goal_state": "Otto and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 7,
+          "lines": [
+            "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+            "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+            "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 7,
+          "lines": [
+            "* SCENE: north dock.",
+            "* Goose: Grab near Hazel's Bakery.",
+            "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+            "* Goose: carries it toward Otto.",
+            "* Objective resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: north dock.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Otto",
+            "action": "react and progress toward: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Hazel",
+            "action": "notice, warm up, and reconnect",
+            "location": "north dock"
+          }
+        ],
+        "news": {
+          "task_id": 7,
+          "headline": "ISLAND BULLETIN: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery."
+        }
+      },
+      {
+        "task": {
+          "task_id": 10,
+          "set_id": 2,
+          "description": "Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.",
+          "target_resident": "Otto",
+          "other_resident": "Vic",
+          "involves_building": "Hazel's Bakery",
+          "goal_state": "Otto and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 10,
+          "lines": [
+            "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+            "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+            "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 10,
+          "lines": [
+            "* SCENE: north dock.",
+            "* Goose: Grab near Hazel's Bakery.",
+            "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+            "* Goose: carries it toward Otto.",
+            "* Objective resolves: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: north dock.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Otto",
+            "action": "react and progress toward: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Vic",
+            "action": "notice, warm up, and reconnect",
+            "location": "north dock"
+          }
+        ],
+        "news": {
+          "task_id": 10,
+          "headline": "ISLAND BULLETIN: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart."
+        }
+      },
+      {
+        "task": {
+          "task_id": 11,
+          "set_id": 2,
+          "description": "Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate.",
+          "target_resident": "Otto",
+          "other_resident": "Vic",
+          "involves_building": "Front Gate",
+          "goal_state": "Otto and Vic are both present at Front Gate with a positive reaction flag set on Vic",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 11,
+          "lines": [
+            "INT./EXT. FRONT GATE - TOWN SQUARE",
+            "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Front Gate)",
+            "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 11,
+          "lines": [
+            "* SCENE: town square.",
+            "* Goose: Honk near Front Gate.",
+            "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+            "* Goose: carries it toward Otto.",
+            "* Objective resolves: Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: town square.",
+            "location": "town square"
+          },
+          {
+            "actor": "Otto",
+            "action": "react and progress toward: Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate.",
+            "location": "town square"
+          },
+          {
+            "actor": "Vic",
+            "action": "notice, warm up, and reconnect",
+            "location": "town square"
+          }
+        ],
+        "news": {
+          "task_id": 11,
+          "headline": "ISLAND BULLETIN: Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate."
+        }
+      },
+      {
+        "task": {
+          "task_id": 12,
+          "set_id": 2,
+          "description": "Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.",
+          "target_resident": "Otto",
+          "other_resident": "Vic",
+          "involves_building": "Garden Hose Stand",
+          "goal_state": "Otto and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 12,
+          "lines": [
+            "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+            "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+            "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 12,
+          "lines": [
+            "* SCENE: east meadow.",
+            "* Goose: Grab near Garden Hose Stand.",
+            "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+            "* Goose: carries it toward Otto.",
+            "* Objective resolves: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: east meadow.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Otto",
+            "action": "react and progress toward: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Vic",
+            "action": "notice, warm up, and reconnect",
+            "location": "east meadow"
+          }
+        ],
+        "news": {
+          "task_id": 12,
+          "headline": "ISLAND BULLETIN: Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand."
+        }
+      },
+      {
+        "task": {
+          "task_id": 13,
+          "set_id": 2,
+          "description": "Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over.",
+          "target_resident": "Vic",
+          "other_resident": "Hazel",
+          "involves_building": "Hazel's Bakery",
+          "goal_state": "Vic and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 13,
+          "lines": [
+            "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+            "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+            "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+            "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+            "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+            "(Task resolves: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 13,
+          "lines": [
+            "* SCENE: north dock.",
+            "* Goose: Grab near Hazel's Bakery.",
+            "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+            "* Goose: carries it toward Vic.",
+            "* Objective resolves: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: north dock.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Vic",
+            "action": "react and progress toward: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Hazel",
+            "action": "notice, warm up, and reconnect",
+            "location": "north dock"
+          }
+        ],
+        "news": {
+          "task_id": 13,
+          "headline": "ISLAND BULLETIN: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over."
+        }
+      },
+      {
+        "task": {
+          "task_id": 14,
+          "set_id": 2,
+          "description": "Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk.",
+          "target_resident": "Vic",
+          "other_resident": "Hazel",
+          "involves_building": "Front Gate",
+          "goal_state": "Vic and Hazel are both present at Front Gate with a positive reaction flag set on Hazel",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 14,
+          "lines": [
+            "INT./EXT. FRONT GATE - TOWN SQUARE",
+            "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+            "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+            "GOOSE: (honks meaningfully near the Front Gate)",
+            "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 14,
+          "lines": [
+            "* SCENE: town square.",
+            "* Goose: Honk near Front Gate.",
+            "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+            "* Goose: carries it toward Vic.",
+            "* Objective resolves: Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: town square.",
+            "location": "town square"
+          },
+          {
+            "actor": "Vic",
+            "action": "react and progress toward: Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk.",
+            "location": "town square"
+          },
+          {
+            "actor": "Hazel",
+            "action": "notice, warm up, and reconnect",
+            "location": "town square"
+          }
+        ],
+        "news": {
+          "task_id": 14,
+          "headline": "ISLAND BULLETIN: Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk."
+        }
+      },
+      {
+        "task": {
+          "task_id": 15,
+          "set_id": 2,
+          "description": "Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.",
+          "target_resident": "Vic",
+          "other_resident": "Hazel",
+          "involves_building": "Garden Hose Stand",
+          "goal_state": "Vic and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 15,
+          "lines": [
+            "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+            "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+            "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
+            "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+            "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
+            "(Task resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 15,
+          "lines": [
+            "* SCENE: east meadow.",
+            "* Goose: Grab near Garden Hose Stand.",
+            "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+            "* Goose: carries it toward Vic.",
+            "* Objective resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: east meadow.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Vic",
+            "action": "react and progress toward: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Hazel",
+            "action": "notice, warm up, and reconnect",
+            "location": "east meadow"
+          }
+        ],
+        "news": {
+          "task_id": 15,
+          "headline": "ISLAND BULLETIN: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends."
+        }
+      },
+      {
+        "task": {
+          "task_id": 16,
+          "set_id": 2,
+          "description": "Get Vic to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+          "target_resident": "Vic",
+          "other_resident": "Otto",
+          "involves_building": "Hazel's Bakery",
+          "goal_state": "Vic and Otto are both present at Hazel's Bakery with a positive reaction flag set on Otto",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 16,
+          "lines": [
+            "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
+            "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Otto -- Otto and Vic: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+            "Vic: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Vic to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 16,
+          "lines": [
+            "* SCENE: north dock.",
+            "* Goose: Grab near Hazel's Bakery.",
+            "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+            "* Goose: carries it toward Vic.",
+            "* Objective resolves: Get Vic to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: north dock.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Vic",
+            "action": "react and progress toward: Get Vic to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+            "location": "north dock"
+          },
+          {
+            "actor": "Otto",
+            "action": "notice, warm up, and reconnect",
+            "location": "north dock"
+          }
+        ],
+        "news": {
+          "task_id": 16,
+          "headline": "ISLAND BULLETIN: Get Vic to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+        }
+      },
+      {
+        "task": {
+          "task_id": 8,
+          "set_id": 1,
+          "description": "Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over.",
+          "target_resident": "Otto",
+          "other_resident": "Hazel",
+          "involves_building": "Front Gate",
+          "goal_state": "Otto and Hazel are both present at Front Gate with a positive reaction flag set on Hazel",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 8,
+          "lines": [
+            "INT./EXT. FRONT GATE - TOWN SQUARE",
+            "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Front Gate)",
+            "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 8,
+          "lines": [
+            "* SCENE: town square.",
+            "* Goose: Honk near Front Gate.",
+            "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+            "* Goose: carries it toward Otto.",
+            "* Objective resolves: Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: town square.",
+            "location": "town square"
+          },
+          {
+            "actor": "Otto",
+            "action": "react and progress toward: Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over.",
+            "location": "town square"
+          },
+          {
+            "actor": "Hazel",
+            "action": "notice, warm up, and reconnect",
+            "location": "town square"
+          }
+        ],
+        "news": {
+          "task_id": 8,
+          "headline": "ISLAND BULLETIN: Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over."
+        }
+      },
+      {
+        "task": {
+          "task_id": 9,
+          "set_id": 1,
+          "description": "Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.",
+          "target_resident": "Otto",
+          "other_resident": "Hazel",
+          "involves_building": "Garden Hose Stand",
+          "goal_state": "Otto and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 9,
+          "lines": [
+            "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+            "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+            "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 9,
+          "lines": [
+            "* SCENE: east meadow.",
+            "* Goose: Grab near Garden Hose Stand.",
+            "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+            "* Goose: carries it toward Otto.",
+            "* Objective resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: east meadow.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Otto",
+            "action": "react and progress toward: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Hazel",
+            "action": "notice, warm up, and reconnect",
+            "location": "east meadow"
+          }
+        ],
+        "news": {
+          "task_id": 9,
+          "headline": "ISLAND BULLETIN: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk."
+        }
+      },
+      {
+        "task": {
+          "task_id": 17,
+          "set_id": 2,
+          "description": "Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+          "target_resident": "Vic",
+          "other_resident": "Otto",
+          "involves_building": "Front Gate",
+          "goal_state": "Vic and Otto are both present at Front Gate with a positive reaction flag set on Otto",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 17,
+          "lines": [
+            "INT./EXT. FRONT GATE - TOWN SQUARE",
+            "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Otto -- Otto and Vic: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Front Gate)",
+            "Vic: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 17,
+          "lines": [
+            "* SCENE: town square.",
+            "* Goose: Honk near Front Gate.",
+            "* Goose: Duck Front Gate (structure): features gate that can open and close..",
+            "* Goose: carries it toward Vic.",
+            "* Objective resolves: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: town square.",
+            "location": "town square"
+          },
+          {
+            "actor": "Vic",
+            "action": "react and progress toward: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+            "location": "town square"
+          },
+          {
+            "actor": "Otto",
+            "action": "notice, warm up, and reconnect",
+            "location": "town square"
+          }
+        ],
+        "news": {
+          "task_id": 17,
+          "headline": "ISLAND BULLETIN: Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate."
+        }
+      },
+      {
+        "task": {
+          "task_id": 18,
+          "set_id": 2,
+          "description": "Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+          "target_resident": "Vic",
+          "other_resident": "Otto",
+          "involves_building": "Garden Hose Stand",
+          "goal_state": "Vic and Otto are both present at Garden Hose Stand with a positive reaction flag set on Otto",
+          "status": "resolved",
+          "retire_reason": ""
+        },
+        "screenplay": {
+          "task_id": 18,
+          "lines": [
+            "INT./EXT. GARDEN HOSE STAND - EAST MEADOW",
+            "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
+            "(They are drifted apart with Otto -- Otto and Vic: drifted apart -- a missed birthday.)",
+            "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+            "Vic: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
+            "(Task resolves: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.)"
+          ]
+        },
+        "verb_plan": {
+          "task_id": 18,
+          "lines": [
+            "* SCENE: east meadow.",
+            "* Goose: Grab near Garden Hose Stand.",
+            "* Goose: Dash Garden Hose Stand (prop): features hose that can spout water..",
+            "* Goose: carries it toward Vic.",
+            "* Objective resolves: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over."
+          ]
+        },
+        "staged_actions": [
+          {
+            "actor": "Goose",
+            "action": "execute plan: * SCENE: east meadow.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Vic",
+            "action": "react and progress toward: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+            "location": "east meadow"
+          },
+          {
+            "actor": "Otto",
+            "action": "notice, warm up, and reconnect",
+            "location": "east meadow"
+          }
+        ],
+        "news": {
+          "task_id": 18,
+          "headline": "ISLAND BULLETIN: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over."
+        }
+      }
+    ],
+    "final_tasks": [
       {
         "task_id": 1,
+        "set_id": 1,
         "description": "Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
         "target_resident": "Hazel",
         "other_resident": "Otto",
         "involves_building": "Hazel's Bakery",
-        "status": "open"
+        "goal_state": "Hazel and Otto are both present at Hazel's Bakery with a positive reaction flag set on Otto",
+        "status": "resolved",
+        "retire_reason": ""
       },
       {
         "task_id": 2,
-        "description": "Help Otto and Vic (drifted apart) patch up a disagreement at the Front Gate.",
-        "target_resident": "Otto",
-        "other_resident": "Vic",
+        "set_id": 1,
+        "description": "Help Hazel and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+        "target_resident": "Hazel",
+        "other_resident": "Otto",
         "involves_building": "Front Gate",
-        "status": "open"
+        "goal_state": "Hazel and Otto are both present at Front Gate with a positive reaction flag set on Otto",
+        "status": "resolved",
+        "retire_reason": ""
       },
       {
         "task_id": 3,
-        "description": "Nudge Vic to notice Hazel sitting alone near the Garden Hose Stand and invite them over.",
+        "set_id": 1,
+        "description": "Nudge Hazel to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+        "target_resident": "Hazel",
+        "other_resident": "Otto",
+        "involves_building": "Garden Hose Stand",
+        "goal_state": "Hazel and Otto are both present at Garden Hose Stand with a positive reaction flag set on Otto",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 4,
+        "set_id": 1,
+        "description": "Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.",
+        "target_resident": "Hazel",
+        "other_resident": "Vic",
+        "involves_building": "Hazel's Bakery",
+        "goal_state": "Hazel and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 5,
+        "set_id": 1,
+        "description": "Bring Hazel and Vic together at the Front Gate despite being close friends.",
+        "target_resident": "Hazel",
+        "other_resident": "Vic",
+        "involves_building": "Front Gate",
+        "goal_state": "Hazel and Vic are both present at Front Gate with a positive reaction flag set on Vic",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 6,
+        "set_id": 1,
+        "description": "Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.",
+        "target_resident": "Hazel",
+        "other_resident": "Vic",
+        "involves_building": "Garden Hose Stand",
+        "goal_state": "Hazel and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 7,
+        "set_id": 1,
+        "description": "Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.",
+        "target_resident": "Otto",
+        "other_resident": "Hazel",
+        "involves_building": "Hazel's Bakery",
+        "goal_state": "Otto and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 8,
+        "set_id": 1,
+        "description": "Nudge Otto to notice Hazel sitting alone near the Front Gate and invite them over.",
+        "target_resident": "Otto",
+        "other_resident": "Hazel",
+        "involves_building": "Front Gate",
+        "goal_state": "Otto and Hazel are both present at Front Gate with a positive reaction flag set on Hazel",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 9,
+        "set_id": 1,
+        "description": "Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.",
+        "target_resident": "Otto",
+        "other_resident": "Hazel",
+        "involves_building": "Garden Hose Stand",
+        "goal_state": "Otto and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 10,
+        "set_id": 2,
+        "description": "Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.",
+        "target_resident": "Otto",
+        "other_resident": "Vic",
+        "involves_building": "Hazel's Bakery",
+        "goal_state": "Otto and Vic are both present at Hazel's Bakery with a positive reaction flag set on Vic",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 11,
+        "set_id": 2,
+        "description": "Get Otto to reconnect with Vic, who they've drifted apart from, near the Front Gate.",
+        "target_resident": "Otto",
+        "other_resident": "Vic",
+        "involves_building": "Front Gate",
+        "goal_state": "Otto and Vic are both present at Front Gate with a positive reaction flag set on Vic",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 12,
+        "set_id": 2,
+        "description": "Help Otto and Vic (drifted apart) patch up a disagreement at the Garden Hose Stand.",
+        "target_resident": "Otto",
+        "other_resident": "Vic",
+        "involves_building": "Garden Hose Stand",
+        "goal_state": "Otto and Vic are both present at Garden Hose Stand with a positive reaction flag set on Vic",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 13,
+        "set_id": 2,
+        "description": "Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over.",
+        "target_resident": "Vic",
+        "other_resident": "Hazel",
+        "involves_building": "Hazel's Bakery",
+        "goal_state": "Vic and Hazel are both present at Hazel's Bakery with a positive reaction flag set on Hazel",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 14,
+        "set_id": 2,
+        "description": "Get Vic to return something of Hazel's at the Front Gate, giving them a reason to talk.",
+        "target_resident": "Vic",
+        "other_resident": "Hazel",
+        "involves_building": "Front Gate",
+        "goal_state": "Vic and Hazel are both present at Front Gate with a positive reaction flag set on Hazel",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 15,
+        "set_id": 2,
+        "description": "Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.",
         "target_resident": "Vic",
         "other_resident": "Hazel",
         "involves_building": "Garden Hose Stand",
-        "status": "open"
-      }
-    ],
-    "screenplay": {
-      "task_id": 1,
-      "lines": [
-        "INT./EXT. HAZEL'S BAKERY - NORTH DOCK",
-        "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
-        "(They are drifted apart with Otto.)",
-        "GOOSE: (honks meaningfully near the Hazel's Bakery)",
-        "Hazel: (startled, then softening) \"Oh -- it's you.\"",
-        "(Task resolves: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.)"
-      ]
-    },
-    "verb_plan": {
-      "task_id": 1,
-      "lines": [
-        "* SCENE: north dock.",
-        "* Goose: Honk near Hazel's Bakery.",
-        "* Goose: Grab Hazel's Bakery (shop): features oven that can overheat and puff flour..",
-        "* Goose: Pick up it and carry it toward Hazel.",
-        "* Objective resolves: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
-      ]
-    },
-    "staged_actions": [
-      {
-        "actor": "Goose",
-        "action": "execute plan: * SCENE: north dock.",
-        "location": "north dock"
+        "goal_state": "Vic and Hazel are both present at Garden Hose Stand with a positive reaction flag set on Hazel",
+        "status": "resolved",
+        "retire_reason": ""
       },
       {
-        "actor": "Hazel",
-        "action": "react and progress toward: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
-        "location": "north dock"
+        "task_id": 16,
+        "set_id": 2,
+        "description": "Get Vic to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery.",
+        "target_resident": "Vic",
+        "other_resident": "Otto",
+        "involves_building": "Hazel's Bakery",
+        "goal_state": "Vic and Otto are both present at Hazel's Bakery with a positive reaction flag set on Otto",
+        "status": "resolved",
+        "retire_reason": ""
       },
       {
-        "actor": "Otto",
-        "action": "notice, warm up, and reconnect",
-        "location": "north dock"
+        "task_id": 17,
+        "set_id": 2,
+        "description": "Help Vic and Otto (drifted apart) patch up a disagreement at the Front Gate.",
+        "target_resident": "Vic",
+        "other_resident": "Otto",
+        "involves_building": "Front Gate",
+        "goal_state": "Vic and Otto are both present at Front Gate with a positive reaction flag set on Otto",
+        "status": "resolved",
+        "retire_reason": ""
+      },
+      {
+        "task_id": 18,
+        "set_id": 2,
+        "description": "Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+        "target_resident": "Vic",
+        "other_resident": "Otto",
+        "involves_building": "Garden Hose Stand",
+        "goal_state": "Vic and Otto are both present at Garden Hose Stand with a positive reaction flag set on Otto",
+        "status": "resolved",
+        "retire_reason": ""
       }
     ],
-    "news": {
-      "task_id": 1,
-      "headline": "ISLAND BULLETIN: Get Hazel to reconnect with Otto, who they've drifted apart from, near the Hazel's Bakery."
+    "completion": {
+      "headline": "GAME COMPLETION: the island has reached harmony -- every generated task has left the active list.",
+      "epilogue_lines": [
+        "Hazel & Otto: reconciled -- Hazel and Otto: drifted apart -- a missed birthday.",
+        "Hazel & Vic: reconciled -- Hazel and Vic: close friends -- splitting a bakery order every week.",
+        "Otto & Vic: reconciled -- Otto and Vic: drifted apart -- a missed birthday."
+      ],
+      "harmony": true
     }
   }
 }

@@ -93,11 +93,16 @@ dependency.
 
 ## Content Fit — what was generated, and why the game needs it
 
-| Content type | Fills this gap |
+| Content type | Gap it was built to fill (in `agents/runtime/`, at the time) |
 |---|---|
-| **Item affordance spec** (a memento) | GDD describes an Item Interaction Agent (Draft #8+); `agents/runtime/` never implements one. |
-| **Relationship backstory** (Hazel/Otto, "drifted apart") | `RelationshipAgent` only assigns a label; Draft #9 made the one-line authored "why" mandatory, and nothing generates it. |
-| **Task premise + verb plan** (mend a falling-out at Hazel's Bakery) | Draft #10 says the ~30-40 task premises are pre-authored content; the runtime `TaskCreatorAgent` only round-robins 5 generic templates. |
+| **Item affordance spec** (a memento) | GDD describes an Item Interaction Agent (Draft #8+); `agents/runtime/` had none. *Since closed directly* — `agents/runtime/item_interaction_agent.py` now exists and is wired into `crew.py`'s playthrough. |
+| **Relationship backstory** (Hazel/Otto, "drifted apart") | `RelationshipAgent` only assigned a label; Draft #9 made the one-line authored "why" mandatory. *Since closed directly* — `RelationshipAgent` now generates both, bidirectionally, for every pair. |
+| **Task premise + verb plan** (mend a falling-out at Hazel's Bakery) | Draft #10 says the ~30-40 task premises are pre-authored content; `TaskCreatorAgent` only round-robinned 5 generic templates with no set/threshold concept. *Since closed directly* — `TaskCreatorAgent.generate_set()` now selects from a real pre-authored catalog (`build_catalog()`) in sets, with a 75% threshold, retirement, and Game Completion. |
+
+This pipeline's agents (`agents/dynamic_content/`) still serve a distinct
+purpose independent of those fixes: RAG-grounded generation with a
+visible query → chunk → output trail and a Consistency Critic Agent, per
+Assignment #4's rubric — not a runtime dependency of the crew itself.
 
 Three of the four pipeline agents (`agents/dynamic_content/`) are
 adapted from `UntitledGooseGame_Multi_Agent`'s agents, each pointed at
