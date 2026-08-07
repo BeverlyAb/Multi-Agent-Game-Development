@@ -2,6 +2,11 @@
 
 ![Demo: the pipeline's output played live in the Phaser web client](img/Demo_v2_char_drama.gif)
 
+*RAG output uses three agents (Item Interaction, Relationship Backstory,
+and Task Premise) to contribute to the developing lore and tasks; the
+tasks themselves are primitive and lack cause and effect. There is a
+lack of continuity that the Consistency Critic Agent misses.*
+
 A RAG pipeline that reads Gachō Badi's own GDD (`gdd.txt`) and generates
 three content types the game specifically needs, each checked by a
 Consistency Critic Agent before it's accepted. Separate from the AI
