@@ -16,7 +16,7 @@ generate() call, for a different resident/other/building triple) into
 ONE method call -- a caller wrapping the whole agent (see
 executable/crew.py) can only supply context once per SET, not once per
 task inside it, without modifying that agent's own loop. Precise mode is
-what workflow/demo_verify.py uses (it calls generate_set() with a
+what workflow/generic/demo_verify.py uses (it calls generate_set() with a
 single-entry catalog, so "the pair" is known exactly); pool mode is what
 a real per-set crew wiring uses instead:
   {
@@ -33,8 +33,8 @@ from __future__ import annotations
 import os
 from typing import Dict, List
 
-from ..guardrails import TokenBudget
-from ..verification_models import Finding, Severity
+from ..generic.guardrails import TokenBudget
+from ..definitions.models_verification import Finding, Severity
 from .base import AgentConstraints
 from .config_loader import load_constraint_config
 

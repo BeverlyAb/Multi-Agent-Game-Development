@@ -1,5 +1,5 @@
 """The shape every per-agent constraint file implements. This is the
-seam between the generic engine (guarded_llm_client.py) and agent-
+seam between the generic engine (generic/guarded_llm_client.py) and agent-
 specific knowledge -- the engine only ever calls AgentConstraints.evaluate()
 and .priority_score(); it never inspects gap_detectors directly.
 """
@@ -8,8 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List
 
-from ..guardrails import TokenBudget
-from ..verification_models import Finding, Severity
+from ..generic.guardrails import TokenBudget
+from ..definitions.models_verification import Finding, Severity
 
 # A gap detector inspects one generate() call's OUTPUT TEXT plus whatever
 # domain context the caller supplied (e.g. {"legal_verbs": [...], "task":

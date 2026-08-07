@@ -13,7 +13,7 @@ import re
 from dataclasses import dataclass
 from typing import List
 
-from .verification_models import GuardrailViolation, Severity
+from ..definitions.models_verification import GuardrailViolation, Severity
 
 # Rough chars-per-token heuristic (no tokenizer dependency, same spirit as
 # gdd.txt's own "Token budgets below are rough, unvalidated planning

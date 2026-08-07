@@ -12,11 +12,11 @@ not touch crew.py, main.py, or any agents/*.py file -- this is purely
 additive, run on its own fixtures.
 
 Usage (from GachoBadi/, matching executable/main.py's own convention):
-    python3 workflow/demo_verify.py                                  # all registered agents (default)
-    python3 workflow/demo_verify.py --agents none                    # zero agents -- just checks the harness loads
-    python3 workflow/demo_verify.py --agents goose_solution_planner   # exactly one
-    python3 workflow/demo_verify.py --agents task_creator,chain_reaction  # a chosen set
-    python3 workflow/demo_verify.py --list                           # print available agent keys and exit
+    python3 workflow/generic/demo_verify.py                                  # all registered agents (default)
+    python3 workflow/generic/demo_verify.py --agents none                    # zero agents -- just checks the harness loads
+    python3 workflow/generic/demo_verify.py --agents goose_solution_planner   # exactly one
+    python3 workflow/generic/demo_verify.py --agents task_creator,chain_reaction  # a chosen set
+    python3 workflow/generic/demo_verify.py --list                           # print available agent keys and exit
 """
 from __future__ import annotations
 
@@ -26,27 +26,27 @@ import sys
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
 
-# Same sys.path bootstrap as executable/main.py and executable/crew.py --
-# this file lives one level below the project root too.
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Same reasoning as executable/main.py's own bootstrap -- but this file
+# lives TWO levels below the project root (workflow/generic/), not one,
+# so api/, definitions/, agents/, and workflow/ itself need the actual
+# root added to sys.path, not workflow/ (which dirname(__file__) twice
+# would incorrectly land on).
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
-PARENT_DIR = os.path.dirname(ROOT_DIR)
-if PARENT_DIR not in sys.path:
-    sys.path.insert(0, PARENT_DIR)
 
 from api.llm_client import LLMClient
 from agents.runtime.chain_reaction_agent import ChainReactionAgent
 from agents.runtime.goose_solution_planner_agent import GooseSolutionPlannerAgent
 from agents.runtime.task_creator_agent import TaskCreatorAgent
 from definitions.models import Building, ChainReaction, Resident, Sliders, Task, VerbOutcome
-from workflow.changelog import clear_changelog, read_changelog, LOG_PATH
+from workflow.generic.changelog import clear_changelog, read_changelog, LOG_PATH
 from workflow.constraints.chain_reaction_constraints import CHAIN_REACTION_CONSTRAINTS
 from workflow.constraints.goose_solution_planner_constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
 from workflow.constraints.task_creator_constraints import TASK_CREATOR_CONSTRAINTS
-from workflow.guarded_llm_client import GuardedLLMClient
-from workflow.guarded_output import verify_output
-from workflow.verification_models import ReviewResult
+from workflow.generic.guarded_llm_client import GuardedLLMClient
+from workflow.generic.guarded_output import verify_output
+from workflow.definitions.models_verification import ReviewResult
 
 
 @dataclass

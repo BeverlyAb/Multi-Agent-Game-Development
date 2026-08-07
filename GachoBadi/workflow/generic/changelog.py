@@ -10,9 +10,13 @@ import os
 from dataclasses import asdict
 from datetime import datetime, timezone
 
-from .verification_models import CallRecord
+from ..definitions.models_verification import CallRecord
 
-LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+# This file lives in workflow/generic/, but logs/ is a sibling of
+# generic/ (workflow/logs/), not a child of it -- go up one level first,
+# or this would silently create and write to a NEW workflow/generic/logs/
+# directory instead of the existing workflow/logs/.
+LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
 LOG_PATH = os.path.join(LOG_DIR, "changelog.jsonl")
 
 

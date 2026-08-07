@@ -9,7 +9,7 @@ text"). guarded_llm_client.GuardedLLMClient can't guard this agent: there
 is no generate() call to intercept. Use guarded_output.verify_output()
 instead, against a flattened text projection of the ChainReaction it
 returns. The expected flattening (one line per step, "{actor}: {action}")
-is exactly what these detectors parse -- see demo_verify.py's
+is exactly what these detectors parse -- see generic/demo_verify.py's
 flatten_chain() for the reference implementation.
 
 context dict this file's detectors expect:
@@ -24,8 +24,8 @@ from __future__ import annotations
 import os
 from typing import Dict, List
 
-from ..guardrails import TokenBudget
-from ..verification_models import Finding, Severity
+from ..generic.guardrails import TokenBudget
+from ..definitions.models_verification import Finding, Severity
 from .base import AgentConstraints
 from .config_loader import load_constraint_config
 

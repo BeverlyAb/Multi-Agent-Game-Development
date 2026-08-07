@@ -1,7 +1,7 @@
 """One constraint spec per agent -- <agent>_constraints.py +
 <agent>_constraints.yaml -- the agent-SPECIFIC half of the workflow (see
 base.py for the shared shape every spec implements, and
-../guardrails.py for the agent-AGNOSTIC half).
+../generic/guardrails.py for the agent-AGNOSTIC half).
 
 Every file here (and its matching .yaml) is named ending in
 "_constraints" specifically so it can never be mistaken for the actual
@@ -18,7 +18,7 @@ To add guardrailed verification for another agent in this crew:
   1. Copy goose_solution_planner_constraints.{py,yaml} (if that agent
      calls self.llm.generate() -- input side) or
      chain_reaction_constraints.{py,yaml} (if it doesn't -- output side,
-     via ../guarded_output.py) as a template.
+     via ../generic/guarded_output.py) as a template.
   2. In the .yaml: set token_budget from gdd.txt's Technical Strategy
      table, and any priority_weights that need to outrank the default.
   3. In the .py: write gap_detectors -- functions of (output_text,

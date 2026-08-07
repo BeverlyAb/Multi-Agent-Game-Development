@@ -10,7 +10,7 @@ Not every agent produces its "work" the same way, so there are two ways
 in -- but both feed the exact same downstream machinery (guardrails,
 gap-detection, priority scoring, changelog logging).
 
-- **`guarded_llm_client.py` (`GuardedLLMClient`)** -- for agents that
+- **`generic/guarded_llm_client.py` (`GuardedLLMClient`)** -- for agents that
   call `self.llm.generate(system, prompt, fallback=...)`, the one
   interface `agents/base.py`'s `BaseAgent` gives every text-generating
   agent. Wraps that call: check → (if blocking issues) retry with
@@ -18,7 +18,7 @@ gap-detection, priority scoring, changelog logging).
   Drop-in: pass a `GuardedLLMClient` wherever an agent's constructor
   currently takes a raw `LLMClient`, and that agent's own file never
   needs to change.
-- **`guarded_output.py` (`verify_output`)** -- for agents whose work is a
+- **`generic/guarded_output.py` (`verify_output`)** -- for agents whose work is a
   structured return value with no `generate()` call to intercept, e.g.
   `ChainReactionAgent` (its only randomness is
   `self.llm.choice(building.possible_outcomes)`). The caller runs the
@@ -44,10 +44,10 @@ result.accepted_all
 
 | Lives in | Knows about |
 |---|---|
-| `guardrails.py` | Nothing agent-specific — only raw strings every call has (system/prompt/output, or just output for `verify_output`). Token-budget overrun, empty output, leaked `{template}` markers, leaked exception text. |
-| `verification_models.py` | The shared vocabulary (`Finding`, `GuardrailViolation`, `CallRecord`, `ReviewResult`) every other file speaks — this workflow's own bookkeeping model, distinct from `definitions/models.py` (the actual game's Resident/Building/Task domain). Deliberately a separate file, not merged: merging would pollute the game's domain model with verification plumbing, and would break this package's portability to another project. |
-| `guarded_llm_client.py`, `guarded_output.py` | The two loops themselves. Agent-agnostic — both only ever call `constraints.evaluate()`, never inspect a domain object directly. |
-| `changelog.py` | Append-only JSONL log of every attempt, with a plain-English justification for why it was accepted or retried. Agent-agnostic. |
+| `generic/guardrails.py` | Nothing agent-specific — only raw strings every call has (system/prompt/output, or just output for `verify_output`). Token-budget overrun, empty output, leaked `{template}` markers, leaked exception text. |
+| `definitions/models_verification.py` | The shared vocabulary (`Finding`, `GuardrailViolation`, `CallRecord`, `ReviewResult`) every other file speaks — this workflow's own bookkeeping model, distinct from the project's top-level `definitions/models.py` (the actual game's Resident/Building/Task domain). Deliberately a separate file, not merged: merging would pollute the game's domain model with verification plumbing, and would break this package's portability to another project. |
+| `generic/guarded_llm_client.py`, `generic/guarded_output.py` | The two loops themselves. Agent-agnostic — both only ever call `constraints.evaluate()`, never inspect a domain object directly. |
+| `generic/changelog.py` | Append-only JSONL log of every attempt, with a plain-English justification for why it was accepted or retried. Agent-agnostic. |
 | `constraints/<agent>_constraints.{py,yaml}` | Everything domain-specific, split in two: the `.yaml` holds **declarative values** (token budget, priority weights, `max_retries`); the `.py` holds **gap-detection logic** (regex extraction, word-overlap checks, whatever actually needs code) and imports the `.yaml`'s values in. See "Why the YAML/Python split" below. |
 
 Constraint file **and YAML config names always end in `_constraints`**
@@ -122,7 +122,7 @@ can't express.
    does), and any `priority_weights` that need to outrank the default.
 4. In the `.py`: write `gap_detectors` — each is `(output_text: str,
    context: dict) -> List[Finding]`. Only check things genuinely true for
-   that agent's own contract; don't duplicate what `guardrails.py`
+   that agent's own contract; don't duplicate what `generic/guardrails.py`
    already covers generically.
 5. Wherever that agent is constructed, either wrap its `LLMClient` in a
    `GuardedLLMClient`, or call `verify_output()` on its return value
@@ -132,18 +132,18 @@ can't express.
 
 ```bash
 cd GachoBadi
-python3 workflow/demo_verify.py                                       # all registered agents (default)
-python3 workflow/demo_verify.py --agents none                         # zero -- just checks the harness loads
-python3 workflow/demo_verify.py --agents goose_solution_planner       # exactly one
-python3 workflow/demo_verify.py --agents task_creator,chain_reaction  # a chosen set
-python3 workflow/demo_verify.py --list                                # print available agent keys and exit
+python3 workflow/generic/demo_verify.py                                       # all registered agents (default)
+python3 workflow/generic/demo_verify.py --agents none                         # zero -- just checks the harness loads
+python3 workflow/generic/demo_verify.py --agents goose_solution_planner       # exactly one
+python3 workflow/generic/demo_verify.py --agents task_creator,chain_reaction  # a chosen set
+python3 workflow/generic/demo_verify.py --list                                # print available agent keys and exit
 ```
 
 `--agents` accepts `all` (default), `none`/`''` (a deliberately valid,
 distinct choice, not an error), or a comma-separated subset of the keys
 `--list` prints. An unknown key exits with status 1 and lists the valid
 ones rather than silently running nothing or everything. Adding a new
-agent's demo to `AGENT_DEMOS` in `demo_verify.py` (alongside a new
+agent's demo to `AGENT_DEMOS` in `generic/demo_verify.py` (alongside a new
 constraint spec, per "Adding a new agent" above) makes it immediately
 selectable by name — nothing else about `--agents` changes.
 
@@ -193,6 +193,9 @@ the changelog. With `--agents all` (or no flag):
   from "this logical call never succeeded" (the thing worth surfacing to
   a human) — without a shared id, every retry attempt looks like an
   independent, still-failing call.
-- **Why is `verification_models.py` a separate file from
-  `definitions/models.py`?** See the table above — different domains,
-  and merging would hurt this package's portability.
+- **Why is `definitions/models_verification.py` a separate file from
+  the project's own top-level `definitions/models.py`?** See the table
+  above — different domains, and merging would hurt this package's
+  portability. (Named `models_verification.py`, and in a `definitions/`
+  folder of its own inside `workflow/`, specifically so neither name nor
+  path is ever confused with the game's own `definitions/models.py`.)

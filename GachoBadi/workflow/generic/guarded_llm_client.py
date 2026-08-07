@@ -25,9 +25,9 @@ import itertools
 from typing import Dict, List, Optional
 
 from .changelog import append_changelog
-from .constraints.base import AgentConstraints
+from ..constraints.base import AgentConstraints
 from .guardrails import GENERIC_OUTPUT_GUARDRAILS, check_token_budget, est_tokens
-from .verification_models import CallRecord, ReviewResult, Severity
+from ..definitions.models_verification import CallRecord, ReviewResult, Severity
 
 _call_id_counter = itertools.count(1)
 

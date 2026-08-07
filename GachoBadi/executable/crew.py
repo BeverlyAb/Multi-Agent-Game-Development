@@ -35,9 +35,9 @@ from definitions.models import Building, ChainReaction, Item, Resident, Task
 from workflow.constraints.chain_reaction_constraints import CHAIN_REACTION_CONSTRAINTS
 from workflow.constraints.goose_solution_planner_constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
 from workflow.constraints.task_creator_constraints import TASK_CREATOR_CONSTRAINTS
-from workflow.guarded_llm_client import GuardedLLMClient
-from workflow.guarded_output import verify_output
-from workflow.verification_models import Severity
+from workflow.generic.guarded_llm_client import GuardedLLMClient
+from workflow.generic.guarded_output import verify_output
+from workflow.definitions.models_verification import Severity
 
 
 class GachoBadiCrew:

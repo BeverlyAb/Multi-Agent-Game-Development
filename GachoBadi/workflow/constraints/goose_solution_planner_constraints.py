@@ -24,8 +24,8 @@ import os
 import re
 from typing import Dict, List
 
-from ..guardrails import TokenBudget
-from ..verification_models import Finding, Severity
+from ..generic.guardrails import TokenBudget
+from ..definitions.models_verification import Finding, Severity
 from .base import AgentConstraints
 from .config_loader import load_constraint_config
 
