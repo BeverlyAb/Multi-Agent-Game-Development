@@ -169,6 +169,10 @@
     {
       "content_type": "completion",
       "file": "38_completion_harmony.json"
+    },
+    {
+      "content_type": "verification",
+      "file": "39_verification_18-unresolved.json"
     }
   ]
 }

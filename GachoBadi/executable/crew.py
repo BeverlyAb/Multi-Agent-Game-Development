@@ -31,24 +31,83 @@ from agents.runtime.relationship_agent import RelationshipAgent
 from agents.runtime.task_creator_agent import TaskCreatorAgent, build_catalog
 from agents.runtime.writer_agent import WriterAgent
 from api.llm_client import LLMClient
-from definitions.models import Building, Item, Resident, Task
+from definitions.models import Building, ChainReaction, Item, Resident, Task
+from workflow.constraints.chain_reaction_constraints import CHAIN_REACTION_CONSTRAINTS
+from workflow.constraints.goose_solution_planner_constraints import GOOSE_SOLUTION_PLANNER_CONSTRAINTS
+from workflow.constraints.task_creator_constraints import TASK_CREATOR_CONSTRAINTS
+from workflow.guarded_llm_client import GuardedLLMClient
+from workflow.guarded_output import verify_output
+from workflow.verification_models import Severity
 
 
 class GachoBadiCrew:
-    """Orchestrates the Gacho Badi AI agents for a full playthrough."""
+    """Orchestrates the Gacho Badi AI agents for a full playthrough.
 
-    def __init__(self, seed: int = 7):
+    When verify=True (the default), three agents run through
+    workflow/'s generic guardrail/verify/feedback loop instead of a bare
+    LLMClient -- see that package's README.md for the full design.
+    GooseSolutionPlannerAgent and TaskCreatorAgent are wrapped in a
+    GuardedLLMClient (they call self.llm.generate()); ChainReactionAgent
+    is checked via verify_output() instead, since it never calls
+    generate() at all (see _resolve_or_retire). Every attempt is logged
+    to workflow/logs/changelog.jsonl regardless of whether it passed.
+    """
+
+    def __init__(self, seed: int = 7, verify: bool = True):
         self.llm = LLMClient(seed=seed)
+        self.verify = verify
         self.personality_agent = CharacterPersonalityAgent(self.llm)
         self.relationship_agent = RelationshipAgent(self.llm)
         self.item_interaction_agent = ItemInteractionAgent(self.llm)
-        self.task_creator = TaskCreatorAgent(self.llm)
         self.writer = WriterAgent(self.llm)
-        self.goose_planner = GooseSolutionPlannerAgent(self.llm)
         self.chain_reaction_agent = ChainReactionAgent(self.llm)
         self.director = DirectorAgent(self.llm)
         self.newscaster = NewscasterAgent(self.llm)
         self.scene_orchestrator = SceneOrchestratorAgent(self.llm)
+
+        if verify:
+            # Constructed once and reused for the whole playthrough --
+            # .context is mutated per-call (see run_playthrough and
+            # _resolve_or_retire) rather than rebuilding these wrappers
+            # per task, since GuardedLLMClient reads self.context live at
+            # generate()-call time, not just at construction.
+            self._goose_guard = GuardedLLMClient(self.llm, constraints=GOOSE_SOLUTION_PLANNER_CONSTRAINTS)
+            self._task_creator_guard = GuardedLLMClient(self.llm, constraints=TASK_CREATOR_CONSTRAINTS)
+            self.goose_planner = GooseSolutionPlannerAgent(self._goose_guard)
+            self.task_creator = TaskCreatorAgent(self._task_creator_guard)
+        else:
+            self.goose_planner = GooseSolutionPlannerAgent(self.llm)
+            self.task_creator = TaskCreatorAgent(self.llm)
+
+        # Every unresolved (still-blocking-after-retries) finding across
+        # the whole playthrough, from all three guarded agents -- surfaced
+        # in run_playthrough()'s return dict and main.py's summary, so a
+        # real run's guardrail hits are visible without having to go read
+        # workflow/logs/changelog.jsonl by hand.
+        self._verification_findings: List[dict] = []
+
+    @staticmethod
+    def _flatten_chain(chain: ChainReaction) -> str:
+        """Same flattening workflow/demo_verify.py uses -- one 'actor:
+        action' line per staged step, the shape
+        constraints/chain_reaction_constraints.py's detectors expect."""
+        return "\n".join(f"{s.actor}: {s.action}" for s in chain.steps)
+
+    def _record_unresolved(self, agent_name: str, task_id: int, call_record) -> None:
+        """Takes a single CallRecord -- the LAST attempt of the ONE
+        logical call this task just made -- not a ReviewResult, since
+        GuardedLLMClient.result() accumulates every call across its
+        entire lifetime; re-scanning it after every task would re-report
+        every earlier task's already-printed findings each time."""
+        if call_record.accepted:
+            return
+        for finding in call_record.findings:
+            if finding.severity != Severity.BLOCKING:
+                continue
+            self._verification_findings.append(
+                {"agent": agent_name, "task_id": task_id, "rule": finding.rule, "message": finding.message}
+            )
+            print(f"  [{agent_name}][VERIFY] task #{task_id} unresolved: [{finding.rule}] {finding.message}")
 
     def run_personality_pass(self, residents: List[Resident]) -> List[Resident]:
         """Enriches raw resident requests (name/role/sliders) with traits + a summary."""
@@ -87,8 +146,30 @@ class GachoBadiCrew:
         Writer -> Director -> Newscaster, per gdd.txt's approval-gate rule:
         the planner may retire a candidate instead of staging it, and that
         retirement counts toward the 75% threshold exactly like a
-        resolution."""
+        resolution.
+
+        When self.verify is on: the Goose Solution Planner's context is
+        set here, per-task, right before it runs (precise -- this agent
+        is called once per task, so the exact legal_verbs/description for
+        THIS task is always knowable); Chain Reaction Agent's output is
+        checked via verify_output() right after, since it has no
+        generate() call for GuardedLLMClient to have wrapped in the first
+        place. Neither ever blocks the task itself -- an unresolved
+        finding is recorded and printed, not treated as a retirement
+        reason, since this workflow's job is to surface problems, not
+        silently veto content the crew's own hard-fail agents already
+        accepted."""
+        building = next((b for b in buildings if b.name == task.involves_building), None)
+        if self.verify and building is not None:
+            self._goose_guard.context = {
+                "legal_verbs": building.goose_actions,
+                "task_description": task.description,
+            }
         verb_plan = self.goose_planner.run(task, buildings)
+        if self.verify and self._goose_guard.result().calls:
+            self._record_unresolved(
+                "Goose Solution Planner Agent", task.task_id, self._goose_guard.result().calls[-1]
+            )
         if verb_plan is None:
             task.status = "retired"
             task.retire_reason = f"no registered goose actions for '{task.involves_building}'"
@@ -101,8 +182,18 @@ class GachoBadiCrew:
                 "news": None,
             }
 
-        building = next((b for b in buildings if b.name == task.involves_building), None)
         chain = self.chain_reaction_agent.run(task, building, residents)
+        if self.verify:
+            chain_review = verify_output(
+                self._flatten_chain(chain),
+                constraints=CHAIN_REACTION_CONSTRAINTS,
+                context={
+                    "building": building,
+                    "target_resident": task.target_resident,
+                    "other_resident": task.other_resident,
+                },
+            )
+            self._record_unresolved("Chain Reaction Agent", task.task_id, chain_review.calls[-1])
         screenplay = self.writer.run(task, residents, buildings, chain)
         staged_actions = self.director.run(screenplay, verb_plan, task, buildings, residents, chain)
         news = self.newscaster.run(staged_actions, task)
@@ -156,7 +247,32 @@ class GachoBadiCrew:
         while offset < len(catalog):
             remaining = len(catalog) - offset
             size = min(self.task_creator.SET_SIZE_MAX, remaining)
+            # Pool mode (workflow/constraints/task_creator_constraints.py):
+            # generate_set() makes one generate() call per task INSIDE
+            # this one method call, so the exact per-task pair can't be
+            # supplied -- only every resident/building valid for this
+            # whole set. Set once per set, not per task, unlike the Goose
+            # Solution Planner's context above (that agent runs once per
+            # task, so its context can be precise).
+            if self.verify:
+                self._task_creator_guard.context = {
+                    "resident_pool": [r.name for r in residents],
+                    "building_pool": [b.name for b in buildings],
+                }
+                calls_before = len(self._task_creator_guard.result().calls)
             tasks = self.task_creator.generate_set(catalog, offset, set_id, residents, buildings, size=size)
+            if self.verify:
+                # generate_set() may have made more than one generate()
+                # call per task (retries), so collapse to the LAST
+                # attempt of each logical call_id before zipping against
+                # tasks -- otherwise a single retried task would
+                # desynchronize every pairing after it.
+                new_calls = self._task_creator_guard.result().calls[calls_before:]
+                last_by_call_id: dict = {}
+                for call_record in new_calls:
+                    last_by_call_id[call_record.call_id] = call_record
+                for produced_task, call_record in zip(tasks, last_by_call_id.values()):
+                    self._record_unresolved("Task Creator Agent", produced_task.task_id, call_record)
             threshold = self.task_creator.threshold_for(len(tasks))
             set_task_snapshots.append({"set_id": set_id, "premises": [asdict(t) for t in tasks]})
 
@@ -195,6 +311,12 @@ class GachoBadiCrew:
         for line in completion["epilogue_lines"]:
             print(f"    {line}")
 
+        if self.verify:
+            print(
+                f"\n  --- verification: {len(self._verification_findings)} unresolved finding(s) across "
+                f"{len(all_tasks)} task(s); full attempt log at workflow/logs/changelog.jsonl ---"
+            )
+
         return {
             "personalities": residents,
             "catalog_size": len(catalog),
@@ -203,6 +325,7 @@ class GachoBadiCrew:
             "ticks": tick_records,
             "final_tasks": all_tasks,
             "completion": completion,
+            "verification_findings": list(self._verification_findings),
         }
 
     def _build_completion(self, tasks: List[Task], residents: List[Resident]) -> dict:

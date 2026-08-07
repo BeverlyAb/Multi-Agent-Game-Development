@@ -182,6 +182,17 @@ def main() -> int:
         # Game Completion -- one file, the epilogue.
         out.write("completion", "harmony" if playthrough["completion"]["harmony"] else "incomplete", playthrough["completion"])
 
+        # workflow/'s guardrail/verify/feedback loop -- one file summarizing
+        # every unresolved (still-blocking-after-retries) finding across the
+        # whole playthrough, from GachoBadiCrew(verify=True) (the default).
+        # The full per-attempt log, including everything that DID clear (on
+        # the first try or after a retry), lives in workflow/logs/changelog.jsonl.
+        out.write(
+            "verification",
+            "clean" if not playthrough["verification_findings"] else f"{len(playthrough['verification_findings'])}-unresolved",
+            {"unresolved_findings": playthrough["verification_findings"]},
+        )
+
         manifest = {
             "game": "Gacho Badi (Goose Buddy)",
             "catalog_size": playthrough["catalog_size"],
@@ -202,6 +213,8 @@ def main() -> int:
         print(f"Tasks resolved       : {resolved}")
         print(f"Tasks retired        : {retired}")
         print(f"Harmony reached      : {playthrough['completion']['harmony']}")
+        print(f"Verify findings      : {len(playthrough['verification_findings'])} unresolved "
+              f"(workflow/logs/changelog.jsonl has the full attempt log)")
         print(f"Output files written : {len(out.entries)} + manifest.json")
         print(f"LLM provider in use  : {crew.llm.provider} "
               f"({'live API calls' if crew.llm.provider != 'mock' else 'local deterministic fallback'})")
