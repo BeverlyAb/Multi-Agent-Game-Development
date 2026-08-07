@@ -1,0 +1,19 @@
+# Declarative half of the constraint spec for
+# agents/runtime/task_creator_agent.py. The gap-detection LOGIC lives in
+# task_creator_constraints.py next to this file.
+
+# Copied from gdd.txt's Technical Strategy table:
+# "High | Task Creator | 1,200-2,500 | 700-1,500".
+token_budget:
+  input_max: 2500
+  output_max: 1500
+  tolerance: 1.5
+
+# A tone violation contradicts this game's own stated pitch commitment
+# (gdd.txt Executive Summary: "not mischief for its own sake ... quiet
+# community-builder") more directly than a merely vague or unfocused
+# description does, so it outranks this agent's other BLOCKING rules.
+priority_weights:
+  no_mischief_tone: 950
+
+max_retries: 2

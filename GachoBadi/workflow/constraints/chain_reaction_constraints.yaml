@@ -1,0 +1,26 @@
+# Declarative half of the constraint spec for
+# agents/runtime/chain_reaction_agent.py. The gap-detection LOGIC lives
+# in chain_reaction_constraints.py next to this file.
+#
+# token_budget is present only because AgentConstraints requires one --
+# this agent makes no generate() call at all (its only randomness is
+# self.llm.choice() over a pre-registered list), so there is no
+# prompt/response token cost to actually budget here. See
+# chain_reaction_constraints.py's module docstring.
+token_budget:
+  input_max: 500
+  output_max: 200
+  tolerance: 2.0
+
+# outcome_is_registered is this agent's equivalent of the Goose Solution
+# Planner's no_unregistered_verb: the one rule that IS this agent's whole
+# reason for existing (per its own docstring, "it never invents an
+# outcome absent from that registered list").
+priority_weights:
+  outcome_is_registered: 1000
+
+# Unused by workflow/guarded_output.py's verify_output() -- there is no
+# retry-with-feedback loop for a structured-output agent, only a single
+# verification pass. Kept at 0 so the field's value is never misleading
+# if read directly.
+max_retries: 0

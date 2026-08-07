@@ -1,0 +1,20 @@
+# Declarative half of the constraint spec for
+# agents/runtime/goose_solution_planner_agent.py. The gap-detection LOGIC
+# (regex extraction, etc.) lives in goose_solution_planner_constraints.py
+# next to this file -- only the values that don't need code live here.
+
+# Copied from gdd.txt's Technical Strategy table:
+# "Highest | Goose Solution Planner | 1,500-3,500 | 600-1,500".
+token_budget:
+  input_max: 3500
+  output_max: 1500
+  tolerance: 1.5
+
+# no_unregistered_verb outranks every other BLOCKING finding for this
+# agent: it's not just "a rule was broken," it's the one rule this agent
+# exists to enforce (gdd.txt: nothing downstream ever executes an action
+# the world model didn't certify). Fix this one first, always.
+priority_weights:
+  no_unregistered_verb: 1000
+
+max_retries: 2
