@@ -32,8 +32,8 @@ class ConsistencyCriticAgent(BaseAgent):
         "against the GDD chunks it was actually grounded in, not against its own opinion."
     )
 
-    ALLOWED_VERBS = {"Honk", "Grab", "Pick up", "Duck", "Dash"}
-    VERB_FIX = {"Run": "Dash", "Tug": "Pick up", "Flap": "Duck"}
+    ALLOWED_VERBS = {"Honk", "Grab", "Drop", "Duck", "Dash"}
+    VERB_FIX = {"Run": "Dash", "Tug": "Drop", "Flap": "Duck"}
     TONE_FIX = {"mischief": "connection", "chaos": "harmony", "prank": "gesture", "mischievous": "well-meaning"}
 
     @staticmethod

@@ -17,6 +17,7 @@
       "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Hazel: (follows up on what the goose left behind: restock or tidy up with it)",
       "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.)"
     ]
@@ -26,10 +27,21 @@
     "lines": [
       "* SCENE: north dock.",
       "* Goose: Grab near Hazel's Bakery.",
-      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: Drop Hazel's Bakery (shop): features oven that can overheat and puff flour..",
       "* Goose: carries it toward Hazel.",
       "* Objective resolves: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk."
     ]
+  },
+  "chain": {
+    "task_id": 4,
+    "steps": [
+      {
+        "actor": "Hazel",
+        "action": "follows up on what the goose left behind: restock or tidy up with it",
+        "location": "north dock"
+      }
+    ],
+    "chain_effect": ""
   },
   "staged_actions": [
     {
@@ -39,7 +51,7 @@
     },
     {
       "actor": "Hazel",
-      "action": "react and progress toward: Get Hazel to return something of Vic's at the Hazel's Bakery, giving them a reason to talk.",
+      "action": "follows up on what the goose left behind: restock or tidy up with it",
       "location": "north dock"
     },
     {

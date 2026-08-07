@@ -12,7 +12,7 @@ class GooseSolutionPlannerAgent(BaseAgent):
     backstory = (
         "Borrowed from the Untitled Goose Game reference crew's Goose Verb Planner Agent: the "
         "goose never speaks, so this agent guarantees every task the Task Creator invents is "
-        "actually solvable with honk/grab/pick up/duck/dash before the player ever sees it, and "
+        "actually solvable with honk/grab/drop/duck/dash before the player ever sees it, and "
         "doubles as the source for an in-game hint if the player gets stuck. Per gdd.txt: 'The "
         "Task Creator does not certify solvability... only approved tasks enter the "
         "player-facing set' -- an earlier version of this code skipped that gate entirely and "
@@ -22,7 +22,7 @@ class GooseSolutionPlannerAgent(BaseAgent):
         "staging it."
     )
 
-    VERBS = ["Honk", "Grab", "Pick up", "Duck", "Dash"]
+    VERBS = ["Honk", "Grab", "Drop", "Duck", "Dash"]
 
     """
     Input:  a Task from TaskCreatorAgent, plus the building enriched by

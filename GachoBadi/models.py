@@ -43,6 +43,19 @@ class Item:
     goose_actions: List[str] = field(default_factory=list)  # e.g. grab, carry, drop, hide
     reset_rule: str = ""  # the no-permanent-loss guarantee's mechanism
     designed: bool = False  # set by ItemInteractionAgent; required by GooseSolutionPlanner
+    # set by ItemInteractionAgent, consumed only by ChainReactionAgent: what
+    # a RESIDENT (not the goose) can do with this item once the goose has
+    # dropped it in front of them or delivered it -- e.g. "water nearby
+    # plants with it." Empty means this item has no resident follow-up at
+    # all, which is common (most tasks are non-sequential, per gdd.txt) and
+    # not an error.
+    resident_actions: List[str] = field(default_factory=list)
+    # set by ItemInteractionAgent, consumed only by ChainReactionAgent: the
+    # further consequence a resident's own resident_actions use can cause --
+    # e.g. "draws a second resident over to admire the result." Empty means
+    # this affordance's resident follow-up is self-contained and never
+    # cascades to a second resident.
+    chain_effect: str = ""
 
 
 @dataclass
@@ -58,6 +71,13 @@ class Building:
     # visual/authored) and ItemInteractionAgent (runtime, gameplay-legal
     # actions) own different halves of "what can happen at this building."
     goose_actions: List[str] = field(default_factory=list)
+    # See Item.resident_actions/chain_effect above -- same meaning, same
+    # ChainReactionAgent-only consumer, just for a building's fixed feature
+    # instead of a movable item (e.g. a resident who finds the garden hose
+    # can water the plants with it; that in turn can draw a second resident
+    # over to admire them).
+    resident_actions: List[str] = field(default_factory=list)
+    chain_effect: str = ""
 
 
 @dataclass
@@ -88,7 +108,7 @@ class Screenplay:
 @dataclass
 class VerbPlan:
     task_id: int
-    lines: List[str]  # goose-verb-only stage directions (honk/grab/pick up/duck/dash) -- no dialogue, ever
+    lines: List[str]  # goose-verb-only stage directions (honk/grab/drop/duck/dash) -- no dialogue, ever
 
 
 @dataclass
@@ -96,6 +116,25 @@ class StagedAction:
     actor: str
     action: str
     location: str
+
+
+@dataclass
+class ChainReaction:
+    """The Chain Reaction Agent's output: at most two follow-on beats after
+    the goose's own action -- the target resident's own use of whatever the
+    goose dropped or delivered, and, only when the affordance registers a
+    chain_effect AND the task has an other_resident to draw in, that second
+    resident's reaction. Zero steps is the common case (most Building/Item
+    affordances have no resident_actions registered at all) and is not an
+    error -- see ChainReactionAgent."""
+
+    task_id: int
+    steps: List[StagedAction] = field(default_factory=list)
+    # The chain_effect text actually realized this run, if the chain
+    # reached its second step -- empty otherwise, including when steps has
+    # exactly one entry (a resident acted on the object, but nothing
+    # cascaded further).
+    chain_effect: str = ""
 
 
 @dataclass

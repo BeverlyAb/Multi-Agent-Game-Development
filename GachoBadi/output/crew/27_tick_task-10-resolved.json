@@ -17,6 +17,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Vic -- Otto and Vic: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Otto: (follows up on what the goose left behind: restock or tidy up with it)",
       "Otto: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.)"
     ]
@@ -26,10 +27,21 @@
     "lines": [
       "* SCENE: north dock.",
       "* Goose: Grab near Hazel's Bakery.",
-      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: Drop Hazel's Bakery (shop): features oven that can overheat and puff flour..",
       "* Goose: carries it toward Otto.",
       "* Objective resolves: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart."
     ]
+  },
+  "chain": {
+    "task_id": 10,
+    "steps": [
+      {
+        "actor": "Otto",
+        "action": "follows up on what the goose left behind: restock or tidy up with it",
+        "location": "north dock"
+      }
+    ],
+    "chain_effect": ""
   },
   "staged_actions": [
     {
@@ -39,7 +51,7 @@
     },
     {
       "actor": "Otto",
-      "action": "react and progress toward: Bring Otto and Vic together at the Hazel's Bakery despite being drifted apart.",
+      "action": "follows up on what the goose left behind: restock or tidy up with it",
       "location": "north dock"
     },
     {

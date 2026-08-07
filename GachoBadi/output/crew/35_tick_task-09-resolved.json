@@ -17,6 +17,8 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Otto: (follows up on what the goose left behind: pick it up and put it to use themselves)",
+      "Hazel: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
       "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.)"
     ]
@@ -31,6 +33,22 @@
       "* Objective resolves: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk."
     ]
   },
+  "chain": {
+    "task_id": 9,
+    "steps": [
+      {
+        "actor": "Otto",
+        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "location": "east meadow"
+      },
+      {
+        "actor": "Hazel",
+        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "location": "east meadow"
+      }
+    ],
+    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+  },
   "staged_actions": [
     {
       "actor": "Goose",
@@ -39,12 +57,12 @@
     },
     {
       "actor": "Otto",
-      "action": "react and progress toward: Get Otto to return something of Hazel's at the Garden Hose Stand, giving them a reason to talk.",
+      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
       "location": "east meadow"
     },
     {
       "actor": "Hazel",
-      "action": "notice, warm up, and reconnect",
+      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

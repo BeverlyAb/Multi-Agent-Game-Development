@@ -17,6 +17,8 @@
       "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Otto -- Otto and Vic: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Vic: (follows up on what the goose left behind: pick it up and put it to use themselves)",
+      "Otto: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
       "Vic: (startled, then softening, remembering Otto and Vic: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.)"
     ]
@@ -31,6 +33,22 @@
       "* Objective resolves: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over."
     ]
   },
+  "chain": {
+    "task_id": 18,
+    "steps": [
+      {
+        "actor": "Vic",
+        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "location": "east meadow"
+      },
+      {
+        "actor": "Otto",
+        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "location": "east meadow"
+      }
+    ],
+    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+  },
   "staged_actions": [
     {
       "actor": "Goose",
@@ -39,12 +57,12 @@
     },
     {
       "actor": "Vic",
-      "action": "react and progress toward: Nudge Vic to notice Otto sitting alone near the Garden Hose Stand and invite them over.",
+      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
       "location": "east meadow"
     },
     {
       "actor": "Otto",
-      "action": "notice, warm up, and reconnect",
+      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

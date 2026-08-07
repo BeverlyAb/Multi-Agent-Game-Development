@@ -17,6 +17,8 @@
       "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Vic: (follows up on what the goose left behind: pick it up and put it to use themselves)",
+      "Hazel: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
       "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.)"
     ]
@@ -31,6 +33,22 @@
       "* Objective resolves: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends."
     ]
   },
+  "chain": {
+    "task_id": 15,
+    "steps": [
+      {
+        "actor": "Vic",
+        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "location": "east meadow"
+      },
+      {
+        "actor": "Hazel",
+        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "location": "east meadow"
+      }
+    ],
+    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+  },
   "staged_actions": [
     {
       "actor": "Goose",
@@ -39,12 +57,12 @@
     },
     {
       "actor": "Vic",
-      "action": "react and progress toward: Bring Vic and Hazel together at the Garden Hose Stand despite being close friends.",
+      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
       "location": "east meadow"
     },
     {
       "actor": "Hazel",
-      "action": "notice, warm up, and reconnect",
+      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

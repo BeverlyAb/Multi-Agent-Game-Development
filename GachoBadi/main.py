@@ -134,7 +134,13 @@ def main() -> int:
             out.write(
                 "item_interaction_building",
                 building.name,
-                {"building": building.name, "goose_actions": building.goose_actions, "spec": spec},
+                {
+                    "building": building.name,
+                    "goose_actions": building.goose_actions,
+                    "resident_actions": building.resident_actions,
+                    "chain_effect": building.chain_effect,
+                    "spec": spec,
+                },
             )
         for item, spec in zip(items, item_interaction_result["item_specs"]):
             out.write(
@@ -143,6 +149,8 @@ def main() -> int:
                 {
                     "item": item.name,
                     "goose_actions": item.goose_actions,
+                    "resident_actions": item.resident_actions,
+                    "chain_effect": item.chain_effect,
                     "reset_rule": item.reset_rule,
                     "spec": spec,
                 },

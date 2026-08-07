@@ -17,6 +17,8 @@
       "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Garden Hose Stand)",
+      "Hazel: (follows up on what the goose left behind: pick it up and put it to use themselves)",
+      "Vic: (is drawn over by it -- the visible result of using it draws a second resident over to see what's going on)",
       "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.)"
     ]
@@ -31,6 +33,22 @@
       "* Objective resolves: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand."
     ]
   },
+  "chain": {
+    "task_id": 6,
+    "steps": [
+      {
+        "actor": "Hazel",
+        "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
+        "location": "east meadow"
+      },
+      {
+        "actor": "Vic",
+        "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
+        "location": "east meadow"
+      }
+    ],
+    "chain_effect": "the visible result of using it draws a second resident over to see what's going on"
+  },
   "staged_actions": [
     {
       "actor": "Goose",
@@ -39,12 +57,12 @@
     },
     {
       "actor": "Hazel",
-      "action": "react and progress toward: Get Hazel to reconnect with Vic, who they've drifted apart from, near the Garden Hose Stand.",
+      "action": "follows up on what the goose left behind: pick it up and put it to use themselves",
       "location": "east meadow"
     },
     {
       "actor": "Vic",
-      "action": "notice, warm up, and reconnect",
+      "action": "is drawn over by it -- the visible result of using it draws a second resident over to see what's going on",
       "location": "east meadow"
     }
   ],

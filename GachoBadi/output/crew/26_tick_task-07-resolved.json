@@ -17,6 +17,7 @@
       "(Otto looks like: Otto: a teacher with a look reflecting sedentary, reserved, flat, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are drifted apart with Hazel -- Hazel and Otto: drifted apart -- a missed birthday.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Otto: (follows up on what the goose left behind: restock or tidy up with it)",
       "Otto: (startled, then softening, remembering Hazel and Otto: drifted apart -- a missed birthday.) \"Oh -- it's you.\"",
       "(Task resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.)"
     ]
@@ -26,10 +27,21 @@
     "lines": [
       "* SCENE: north dock.",
       "* Goose: Grab near Hazel's Bakery.",
-      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: Drop Hazel's Bakery (shop): features oven that can overheat and puff flour..",
       "* Goose: carries it toward Otto.",
       "* Objective resolves: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery."
     ]
+  },
+  "chain": {
+    "task_id": 7,
+    "steps": [
+      {
+        "actor": "Otto",
+        "action": "follows up on what the goose left behind: restock or tidy up with it",
+        "location": "north dock"
+      }
+    ],
+    "chain_effect": ""
   },
   "staged_actions": [
     {
@@ -39,7 +51,7 @@
     },
     {
       "actor": "Otto",
-      "action": "react and progress toward: Help Otto and Hazel (drifted apart) patch up a disagreement at the Hazel's Bakery.",
+      "action": "follows up on what the goose left behind: restock or tidy up with it",
       "location": "north dock"
     },
     {

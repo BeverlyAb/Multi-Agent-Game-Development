@@ -17,6 +17,7 @@
       "(Vic looks like: Vic: a gym instructor with a look reflecting energetic, candid, excitable, dull -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Hazel -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Hazel's Bakery)",
+      "Vic: (follows up on what the goose left behind: restock or tidy up with it)",
       "Vic: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over.)"
     ]
@@ -26,10 +27,21 @@
     "lines": [
       "* SCENE: north dock.",
       "* Goose: Grab near Hazel's Bakery.",
-      "* Goose: Pick up Hazel's Bakery (shop): features oven that can overheat and puff flour..",
+      "* Goose: Drop Hazel's Bakery (shop): features oven that can overheat and puff flour..",
       "* Goose: carries it toward Vic.",
       "* Objective resolves: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over."
     ]
+  },
+  "chain": {
+    "task_id": 13,
+    "steps": [
+      {
+        "actor": "Vic",
+        "action": "follows up on what the goose left behind: restock or tidy up with it",
+        "location": "north dock"
+      }
+    ],
+    "chain_effect": ""
   },
   "staged_actions": [
     {
@@ -39,7 +51,7 @@
     },
     {
       "actor": "Vic",
-      "action": "react and progress toward: Nudge Vic to notice Hazel sitting alone near the Hazel's Bakery and invite them over.",
+      "action": "follows up on what the goose left behind: restock or tidy up with it",
       "location": "north dock"
     },
     {

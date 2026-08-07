@@ -1,13 +1,22 @@
 # Agent Diagram — Gachō Badi (Goose Buddy)
 
-Twelve agents now, matching gdd.txt's AI Architecture section exactly:
-eight Runtime Gameplay Agents and four Dev-Time Content Pipeline agents.
+Thirteen agents now, matching gdd.txt's AI Architecture section exactly:
+nine Runtime Gameplay Agents and four Dev-Time Content Pipeline agents.
 An earlier version of this code stopped at eleven — it never implemented
 the **Item Interaction / World Affordance Agent** the GDD has described
 since Draft #8, so the Goose Solution Planner had nothing to validate
 against and just invented actions from a fixed verb list. It's implemented
 now (`agents/runtime/item_interaction_agent.py`), and its absence is
-provably load-bearing, not just described that way — see below.
+provably load-bearing, not just described that way — see below. Draft #11
+adds a thirteenth agent, the **Chain Reaction Agent**
+(`agents/runtime/chain_reaction_agent.py`): before it existed, a task's
+gameplay stopped at the goose's own action and the target resident's
+generic on-the-spot reaction — nothing staged the resident actually using
+whatever the goose dropped, or a second resident being drawn in by that
+use. Unlike the other additions, its absence degrades gracefully rather
+than raising: a building/item with no registered `resident_actions`
+(the common case) simply produces a zero-step chain, so most tasks are
+unaffected either way.
 
 Four stages: a **Personality + Relationship** pass, a **Dev-Time /
 Island Prep** stage (dispatched by the Scene Orchestrator), an **Item
@@ -52,6 +61,7 @@ flowchart TB
     subgraph TICK["Playthrough — one task set at a time, per gdd.txt's Game Mechanics"]
         TCA["Task Creator Agent ('One Wow')<br/>build_catalog() + generate_set()<br/>requires: traits + relationships + building.location + .designed"]
         GSPA["Goose Solution Planner Agent<br/>requires: building.goose_actions (from Item Interaction Agent)<br/>approves -> VerbPlan, or retires -> None"]
+        CRA["Chain Reaction Agent<br/>reads: building.resident_actions + .chain_effect (from Item Interaction Agent)<br/>out: ChainReaction (0-2 staged steps); 0 steps if no resident_actions registered"]
         WA["Writer Agent<br/>requires: resident.appearance + relationship_backstories + building.location + .designed"]
         DA["Director Agent ('One Wow')<br/>requires: screenplay + verb plan<br/>checks goal_state -> task.status = resolved"]
         NA["Newscaster Agent<br/>requires: staged actions"]
@@ -63,10 +73,13 @@ flowchart TB
     IIA -->|"building.goose_actions"| GSPA
 
     TCA -->|"Task (goal_state, set_id)"| GSPA
-    GSPA -->|"VerbPlan (approved)"| WA
+    GSPA -->|"VerbPlan (approved)"| CRA
     GSPA -.->|"None (retired -- unsolvable)"| RETIRED[("task.status = retired")]
-    WA -->|"Screenplay: dialogue referencing the authored backstory"| DA
-    GSPA -->|"VerbPlan: honk/grab/pick up/duck/dash -- no dialogue"| DA
+    IIA -->|"building.resident_actions + .chain_effect"| CRA
+    CRA -->|"ChainReaction (0-2 steps)"| WA
+    CRA -->|"ChainReaction (0-2 steps)"| DA
+    WA -->|"Screenplay: dialogue referencing the authored backstory + chain steps"| DA
+    GSPA -->|"VerbPlan: honk/grab/drop/duck/dash -- no dialogue"| DA
     DA -->|"Staged actions + goal_state check"| RESOLVED[("task.status = resolved")]
     DA -->|"Staged actions"| NA
     DA -->|"Staged actions"| GAME
@@ -84,7 +97,7 @@ flowchart TB
     class CPA,RA found;
     class SO,CAA,ILA,BDA prep;
     class IIA item;
-    class TCA,GSPA,WA,DA,NA,GAME tick;
+    class TCA,GSPA,CRA,WA,DA,NA,GAME tick;
     class RESIDENTS,BUILDINGS,RETIRED,RESOLVED,NEXTSET,COMPLETION data;
 ```
 
@@ -132,9 +145,19 @@ resolving:
   retires the task on `None` rather than staging an invented solution —
   an earlier version of this crew skipped this gate entirely and handed
   the Task Creator's first candidate straight to staging.
+- **Chain Reaction Agent** is the one addition that's deliberately *not*
+  hard-fail: it reads `building.resident_actions` / `.chain_effect` (set
+  by Item Interaction Agent) and, when the list is empty — the common
+  case, since most affordances register no resident follow-up — returns a
+  zero-step `ChainReaction` rather than raising. Only when a `chain_effect`
+  AND the task's `other_resident` are both present does it stage the
+  second, "drawn in" step; **Writer Agent** and **Director Agent** both
+  accept `chain=None` and fall back to their pre-Draft-#11 generic beats,
+  so removing this agent degrades content, not correctness.
 - **Writer Agent** turns a task into a screenplay that references the
-  Relationship Agent's specific backstory; **Director Agent** (the other
-  "One Wow" agent) raises if the screenplay or verb plan is empty.
+  Relationship Agent's specific backstory (and, when present, the Chain
+  Reaction Agent's staged steps); **Director Agent** (the other "One Wow"
+  agent) raises if the screenplay or verb plan is empty.
 - **Director Agent** is the agent gdd.txt makes responsible for actually
   confirming a task: `check_goal_state` verifies the referenced
   resident(s) and building still exist before flipping `task.status` to

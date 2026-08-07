@@ -2,8 +2,12 @@
   "item": "a family memento",
   "goose_actions": [
     "Grab",
-    "Pick up"
+    "Drop"
   ],
+  "resident_actions": [
+    "hold onto it and remember who it belonged to"
+  ],
+  "chain_effect": "",
   "reset_rule": "if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost.",
-  "spec": "a family memento (memento): the goose can grab/pick up it; residents can notice, retrieve, or discuss it. if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost."
+  "spec": "a family memento (memento): the goose can grab/drop it; a resident who receives it can hold onto it and remember who it belonged to. if dropped or hidden outside of active use, a family memento drifts back to its owner or origin after a short time -- it can never become permanently lost."
 }

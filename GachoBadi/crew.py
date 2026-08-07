@@ -11,6 +11,7 @@ from typing import List
 
 from agents.dev_time.scene_orchestrator import SceneOrchestratorAgent
 from agents.runtime.character_personality_agent import CharacterPersonalityAgent
+from agents.runtime.chain_reaction_agent import ChainReactionAgent
 from agents.runtime.director_agent import DirectorAgent
 from agents.runtime.goose_solution_planner_agent import GooseSolutionPlannerAgent
 from agents.runtime.item_interaction_agent import ItemInteractionAgent
@@ -33,6 +34,7 @@ class GachoBadiCrew:
         self.task_creator = TaskCreatorAgent(self.llm)
         self.writer = WriterAgent(self.llm)
         self.goose_planner = GooseSolutionPlannerAgent(self.llm)
+        self.chain_reaction_agent = ChainReactionAgent(self.llm)
         self.director = DirectorAgent(self.llm)
         self.newscaster = NewscasterAgent(self.llm)
         self.scene_orchestrator = SceneOrchestratorAgent(self.llm)
@@ -70,18 +72,28 @@ class GachoBadiCrew:
         return self.item_interaction_agent.run(buildings, items)
 
     def _resolve_or_retire(self, task: Task, residents: List[Resident], buildings: List[Building]) -> dict:
-        """Runs one task through Goose Solution Planner -> Writer -> Director
-        -> Newscaster, per gdd.txt's approval-gate rule: the planner may
-        retire a candidate instead of staging it, and that retirement
-        counts toward the 75% threshold exactly like a resolution."""
+        """Runs one task through Goose Solution Planner -> Chain Reaction ->
+        Writer -> Director -> Newscaster, per gdd.txt's approval-gate rule:
+        the planner may retire a candidate instead of staging it, and that
+        retirement counts toward the 75% threshold exactly like a
+        resolution."""
         verb_plan = self.goose_planner.run(task, buildings)
         if verb_plan is None:
             task.status = "retired"
             task.retire_reason = f"no registered goose actions for '{task.involves_building}'"
-            return {"task": task, "screenplay": None, "verb_plan": None, "staged_actions": [], "news": None}
+            return {
+                "task": task,
+                "screenplay": None,
+                "verb_plan": None,
+                "chain": None,
+                "staged_actions": [],
+                "news": None,
+            }
 
-        screenplay = self.writer.run(task, residents, buildings)
-        staged_actions = self.director.run(screenplay, verb_plan, task, buildings, residents)
+        building = next((b for b in buildings if b.name == task.involves_building), None)
+        chain = self.chain_reaction_agent.run(task, building, residents)
+        screenplay = self.writer.run(task, residents, buildings, chain)
+        staged_actions = self.director.run(screenplay, verb_plan, task, buildings, residents, chain)
         news = self.newscaster.run(staged_actions, task)
         if task.status == "open":
             # check_goal_state failed (e.g. a referenced resident/building
@@ -89,7 +101,14 @@ class GachoBadiCrew:
             # leaving the player stuck.
             task.status = "retired"
             task.retire_reason = "goal state unreachable after generation (re-plan target missing)"
-        return {"task": task, "screenplay": screenplay, "verb_plan": verb_plan, "staged_actions": staged_actions, "news": news}
+        return {
+            "task": task,
+            "screenplay": screenplay,
+            "verb_plan": verb_plan,
+            "chain": chain,
+            "staged_actions": staged_actions,
+            "news": news,
+        }
 
     def run_playthrough(self, residents: List[Resident], buildings: List[Building]) -> dict:
         """The full task-set loop: reveal a 5-9-task set from the lifetime

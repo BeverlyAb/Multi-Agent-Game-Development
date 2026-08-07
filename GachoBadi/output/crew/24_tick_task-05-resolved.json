@@ -17,6 +17,7 @@
       "(Hazel looks like: Hazel: a baker with a look reflecting sedentary, candid, excitable, astute -- palette and silhouette chosen to read at a glance..)",
       "(They are close friends with Vic -- Hazel and Vic: close friends -- splitting a bakery order every week.)",
       "GOOSE: (honks meaningfully near the Front Gate)",
+      "Hazel: (follows up on what the goose left behind: settle it back into their own routine)",
       "Hazel: (startled, then softening, remembering Hazel and Vic: close friends -- splitting a bakery order every week.) \"Oh -- it's you.\"",
       "(Task resolves: Bring Hazel and Vic together at the Front Gate despite being close friends.)"
     ]
@@ -31,6 +32,17 @@
       "* Objective resolves: Bring Hazel and Vic together at the Front Gate despite being close friends."
     ]
   },
+  "chain": {
+    "task_id": 5,
+    "steps": [
+      {
+        "actor": "Hazel",
+        "action": "follows up on what the goose left behind: settle it back into their own routine",
+        "location": "town square"
+      }
+    ],
+    "chain_effect": ""
+  },
   "staged_actions": [
     {
       "actor": "Goose",
@@ -39,7 +51,7 @@
     },
     {
       "actor": "Hazel",
-      "action": "react and progress toward: Bring Hazel and Vic together at the Front Gate despite being close friends.",
+      "action": "follows up on what the goose left behind: settle it back into their own routine",
       "location": "town square"
     },
     {
