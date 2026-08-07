@@ -1,0 +1,37 @@
+﻿ELVTR logo  cover background MULTI-AGENT AI FOR GAME DEVELOPMENT
+ASSIGNMENT #04
+
+
+ASSIGNMENT #04
+DYNAMIC CONTENT PIPELINE
+DUE DATE: Before session 7 — 30 July, 11:59 ET
+DYNAMIC CONTENT PIPELINE
+Build a pipeline that generates content for your game using your GDD as the source material. Your agent reads your game docs before generating — so the output sounds like your game, not generic content.
+DELIVERABLES
+* Your pipeline (however you built it — script, notebook, or LLM-assisted workflow)
+* Three generated outputs that your game actually needs
+* A short ReadMe: what content did you generate, does it sound like your game, and what did the critic agent catch?
+The pipeline must target your capstone game. Submissions using placeholder lore receive no credit on Content Quality or Game Connection.
+This is a mandatory assignment critical for your final playable game project. Ensure your consistency check loop is fully functional before submission.
+NOTE ON TECHNICAL EXECUTION
+Code that does not run receives 0 across all criteria. Functional code is the minimum bar for submission, not a graded achievement.
+ASSIGNMENT #4 — RUBRIC
+CRITERION
+	DESCRIPTION
+	POINTS
+	Game-Anchored Source
+	Knowledge Base is the student's GDD lore document (or direct extension). Placeholder or generic lore = 0 on this criterion and Content Fit.
+	/ 2.0
+	Content Fit
+	The three generated content types are ones the student's game specifically needs. Submission names the gap ('my game is thin on X') and output fills it. Generic or irrelevant types = partial credit at most.
+	/ 2.5
+	RAG Implementation
+	Retrieval is accurate — generated output reflects retrieved context. Demonstrated by showing query, retrieved chunk, and output side by side.
+	/ 2.0
+	Consistency Checking
+	Critic Agent catches and corrects at least one lore break or tone drift. The correction is shown, not just claimed.
+	/ 2.0
+	Voice Judgment
+	Report contains self-assessment: do outputs sound like the student's game? Includes at least one concrete prompt or retrieval tweak made to improve game-fit.
+	/ 1.5
+	TOTAL:  / 10.0
