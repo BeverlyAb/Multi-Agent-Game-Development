@@ -23,7 +23,7 @@ CONNECTION_KINDS = {
         # Dash) -- "Run" isn't one of them. Left in on purpose: this is
         # the exact lore break ConsistencyCriticAgent catches, so the
         # correction shown in output/content_pipeline_run.json is real,
-        # not staged after the fact. See CONTENT_PIPELINE_README.md.
+        # not staged after the fact. See Readme.md.
         "template": "Help {resident} and {other} patch up a disagreement at the {building}.",
         "verbs": ["Grab", "Run", "Honk"],
         "reaction": "startles, then laughs off the disagreement with {other}",

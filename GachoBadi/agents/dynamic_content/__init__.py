@@ -9,6 +9,6 @@ implemented, or a field the existing agents leave empty). The fourth, the
 Consistency Critic Agent, exists because that borrowing is itself a risk:
 Untitled Goose Game is a mischief/chaos game with a five-verb set Gacho
 Badi doesn't share, so adapted content can leak the wrong tone or the
-wrong verbs. See CONTENT_PIPELINE_README.md for the full mapping and a
-real, reproducible catch.
+wrong verbs. See ../../Readme.md for the full mapping and a real,
+reproducible catch.
 """

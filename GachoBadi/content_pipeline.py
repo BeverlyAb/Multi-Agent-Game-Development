@@ -4,8 +4,8 @@ Reads the GDD (gdd.txt) as the knowledge base, retrieves grounding
 context per content request, generates content with agents adapted from
 UntitledGooseGame_Multi_Agent (see agents/dynamic_content/), and runs every
 output through a Consistency Critic Agent before it's accepted. See
-CONTENT_PIPELINE_README.md for what this generates, whether it sounds
-like the game, and what the critic actually caught.
+Readme.md for what this generates, whether it sounds like the game, and
+what the critic actually caught.
 """
 from __future__ import annotations
 
@@ -103,7 +103,7 @@ class ContentPipeline:
         # Tuned from an earlier version of this query ("task creator connection
         # goose verbs honk grab pick up duck dash no dialogue"), which pulled
         # in the roster/scoping and tutorial-opening paragraphs instead of the
-        # GDD's actual task-definition paragraph -- see CONTENT_PIPELINE_README.md.
+        # GDD's actual task-definition paragraph -- see Readme.md.
         query = "tasks are actions goose must perform on residents or buildings open-ended indirect interaction"
         hits = self._retrieve(query)
         context = "\n".join(h.chunk.text for h in hits)
