@@ -198,11 +198,10 @@ class GachoBadiCrew:
         """gdd.txt's Game Completion: 'a short cast-wide scene names every
         resident once' -- one authored line per relationship thread (not
         per task; the catalog generates several tasks per pair, one per
-        building, and re-narrating the same pair 3 times would be exactly
-        the kind of repetition the Consistency Critic Agent's redundancy
-        checks exist to catch elsewhere in this codebase), differentiated
-        by whether that thread ultimately resolved or was retired -- never
-        told as an identical, unearned success."""
+        building, and re-narrating the same pair 3 times would read as
+        repetitive filler), differentiated by whether that thread
+        ultimately resolved or was retired -- never told as an identical,
+        unearned success."""
         residents_by_name = {r.name: r for r in residents}
         threads: dict = {}
         for task in tasks:
