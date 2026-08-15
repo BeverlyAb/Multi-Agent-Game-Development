@@ -24,12 +24,15 @@ Only the human owner sets a contract's `Status`. Agents never change it.
 2. **READY FOR REVIEW** — the human sends the contract to the Reviewer.
    The Reviewer writes `docs/agent-reviews/review-<name>.md`, classifying
    findings per `docs/finding-severity.md`.
-3. **NEEDS HUMAN INPUT** — either the Reviewer or the Implementer found
-   an ambiguity or a decision only the human can make. The human resolves
-   it, updates the contract, and moves it back to `READY FOR REVIEW`.
-4. **READY FOR APPROVAL** — the Implementer finished the work (source +
-   tests) and the AI review is complete, with no P0/P1 findings left
-   open. The human performs the final review.
+3. **NEEDS HUMAN INPUT** — the Reviewer recommends this status in the
+   review whenever any P0/P1/P2 findings are open or a human decision is
+   required (the normal outcome of a review with unresolved findings).
+   The human resolves the decisions, updates the contract, and sends it
+   back to the Reviewer. The Reviewer re-runs the review.
+4. **READY FOR APPROVAL** — the Reviewer recommends this status once most
+   or all severities are addressed (no open P0/P1; P2s resolved or
+   consciously waived) and the implementation + AI review are complete.
+   The human performs the final review.
 5. **CLOSED** — the human accepted the implementation.
 
 ## What happens when a contract is CLOSED
