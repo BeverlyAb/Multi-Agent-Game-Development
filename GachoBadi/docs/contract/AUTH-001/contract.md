@@ -1,7 +1,7 @@
 # Contract: auth-refactor
 
 **ID:** AUTH-001
-**Status:** NEEDS HUMAN INPUT
+**Status:** READY FOR REVIEW
 
 
 
@@ -20,7 +20,26 @@ By the end, gdd.txt, README.md, and the gdd-review-kit's SYNTHESIS.md (tracked c
   `chain_effect` schema; agent roster; token budgets
 2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md. 
 3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/reviews/SYNTHESIS.md. Enumerate round outputs (or state only `SYNTHESIS.md` is required and others may be discarded)
+4. If any Requirement 1 section does not match the
+  code, update `README.md` to match the code, then sync `gdd.txt` to
+  README." State the chain code → README → `gdd.txt` → synthesis.
+5. The authoritative source is the tracked Draft
+  #11 copy, name the blockers to confirm gone (its Issue 1 is the
+  chain-reaction softlock — which is also Requirement 1's first section),
+  and define the loop: if the regenerated synthesis still reports
+  BLOCKING findings, update the GDD sections and re-run, or escalate to
+  the human.
 
+6. Make the decision ("only `SYNTHESIS.md` is required —
+  `review-board.html`, `review-viz.html`, and `reviews/viz-*.json` may be
+  discarded"), add an acceptance criterion that the tracked
+  `GachoBadi/design_review/SYNTHESIS.md` is refreshed to match the kit's,
+  and replace the P0/P1 criterion with "no BLOCKING findings in the
+  regenerated synthesis" (or drop it, since the human reviews).
+
+  6. Implementer runs the
+  rounds (after confirming `codex` is authenticated) or the human runs
+  them, and require honoring the kit's context rules.
 ## Constraints
 
 Define what must not change or what boundaries the implementation must
