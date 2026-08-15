@@ -24,8 +24,10 @@ See:
 
 Read the relevant document before making architectural changes. See
 docs/contract/, docs/agent-reviews/, and docs/agent-responses/ for the
-contract -> review -> response workflow, and docs/finding-severity.md for
-how review findings are classified (P0-P3) and numbered (P<n>-<NNN>).
+contract -> review -> response workflow (docs/workflow-lifecycle.md
+defines the contract statuses and what happens when one is CLOSED), and
+docs/finding-severity.md for how review findings are classified (P0-P3)
+and numbered (P<n>-<NNN>).
 
 ## Important Directories
 

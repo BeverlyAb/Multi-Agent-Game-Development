@@ -6,6 +6,11 @@
 > [Ownership](#ownership)).
 
 **ID:** AUTH-001
+
+`Status` follows the workflow lifecycle (`DRAFT` -> `READY FOR REVIEW`
+-> `NEEDS HUMAN INPUT` -> `READY FOR APPROVAL` -> `CLOSED`). Only the
+human owner sets it. See docs/workflow-lifecycle.md for the full
+lifecycle and what happens when a contract is CLOSED.
 **Status:** READY FOR REVIEW
 
 ## Problem
