@@ -1,11 +1,13 @@
-# Contract: auth-refactor
+# Contract: <ID>
 
-> **Template.** Copy this file for a new piece of work: give it a unique
-> `Contract ID` and replace every `...` placeholder. The human owner
-> writes the contract; the reviewer and implementer consume it (see
-> [Ownership](#ownership)).
+> **Template.** For a new piece of work, create a directory
+> `docs/contract/<ID>/` with this file as `contract.md`, give it a
+> unique `Contract ID`, and replace every `...` placeholder. The human
+> owner writes the contract; the reviewer and implementer consume it
+> (see [Ownership](#ownership)). The review and response for this
+> contract live in the same directory as `review.md` and `response.md`.
 
-**ID:** AUTH-001
+**ID:** AUTH-<NNN>
 
 `Status` follows the workflow lifecycle (`DRAFT` -> `READY FOR REVIEW`
 -> `NEEDS HUMAN INPUT` -> `READY FOR APPROVAL` -> `CLOSED`). Only the
@@ -61,13 +63,12 @@ contract-specific checks on top of these:
 
 - **Human:** owns and modifies this contract. Assigns the `Contract ID`
   and sets `Status`.
-- **Reviewer:** reads the contract and owns
-  `docs/agent-reviews/review-auth-refactor.md`. Findings are numbered
+- **Reviewer:** reads the contract and owns this contract directory's
+  `review.md`. Findings are numbered
   `P0-001`, `P1-001`, `P2-001`, ... per `docs/finding-severity.md`; only
   the reviewer assigns severities.
 - **Implementer:** reads the contract and the review, modifies source
-  code and tests, and owns
-  `docs/agent-responses/response-auth-refactor.md`, disposing of each
-  review finding by id.
+  code and tests, and owns this contract directory's
+  `response.md`, disposing of each review finding by id.
 - **AGENTS.md:** defines repository-wide rules; modified only with human
   approval (see `AGENTS.md` Governance).

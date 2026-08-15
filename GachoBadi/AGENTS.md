@@ -23,11 +23,12 @@ See:
 - docs/cli.md
 
 Read the relevant document before making architectural changes. See
-docs/contract/, docs/agent-reviews/, and docs/agent-responses/ for the
-contract -> review -> response workflow (docs/workflow-lifecycle.md
-defines the contract statuses and what happens when one is CLOSED), and
-docs/finding-severity.md for how review findings are classified (P0-P3)
-and numbered (P<n>-<NNN>).
+docs/contract/ for the contract -> review -> response workflow, with one
+directory per Contract ID (`docs/contract/<ID>/contract.md`,
+`review.md`, `response.md`). docs/workflow-lifecycle.md defines the
+contract statuses and what happens when one is CLOSED, and
+docs/finding-severity.md covers how review findings are classified
+(P0-P3) and numbered (P<n>-<NNN>).
 
 ## Important Directories
 
@@ -43,9 +44,7 @@ and numbered (P<n>-<NNN>).
     tests/             (placeholder) automated tests
     docs/              Project documentation
     docs/architecture/ Architecture docs
-    docs/contract/     Task contracts (e.g. contract/auth-refactor.md)
-    docs/agent-reviews/   Independent reviews (e.g. review-auth-refactor.md)
-    docs/agent-responses/ Responses to reviews (e.g. response-auth-refactor.md)
+    docs/contract/     Per-ID contract dirs (docs/contract/<ID>/contract.md, review.md, response.md)
 
 ## Development
 
@@ -110,12 +109,13 @@ not AGENTS.md.
 
 ## Reviewer-Implementer Specific Tasks
 Reviewer owns:
-  review-auth-refactor.md
+  docs/contract/<ID>/review.md
 
 Implementer owns:
   source changes
   test changes
   implementation commits
+  docs/contract/<ID>/response.md
 
 Human owns:
   AGENTS.md / governance

@@ -36,9 +36,9 @@ Examples: `P0-001`, `P1-003`, `P2-007`, `P3-012`.
 ## Usage
 
 - The reviewer records each finding with its id in
-  `docs/agent-reviews/review-<name>.md`.
+  `docs/contract/<ID>/review.md`.
 - The implementation agent refers back by id in
-  `docs/agent-responses/response-<name>.md` ("P1-001 — fixed in ...",
+  `docs/contract/<ID>/response.md` ("P1-001 — fixed in ...",
   "P2-004 — won't fix, reason ...").
 - Only the reviewer assigns severity and numbers; the implementation
   agent does not renumber findings.

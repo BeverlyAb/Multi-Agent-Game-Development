@@ -1,11 +1,11 @@
 # Review: auth-refactor
 
-**Contract reviewed:** `docs/contract/auth-refactor.md` (AUTH-001, revision 3)
+**Contract reviewed:** `docs/contract/AUTH-001/contract.md` (AUTH-001, revision 3)
 **Date:** 2026-08-15
 
 ## Scope reviewed
 
-- The revised contract (`docs/contract/auth-refactor.md`)
+- The revised contract (`docs/contract/AUTH-001/contract.md`)
 - `README.md` (workspace root) vs `gdd-review-kit/gdd.txt` vs `gdd-review-kit/gdd.md` vs `GachoBadi/design_review/gdd.txt`
 - `gdd-review-kit/` orchestration and git state, `gdd-review-kit/.gitignore`
 - Claude Code feasibility (`claude` CLI presence and auth state)

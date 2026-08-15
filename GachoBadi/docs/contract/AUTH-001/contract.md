@@ -52,13 +52,12 @@ contract-specific checks on top of these:
 
 - **Human:** owns and modifies this contract. Assigns the `Contract ID`
   and sets `Status`.
-- **Reviewer:** reads the contract and owns
-  `docs/agent-reviews/review-auth-refactor.md`. Findings are numbered
+- **Reviewer:** reads the contract and owns this contract directory's
+  `review.md`. Findings are numbered
   `P0-001`, `P1-001`, `P2-001`, ... per `docs/finding-severity.md`; only
   the reviewer assigns severities.
 - **Implementer:** reads the contract and the review, modifies source
-  code and tests, and owns
-  `docs/agent-responses/response-auth-refactor.md`, disposing of each
-  review finding by id.
+  code and tests, and owns this contract directory's
+  `response.md`, disposing of each review finding by id.
 - **AGENTS.md:** defines repository-wide rules; modified only with human
   approval (see `AGENTS.md` Governance).

@@ -1,7 +1,7 @@
 # Response: auth-refactor
 
-The implementing agent records its response to
-`docs/agent-reviews/review-auth-refactor.md` here. Per
+The implementing agent records its response to this contract
+directory's `review.md` here. Per
 `docs/workflow-lifecycle.md` the middle statuses are agent-owned and
 generic: the implementer sets `NEEDS HUMAN INPUT` when it needs a human
 decision, and `READY FOR APPROVAL` once the work + tests are done and
