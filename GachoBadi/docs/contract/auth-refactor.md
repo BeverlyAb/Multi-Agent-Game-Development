@@ -1,31 +1,24 @@
 # Contract: auth-refactor
 
-> **Template.** Copy this file for a new piece of work: give it a unique
-> `Contract ID` and replace every `...` placeholder. The human owner
-> writes the contract; the reviewer and implementer consume it (see
-> [Ownership](#ownership)).
-
 **ID:** AUTH-001
 **Status:** READY FOR REVIEW
 
 ## Problem
 
-Describe what is wrong, missing, or needs improvement. Be concrete: name
-the behavior, the code path, or the user-visible symptom. If this traces
-back to a `design_review/gdd.txt` requirement, cite it.
+There have been significant changes to the code that might not be captured in the MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt and its .md version in MultiAgent-Game-Development/README.md. 
+
+Update both gdd.txt and README.md and run through the MultiAgent-Game-Development/gdd-review-kit from rounds 1-5. 
 
 ## Desired Outcome
 
-Describe what should be true after the work is complete — the observable
-state, not the implementation.
+By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/review-board.html should be updated.
 
 ## Requirements
 
-Numbered, checkable requirements. Each should be verifiable on its own.
 
-1. ...
-2. ...
-3. ...
+1. Go through the files within GachoBadi.
+2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt and  MultiAgent-Game-Development/README.md to reflect the changes.
+3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/.
 
 ## Constraints
 
