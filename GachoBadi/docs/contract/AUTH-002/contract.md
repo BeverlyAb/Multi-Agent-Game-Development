@@ -1,7 +1,7 @@
 # Contract: auth-refactor
 
 **ID:** AUTH-002
-**Status:** NEEDS HUMAN INPUT
+**Status:** READY FOR REVIEW
 
 
 
@@ -19,8 +19,7 @@ Update the MultiAgent-Game-Development/README.md and MultiAgent-Game-Development
   match the code: Chain Reaction Agent; Item Interaction `resident_actions`/
   `chain_effect` schema; agent roster; token budgets
 2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md. 
-3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/review-board.html. Enumerate round outputs (or state only `review-board.html`
-  is required and others may be discarded).
+3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an SYNTHESIS.md
   4. Define a blocker as "a BLOCKING finding in the
   regenerated `review-board.html`", replace the P0/P1 acceptance
   criterion with "no BLOCKING findings in the regenerated board", and
@@ -29,6 +28,10 @@ Update the MultiAgent-Game-Development/README.md and MultiAgent-Game-Development
   5. "Run Rounds 1-5; only
   `review-board.html` is required — `SYNTHESIS.md`, `review-viz.html`,
   and `reviews/viz-*.json` may be discarded."
+  6. "If any section in Requirement 1
+  does not match the code, update `README.md` (the GDD source) to match
+  the code, then sync `gdd.txt` to README." State README → `gdd.txt` →
+  board as the chain, with the code as ground truth for Requirement 1.
 
 
 ## Constraints

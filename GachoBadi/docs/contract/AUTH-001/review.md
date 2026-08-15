@@ -1,7 +1,14 @@
 # Review: auth-refactor
 
 **Contract reviewed:** `docs/contract/AUTH-001/contract.md` (AUTH-001, revision 3)
-**Date:** 2026-08-15
+**Date:** 2026-08-15 (re-review; contract reset to READY FOR REVIEW by the human)
+
+## Re-review note
+
+The contract text is unchanged since the previous review and the
+underlying state is unchanged (`README.md` = Draft #11,
+`gdd-review-kit/gdd.txt` = Draft #10, `review-board.html` = Draft #9).
+All findings below are reaffirmed as-is.
 
 ## Scope reviewed
 
@@ -111,8 +118,9 @@ No P0 or P1 findings. Findings below: 2 × P2, 2 × P3.
 
 ## Report
 
-Reported to the implementer. No source code was modified. Contract status
-(`READY FOR REVIEW`) is unchanged — per `docs/workflow-lifecycle.md`, only
-the human owner changes status. The contract is in good shape to proceed; the
-two remaining P2s are about deciding round-output scope and confirming how the
-Claude Code rounds will be executed.
+Reported to the implementer. No source code was modified. Per
+`docs/workflow-lifecycle.md`, the reviewer sets the contract status as a
+direct consequence of the review; findings are open, so the status is
+set to `NEEDS HUMAN INPUT`. The two P2s remain about deciding
+round-output scope and confirming how the Claude Code rounds will be
+executed.

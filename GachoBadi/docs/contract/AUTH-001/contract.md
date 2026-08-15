@@ -1,7 +1,7 @@
 # Contract: auth-refactor
 
 **ID:** AUTH-001
-**Status:** READY FOR REVIEW
+**Status:** NEEDS HUMAN INPUT
 
 
 
