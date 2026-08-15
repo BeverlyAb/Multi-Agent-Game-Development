@@ -6,21 +6,18 @@
 
 
 ## Problem
-
-There have been significant changes to the code that might not be captured in the MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt and its .md version in MultiAgent-Game-Development/README.md. 
-
-Update both gdd.txt and README.md and run through the MultiAgent-Game-Development/gdd-review-kit from rounds 1-5. 
+Update MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md, which is its 11th version. Run through the MultiAgent-Game-Development/gdd-review-kit from rounds 1-5. 
 
 ## Desired Outcome
 
-By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/review-board.html should be updated.
+By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/review-board.html should be at the latest version. The human will review the results from the gdd-review-kit.
 
 ## Requirements
 
 
 1. Go through the files within GachoBadi.
-2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt and  MultiAgent-Game-Development/README.md to reflect the changes.
-3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/.
+2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md. 
+3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/review-board.html.
 
 ## Constraints
 
