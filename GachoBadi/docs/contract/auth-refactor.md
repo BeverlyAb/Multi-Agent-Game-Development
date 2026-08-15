@@ -15,16 +15,19 @@ By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/r
 ## Requirements
 
 
-1. Go through the files within GachoBadi.
+1. Verify these GDD sections
+  match the code: Chain Reaction Agent; Item Interaction `resident_actions`/
+  `chain_effect` schema; agent roster; token budgets
 2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md. 
-3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/review-board.html.
+3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/review-board.html. Enumerate round outputs (or state only `review-board.html`
+  is required and others may be discarded)
 
 ## Constraints
 
 Define what must not change or what boundaries the implementation must
 respect.
 
-- **Scope:** do not modify files outside the stated areas.
+- **Scope:** do not modify files outside the stated areas. Do not worry about untracked version (e.g. Draft #9 artifacts). Ignore gdd.md
 - **Dependencies:** no new mandatory dependencies (project is stdlib-only).
 - **API compatibility:** preserve existing public interfaces.
 - **Behavioral rules:** the project's coding rules in `AGENTS.md` apply,
@@ -43,7 +46,8 @@ contract-specific checks on top of these:
 - [ ] No unintended changes are present (`git diff` reviewed).
 - [ ] No P0 or P1 review findings remain open.
 - [ ] `AGENTS.md` "Before Completing a Task" steps are satisfied.
-
+- [ ] `gdd-review-kit/gdd.txt` content
+  matches `README.md` (Draft #11)" — e.g. a diff on normalized text.
 ## Ownership
 
 - **Human:** owns and modifies this contract. Assigns the `Contract ID`
