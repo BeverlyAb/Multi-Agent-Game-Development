@@ -1,16 +1,16 @@
 # Contract: auth-refactor
 
-**ID:** AUTH-001
-**Status:** READY FOR REVIEW
+**ID:** AUTH-002
+**Status:** NEEDS HUMAN INPUT
 
 
 
 ## Problem
-Update MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md, which is its 11th version. Run through the MultiAgent-Game-Development/gdd-review-kit from rounds 1-5. 
+Critics from MultiAgent-Game-Development/gdd-review-kit/review-board.html found significant blockers with the GDD.
 
 ## Desired Outcome
 
-By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/review-board.html should be at the latest version. The human will review the results from the gdd-review-kit.
+Update the MultiAgent-Game-Development/README.md and MultiAgent-Game-Development/gdd-review-kit/gdd.txt so they are in sync and so that there are no blockers.
 
 ## Requirements
 
@@ -20,12 +20,22 @@ By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/r
   `chain_effect` schema; agent roster; token budgets
 2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md. 
 3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/review-board.html. Enumerate round outputs (or state only `review-board.html`
-  is required and others may be discarded)
+  is required and others may be discarded).
+  4. Define a blocker as "a BLOCKING finding in the
+  regenerated `review-board.html`", replace the P0/P1 acceptance
+  criterion with "no BLOCKING findings in the regenerated board", and
+  state the loop: if the board reports BLOCKING findings, update the GDD
+  sections in README + `gdd.txt` and re-run, or escalate to the human.
+  5. "Run Rounds 1-5; only
+  `review-board.html` is required — `SYNTHESIS.md`, `review-viz.html`,
+  and `reviews/viz-*.json` may be discarded."
+
 
 ## Constraints
 
 Define what must not change or what boundaries the implementation must
 respect.
+
 
 - **Scope:** do not modify files outside the stated areas. Do not worry about untracked version (e.g. Draft #9 artifacts). Ignore gdd.md
 - **Dependencies:** no new mandatory dependencies (project is stdlib-only).
