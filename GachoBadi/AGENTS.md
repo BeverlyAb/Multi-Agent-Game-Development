@@ -96,3 +96,15 @@ the proposed change separately.
 
 Task-specific findings belong in review or planning documents,
 not AGENTS.md.
+
+## Reviewer-Implementer Specific Tasks
+Reviewer owns:
+  review-auth-refactor.md
+
+Implementer owns:
+  source changes
+  test changes
+  implementation commits
+
+Human owns:
+  AGENTS.md / governance
