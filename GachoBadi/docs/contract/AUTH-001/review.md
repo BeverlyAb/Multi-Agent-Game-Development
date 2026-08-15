@@ -1,19 +1,22 @@
 # Review: auth-refactor
 
-**Contract reviewed:** `docs/contract/AUTH-001/contract.md` (AUTH-001, revision 3)
-**Date:** 2026-08-15 (re-review; contract reset to READY FOR REVIEW by the human)
+**Contract reviewed:** `docs/contract/AUTH-001/contract.md` (AUTH-001, revision 4)
+**Date:** 2026-08-15 (re-review; contract merged with AUTH-002 and re-pointed at SYNTHESIS.md)
 
 ## Re-review note
 
-The contract text is unchanged since the previous review and the
-underlying state is unchanged (`README.md` = Draft #11,
-`gdd-review-kit/gdd.txt` = Draft #10, `review-board.html` = Draft #9).
-All findings below are reaffirmed as-is.
+Revision 4 merged AUTH-002 into AUTH-001 and changed the kit deliverable
+from `review-board.html` to the moderated `SYNTHESIS.md` (tracked copy
+`GachoBadi/design_review/SYNTHESIS.md`, Draft #11: 10 BLOCKING / 16 MAJOR /
+4 MINOR). Underlying state: `README.md` = Draft #11,
+`gdd-review-kit/gdd.txt` = Draft #10, kit `reviews/SYNTHESIS.md` = Draft #9.
+Findings below are reaffirmed with the deliverable updated.
 
 ## Scope reviewed
 
 - The revised contract (`docs/contract/AUTH-001/contract.md`)
 - `README.md` (workspace root) vs `gdd-review-kit/gdd.txt` vs `gdd-review-kit/gdd.md` vs `GachoBadi/design_review/gdd.txt`
+- `GachoBadi/design_review/SYNTHESIS.md` (tracked copy, Draft #11) vs `gdd-review-kit/reviews/SYNTHESIS.md` (Draft #9)
 - `gdd-review-kit/` orchestration and git state, `gdd-review-kit/.gitignore`
 - Claude Code feasibility (`claude` CLI presence and auth state)
 - GachoBadi code behind the Draft #11 changes (Chain Reaction Agent, item affordance schema)
@@ -39,7 +42,8 @@ This revision resolves the previous review's P1 and nearly all P2s:
 Verified current state (unchanged): `README.md` = Draft #11,
 `gdd-review-kit/gdd.txt` = Draft #10, `gdd-review-kit/gdd.md` = Draft #10
 (untracked), `GachoBadi/design_review/gdd.txt` = Draft #11,
-`reviews/` and `review-board.html` = Draft #9.
+`gdd-review-kit/reviews/SYNTHESIS.md` = Draft #9,
+`GachoBadi/design_review/SYNTHESIS.md` = Draft #11.
 
 No P0 or P1 findings. Findings below: 2 × P2, 2 × P3.
 
@@ -66,19 +70,21 @@ No P0 or P1 findings. Findings below: 2 × P2, 2 × P3.
 #### P2-001 — Round-output scope is still not decided; P0/P1 criterion remains unmappable
 
 - **Evidence:** Requirement 3 reads "Run the 5 rounds ... make sure it
-  produces an updated `review-board.html`. Enumerate round outputs (or state
-  only `review-board.html` is required and others may be discarded)" — that
-  is guidance *about* the requirement, not the requirement itself. The
-  contract still does not state whether `SYNTHESIS.md`, `review-viz.html`,
-  and `reviews/viz-*.json` count as deliverables. Separately, acceptance
-  criterion "No P0 or P1 review findings remain open" still cannot be
-  evaluated: the kit produces BLOCKING/MAJOR/MINOR, not P0/P1.
+  produces an updated `gdd-review-kit/reviews/SYNTHESIS.md`. Enumerate
+  round outputs (or state only `SYNTHESIS.md` is required and others may
+  be discarded)" — that is guidance *about* the requirement, not the
+  requirement itself. The contract still does not state whether
+  `review-board.html`, `review-viz.html`, and `reviews/viz-*.json` count
+  as deliverables. Separately, acceptance criterion "No P0 or P1 review
+  findings remain open" still cannot be evaluated: the kit produces
+  BLOCKING/MAJOR/MINOR, not P0/P1.
 - **Why it matters:** The implementer is told to decide scope that the human
   should own, and one criterion remains uncheckable.
 - **Suggestion:** Reword requirement 3 to a decision, e.g. "Run rounds 1-5;
-  only `review-board.html` is required — `SYNTHESIS.md` and `review-viz.html`
-  may be discarded." Replace the P0/P1 criterion with "no BLOCKING findings
-  remain in the kit's synthesis" (or drop it, since the human reviews).
+  only `SYNTHESIS.md` is required — `review-board.html`, `review-viz.html`,
+  and `reviews/viz-*.json` may be discarded." Replace the P0/P1 criterion
+  with "no BLOCKING findings remain in the kit's synthesis" (or drop it,
+  since the human reviews).
 
 #### P2-002 — Running rounds requires authenticated Claude Code
 

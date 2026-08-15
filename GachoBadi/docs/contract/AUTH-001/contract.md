@@ -6,11 +6,11 @@
 
 
 ## Problem
-Update MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md, which is its 11th version. Run through the MultiAgent-Game-Development/gdd-review-kit from rounds 1-5. 
+Critics from the gdd-review-kit's moderated synthesis found significant blockers with the GDD (see MultiAgent-Game-Development/gdd-review-kit/reviews/SYNTHESIS.md and its tracked copy at GachoBadi/design_review/SYNTHESIS.md). Update MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md, which is its 11th version, and run through the MultiAgent-Game-Development/gdd-review-kit from rounds 1-5 to confirm the blockers are gone.
 
 ## Desired Outcome
 
-By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/review-board.html should be at the latest version. The human will review the results from the gdd-review-kit.
+By the end, gdd.txt, README.md, and the gdd-review-kit's SYNTHESIS.md (tracked copy at GachoBadi/design_review/SYNTHESIS.md) should be at the latest version. The human will review the results from the gdd-review-kit.
 
 ## Requirements
 
@@ -19,8 +19,7 @@ By the end, gdd.txt, README.md, and MultiAgent-Game-Development/gdd-review-kit/r
   match the code: Chain Reaction Agent; Item Interaction `resident_actions`/
   `chain_effect` schema; agent roster; token budgets
 2. Update MultiAgentGame/MultiAgent-Game-Development/gdd-review-kit/gdd.txt to reflect the changes of the MultiAgent-Game-Development/README.md. 
-3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/review-board.html. Enumerate round outputs (or state only `review-board.html`
-  is required and others may be discarded)
+3. Run the 5 rounds of testing using MultiAgent-Game-Development/gdd-review-kit/ and make sure it produces an updated MultiAgent-Game-Development/gdd-review-kit/reviews/SYNTHESIS.md. Enumerate round outputs (or state only `SYNTHESIS.md` is required and others may be discarded)
 
 ## Constraints
 
