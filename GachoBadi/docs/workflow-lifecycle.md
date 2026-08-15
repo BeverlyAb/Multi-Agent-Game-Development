@@ -4,17 +4,30 @@ How a task contract moves through the contract -> review -> response
 workflow, from `DRAFT` to `CLOSED`. The full status list lives here;
 `docs/contract/auth-refactor.md` just points at it.
 
-## Statuses
+## Who determines each status
 
-Only the human owner sets a contract's `Status`. Agents never change it.
+Every status has exactly **one determiner** — the actor who decides the
+contract is in that state and sets the `Status` field. No status is ever
+"recommended"; whoever owns it applies it directly.
 
-| Status             | Meaning                                               | Human action                                |
-| ------------------ | ----------------------------------------------------- | ------------------------------------------- |
-| `DRAFT`            | Task is still being defined                           | Edit requirements/criteria                  |
-| `READY FOR REVIEW` | Task definition is complete                           | Send to Reviewer                            |
-| `NEEDS HUMAN INPUT`| Reviewer/Implementer found an ambiguity or decision   | Resolve it and update task                  |
-| `READY FOR APPROVAL`| Implementation and AI review are complete            | Perform final human review                  |
-| `CLOSED`           | Human accepted the implementation                     | Merge/finish                                |
+| Status              | Determined & set by | Meaning                                              |
+| ------------------- | ------------------- | ---------------------------------------------------- |
+| `DRAFT`             | Human               | Task is still being defined                          |
+| `READY FOR REVIEW`  | Human               | Task definition is complete                          |
+| `NEEDS HUMAN INPUT` | Agent (generic)     | Open P0/P1/P2 findings, or a human decision is required |
+| `READY FOR APPROVAL`| Agent (generic)     | Work + tests complete; most or all severities addressed |
+| `CLOSED`            | Human               | Human accepted the implementation                    |
+
+- The **human** owns `DRAFT`, `READY FOR REVIEW`, and `CLOSED`.
+- The two middle statuses are **agent-owned** and generic — any acting
+  agent (reviewer or implementer) sets them depending on the situation:
+  - **NEEDS HUMAN INPUT** — the reviewer sets it when a review leaves
+    open P0/P1/P2 findings; the implementer sets it when it hits an
+    ambiguity or decision only the human can make.
+  - **READY FOR APPROVAL** — the implementer sets it once the work and
+    tests are complete; the reviewer sets it when a re-review confirms
+    most or all severities are addressed (no open P0/P1; P2s resolved
+    or consciously waived).
 
 ## The flow
 
@@ -22,18 +35,21 @@ Only the human owner sets a contract's `Status`. Agents never change it.
    Requirements, Constraints, Acceptance Criteria) until the task is
    well-defined.
 2. **READY FOR REVIEW** — the human sends the contract to the Reviewer.
-   The Reviewer writes `docs/agent-reviews/review-<name>.md`, classifying
-   findings per `docs/finding-severity.md`.
-3. **NEEDS HUMAN INPUT** — the Reviewer recommends this status in the
-   review whenever any P0/P1/P2 findings are open or a human decision is
+3. **NEEDS HUMAN INPUT** — the Reviewer writes
+   `docs/agent-reviews/review-<name>.md` and sets the contract to this
+   status whenever any P0/P1/P2 findings are open or a human decision is
    required (the normal outcome of a review with unresolved findings).
-   The human resolves the decisions, updates the contract, and sends it
-   back to the Reviewer. The Reviewer re-runs the review.
-4. **READY FOR APPROVAL** — the Reviewer recommends this status once most
-   or all severities are addressed (no open P0/P1; P2s resolved or
-   consciously waived) and the implementation + AI review are complete.
-   The human performs the final review.
-5. **CLOSED** — the human accepted the implementation.
+   The human resolves the decisions and updates the contract.
+4. **READY FOR APPROVAL** — the Implementer addresses the findings and
+   completes the work and tests, and the Reviewer re-runs the review.
+   Once most or all severities are addressed, the acting agent sets this
+   status. The human performs the final review.
+5. **CLOSED** — the human accepted the implementation and sets the
+   terminal status.
+
+An agent cannot leave a contract in `READY FOR REVIEW`; after a review
+the contract must move to `NEEDS HUMAN INPUT` (if findings remain) or on
+to `READY FOR APPROVAL` (if they are addressed).
 
 ## What happens when a contract is CLOSED
 

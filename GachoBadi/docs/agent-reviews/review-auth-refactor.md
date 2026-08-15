@@ -1,8 +1,6 @@
 # Review: auth-refactor
 
 **Contract reviewed:** `docs/contract/auth-refactor.md` (AUTH-001, revision 3)
-**Status:** Re-review complete — findings below. The reviewer did not modify source code.
-**Recommended contract status:** NEEDS HUMAN INPUT (P2 findings open; see P2-001/P2-002).
 **Date:** 2026-08-15
 
 ## Scope reviewed
