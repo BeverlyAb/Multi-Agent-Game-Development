@@ -18,11 +18,14 @@ exchange shared data models; a verification layer wraps the highest-risk
 agents; a Phaser 3 client renders the generated content.
 
 See:
-- docs/architecture.md
+- docs/architecture/architecture.md
 - docs/domain-models.md
 - docs/cli.md
 
-Read the relevant document before making architectural changes.
+Read the relevant document before making architectural changes. See
+docs/contract/, docs/agent-reviews/, and docs/agent-responses/ for the
+contract -> review -> response workflow, and docs/finding-severity.md for
+how review findings are classified (P0-P3) and numbered (P<n>-<NNN>).
 
 ## Important Directories
 
@@ -34,7 +37,13 @@ Read the relevant document before making architectural changes.
     web/               Phaser 3 client
     output/crew/       Generated game content + manifest.json
     design_review/     GDD and design review docs
-    docs/              This project's documentation
+    src/               (placeholder) application source
+    tests/             (placeholder) automated tests
+    docs/              Project documentation
+    docs/architecture/ Architecture docs
+    docs/contract/     Task contracts (e.g. contract/auth-refactor.md)
+    docs/agent-reviews/   Independent reviews (e.g. review-auth-refactor.md)
+    docs/agent-responses/ Responses to reviews (e.g. response-auth-refactor.md)
 
 ## Development
 
