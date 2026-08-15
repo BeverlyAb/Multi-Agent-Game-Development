@@ -83,3 +83,16 @@ test harness.
 3. Review git diff (restore regenerated `workflow/logs/*.jsonl` if the run wasn't the point of the change).
 4. Report tests that failed.
 5. Do not claim tests passed unless they were actually run.
+
+## Governance
+
+AGENTS.md defines repository-wide agent policy.
+
+Agents must not modify AGENTS.md unless explicitly instructed
+by the human repository owner.
+
+If an agent believes AGENTS.md should change, it must report
+the proposed change separately.
+
+Task-specific findings belong in review or planning documents,
+not AGENTS.md.
