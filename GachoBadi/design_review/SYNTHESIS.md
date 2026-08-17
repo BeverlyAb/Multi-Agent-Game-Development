@@ -1,160 +1,100 @@
-# Design Review Board — Moderator Synthesis
+# DESIGN REVIEW BOARD — SYNTHESIS
 
-Document reviewed: `gdd.txt` (GDD Draft #11)
-Date: 2026-08-15
-Method: six isolated reviewer contexts · parallel Round 1 · cross-examination Round 2 · moderated synthesis
-
-Board tally: 30 Round 1 findings (six reviewers × five). After cross-examination,
-final severities: **10 BLOCKING / 16 MAJOR / 4 MINOR** (finding-level; the chain
-softlock is one merged board issue across SD-2 + AQA-1 + F-03, and PP-1 was upgraded
-to effectively BLOCKING). **3 unresolved disagreements** escalated to the design owner.
+**Document:** Gachō Badi GDD Draft #11 (gdd.txt)
+**Date:** 2026-08-17
+**Reviewers:** Systems Designer, Narrative Critic, Player Psychologist, Feasibility Lead, Adversarial QA, Business Analyst
 
 ---
 
-## TOP 5 ISSUES
+## 1. TOP 5 ISSUES
 
-### 1 — BLOCKING — Chain-reaction tasks are a permanent, unretirable softlock
-**Problem.** The Goose Solution Planner certifies solvability but is forbidden to
-plan chain reactions; the Chain Reaction Agent certifies nothing; and an un-fired
-chain step is invisible to the retirement detector (residents and items are present,
-they just never act). A chain task whose goal needs a resident-authored
-`chain_effect` is neither planner-verifiable, nor Director-pollable, nor retirable —
-and the consumed pairing can never regenerate.
-**Flagged by:** Systems Designer (SD-2), Adversarial QA (AQA-1), Feasibility Lead
-(F-03).
-**Cross-examination:** STRENGTHENED. SD-2 and F-03 were upgraded MAJOR → BLOCKING
-and merged with AQA-1 into one board BLOCKING. AQA-1's root-cause diagnosis (no
-guarantee the state being checked is ever reachable) was held against F-03's
-symptom-level poll-trigger fix.
+### #1 — Task count math is incoherent with the pair-consumption model
+**Severity:** BLOCKING · **Confidence:** High · **Cross-exam outcome:** STRENGTHENED
 
-### 2 — BLOCKING — The completion gate and ending are incoherent: harmony is either unearned (retirement counts) or unreachable (retirement cannot fire)
-**Problem.** The ending is reached "whether by resolution or by outright retirement,"
-but a retired task is, by the pitch's own definition, a thread that stayed open —
-so the harmony beat can play over the pitch's definition of *not* harmony (NC-01).
-Conversely, the only defined retirement trigger is bug-classified and never fires in
-intended play, so a genuinely stuck player has no skip, no hint sufficiency, and no
-exit from the 100%-completion gate (SD-1). The player either gets silent retirement
-with no accounting (PP-1) or a permanent wall.
-**Flagged by:** Narrative Critic (NC-01, BLOCKING), Systems Designer (SD-1,
-BLOCKING), Player Psychologist (PP-1, MAJOR → effectively BLOCKING), Business
-Analyst (BA-F4, MINOR → MAJOR).
-**Cross-examination:** STRENGTHENED. Five reviewers converge on one unresolved model
-choice; PP-1 was upgraded on NC-01's promise-breaker argument; BA-F4 was upgraded
-because the same root breaks two promises at the climax.
+The document claims "roughly 30-40 one-time tasks" but the consumption rule ("each resident/resident pair's task once") caps two-resident tasks at 15 with 6 residents. Three-resident tasks are even more pair-expensive. Every downstream calculation — the 75% set threshold, the true-ending tally, the executive summary scope claim — inherits this error.
 
-### 3 — BLOCKING — "Everything past week 3 is additive, not load-bearing" is false; the pitched game is validated by a slice that is not it
-**Problem.** The systems deferred past the week-3 checkpoint — chain reactions, item
-reset/loss recovery, the Newscaster reward loop, the full-cast ending, real-latency
-async — are the ones the pitch names as its differentiation, and the FPS validates
-2 residents, 1 building, 1 task. The checkpoint can pass while the differentiating
-promise is missing, and the real failure is discoverable only in week 12. The stated
-descope contingency would cancel the game's own completion structure.
-**Flagged by:** Feasibility Lead (F-01, BLOCKING), Business Analyst (BA-F3, MAJOR →
-BLOCKING).
-**Cross-examination:** STRENGTHENED. BA-F3 was upgraded to BLOCKING read jointly with
-F-01 as a pitch-integrity defect plus a schedule-integrity defect. F-01's evidence
-was re-anchored onto the reset rule, hint sufficiency, and the chain/latency/ending
-systems.
+**Flagged by:** Adversarial QA (Finding 1). **Connected by:** Systems Designer (cross-exam: smaller pool makes retirement more damaging), Narrative Critic (cross-exam: pair-consumption means zero room for accumulative relationship-building), Business Analyst (cross-exam: developer may plan for 30-40 and discover 15 at week 6). **Survived cross-examination:** Strengthened — the error is structural, not cosmetic, and changes the denominator of every pacing calculation.
 
-### 4 — BLOCKING — The physical-comedy core has no committed technology substrate
-**Problem.** The core loop and goal-state system are built on physical-comedy
-emergence (gates, hoses, puddles, wet targets, moved objects) and the document names
-two 3D physics parents, yet it commits to no engine, no 2D/3D decision, no physics
-approach, no rendering stack, and no save-state model. Weeks 1–12 and the "reused
-unchanged" schedule basis are uncheckable without a substrate.
-**Flagged by:** Feasibility Lead (F-02, MAJOR → BLOCKING).
-**Cross-examination:** STRENGTHENED. Upgraded to BLOCKING because colleague findings
-(NC-05 staging, SD-3 reset movement, BA-F1 market tier) all terminate in the
-uncommitted substrate; each finding makes the others more severe.
-
-### 5 — BLOCKING — The pitch borrows two audience hooks the design strips, then asserts a crossover nobody can identify
-**Problem.** The audience is "the crossover audience of Tomodachi Life and Untitled
-Goose Game players," but the design removes the hook of each: the goose "is not
-mischief for its own sake," and the player "never directly controls a resident," with
-no economy or customization. The crossover is asserted, not argued or quantified,
-against a crowded 2026 cozy/life-sim market.
-**Flagged by:** Business Analyst (BA-F1, BLOCKING).
-**Cross-examination:** STRENGTHENED (argument refined). NC-05 forced a correction:
-the mischief *verbs* are retained — honk, grab, drag, drop, hide, spray — only the
-*justification* is stripped, so the honest positioning ("cozy-coded goose chaos")
-sits closer to Untitled Goose Game-lite and the crossover claim must be argued
-against the shipping mechanics, not the label.
+**Recommendation:** Explicitly state that multi-resident tasks read pairwise records without consuming them (the most likely intended design), add that exception to the consumption rule, and verify the 30-40 ceiling is reachable under the clarified model. If not, revise all downstream math.
 
 ---
 
-## UNRESOLVED DISAGREEMENTS
+### #2 — The retirement subsystem is unconstrained and contradictory
+**Severity:** BLOCKING · **Confidence:** High · **Cross-exam outcome:** STRENGTHENED
 
-### D1 — The retirement model: a designed path or a bug-only pathology?
-**Position A (Systems Designer SD-1):** the only defined trigger is
-agent-detected unsolvability, classified as "a genuine authoring or state-tracking
-bug, not intended play," so retirement can never fire in intended play and the
-reachability claim collapses; a player-initiated retire/skip path is required.
-**Position B (Player Psychologist PP-1 / Business Analyst BA):** the GDD carries a
-second, routine model — the Draft #10 note ("so retirement counting toward
-completion never reads as an unearned success") and the ending's mandatory
-open-thread recounting only have meaning if retirement is a normal event; silent
-retirement is then a guaranteed, repeated player experience.
-**Escalation:** the design owner must decide whether retirement is a designed
-player-facing path or an authoring-bug valve. The choice determines five findings
-across four reviewers (NC-01, PP-1, BA-F4, SD-1, AQA-2).
+Retirement is simultaneously too easy to trigger (planner can retire tasks the player never attempted), unconstrained in volume (no cap on how many tasks retire per set), narratively flat (retired tasks get footnotes, not emotional beats), and contradictory with the "no failure state" claim. Cross-examination revealed this touches nearly every reviewer's concerns: it collapses pacing (Systems Designer), bypasses player agency (Adversarial QA), produces anticlimactic narrative beats (Narrative Critic), and confuses the player (Player Psychologist).
 
-### D2 — What the ending honors: effort or connection?
-**Position A (Systems Designer SD-1, remedy):** a player-initiated skip preserves
-reachability and can be narrated honestly; the reachability promise must win over the
-no-failure branding.
-**Position B (Narrative Critic NC-01):** adopting that remedy *widens* the
-unearned-harmony problem from bug-gated to routine; it must be paired with a
-connection-gated completion ("no open threads") or a rewritten harmony sentence, and
-the connection gate re-opens the reachability hole it closes.
-**Escalation:** the completion-gate semantics — what state actually triggers the
-harmony beat — must be defined against one of these, not both.
+**Flagged by:** Systems Designer (Finding 1: clustering), Adversarial QA (Finding 5: preemptive retirement, Finding 7: no-failure contradiction), Narrative Critic (Finding 3: emotionally flat), Player Psychologist (Finding 5: frustrating, Finding 8: contradicts no-failure claim). **Survived cross-examination:** Strengthened — the two-part fix (cap retirements per set AND require player attempt before retirement) is now a consensus across four reviewers.
 
-### D3 — Payoff integrity versus the open-endedness the difficulty curve depends on
-**Position A (Player Psychologist PP-3):** the authored payoff must be gated to the
-validated, planned solution path, or the reconciliation line can narrate closure the
-player's actions never earned (a hose "mending" a memento-driven friendship).
-**Position B (Systems Designer, conflict 3):** gating to the planned path shrinks the
-effective solution space to the planner's canonical route — exactly the breadth the
-flat-difficulty claim depends on — and reintroduces the state-machine outcome; the
-correct resolution is payoff keyed to *outcome state* plus an enumerated, budgeted
-per-state authoring surface.
-**Escalation:** the document must either curtail the open-endedness claim or commit
-to the per-state authoring budget; PP-3's fix must not be adopted as a substitute
-for the romance-payoff design NC-02 demands.
+**Recommendation:** (1) Cap retirement at ~25% per set. (2) Require the planner to retire only after the player has attempted a task and the attempt has demonstrably failed. (3) Treat retirement as a narrative event with Writer Agent treatment. (4) Reframe "no failure state" as "no blocking failure."
 
 ---
 
-## QUICK WINS
+### #3 — Backstory generation failure creates an unrecoverable softlock
+**Severity:** BLOCKING · **Confidence:** High · **Cross-exam outcome:** STRENGTHENED
 
-1. **State a target playthrough figure** (hours per run, minutes per session). BA-F2
-   flags the omission; Feasibility F-04 cannot compute a per-session API budget
-   without it and Systems Designer SD-4 cannot claim pacing structure without per-set
-   time. One number unblocks three findings across three reviewers.
-2. **Define the item-reset rule** — what "outside of active use" means, how long "a
-   short time" is, and a pause during an active plan. This closes AQA-4/SD-3 and
-   removes a major source of the unexplained task disappearances PP-1 calls a bug.
-3. **Define "island-wide story moments" or drop the phrase**, and give romance a
-   culminating state. PP-4 (MINOR) and NC-02 (MAJOR) can be satisfied by one
-   commitment: define the moments and include at least one romance-resolving beat
-   among them.
+If the Relationship Agent permanently fails to attach a backstory after retries are exhausted, the task never counts toward any threshold. The game can never reach its ending. No amount of placeholder polish fixes a threshold that can never be reached.
+
+**Flagged by:** Adversarial QA (Finding 2). **Connected by:** Narrative Critic (cross-exam: same vulnerability at catastrophic severity), Systems Designer (cross-exam: compounds with retirement clustering — two different "not counted" states can trap the player). **Survived cross-examination:** Strengthened — the recommended fix (hard fallback: retire after N retries, count toward thresholds) is now consensus.
+
+**Recommendation:** Add: "If backstory generation fails after 2 retries, the task is automatically retired — it counts toward the 75% threshold and the true-ending tally, and the ending narrates it as an open thread." No task may exist in a state where it is neither resolved nor retired.
 
 ---
 
-## ONE PARAGRAPH VERDICT
+### #4 — No tiered definition of done; schedule is fiction beyond week 3
+**Severity:** BLOCKING · **Confidence:** High · **Cross-exam outcome:** STRENGTHENED
 
-This document is not ready to drive production. Its engine-level architecture is
-well-developed, but the two most load-bearing guarantees — "no softlock" and "a
-reachable, finite stopping point" — fail inside the systems the document itself adds
-to defend them: the Chain Reaction Agent produces goals no agent can verify or
-retire (Issue 1), and the completion gate makes the harmony ending either unearned or
-unreachable (Issue 2), while the schedule validates a slice that is not the pitched
-game (Issue 3), the physical-comedy core has no committed technology (Issue 4), and
-the audience contract is asserted against hooks the design strips (Issue 5). The
-single change that matters most is the one the board converges on from both
-directions: **resolve the retirement/completion model** — decide whether the ending
-honors effort or connection, then make the gate, the retirement trigger, the
-player-facing accounting, and the epilogue consistent with that choice, and give the
-solvability authority (the Goose Solution Planner) the means to verify
-chain_effect-reachable goals or de-scope the chain promise. Until those two
-decisions are made and the schedule checkpoint exercises them, the week-3 slice will
-certify a game that does not yet exist.
+The GDD describes a complete game with ~40 tasks, 13 agents, and a closing sequence, but never defines what minimum viable product looks like. The 12-week schedule acknowledges its own estimates are "rough, unvalidated" but still presents weeks 4-12 as a plan. Content authoring, token validation, and agent integration are all underestimated.
+
+**Flagged by:** Business Analyst (Finding 4: schedule fiction, Finding 7: no done definition). **Connected by:** Feasibility Lead (cross-exam: timeline has hidden scope from onboarding + hint system + content authoring), Player Psychologist (cross-exam: onboarding is an authoring task the schedule underestimates). **Survived cross-examination:** Strengthened — the lack of MVP tiers means the developer won't know what to ship if time runs out.
+
+**Recommendation:** Add a "Minimum Shippable Product" section defining three tiers: MVP (core loop, 3 residents, one task set), acceptable (full cast, one complete set, closing sequence draft), full (all ~30-40 tasks, full closing sequence). Explicitly state that weeks 4-12 are hypotheses, not commitments, to be re-estimated after week 3 ships.
+
+---
+
+### #5 — The pitch promises Tomodachi Life depth without mechanical support
+**Severity:** BLOCKING · **Confidence:** Medium · **Cross-exam outcome:** STRENGTHENED
+
+The "Tomodachi Life meets Untitled Goose Game" pitch promises emotional depth, emergent relationship drama, and characters who develop independently of the player. Every system described serves the Untitled Goose Game side (puzzle mechanics). There is no ambient community life, no goose character arc, no emotional escalation in writing or staging, and the pitch comparison creates commitments the architecture cannot fulfill.
+
+**Flagged by:** Narrative Critic (Finding 1). **Connected by:** Systems Designer (cross-exam: the underspecified relationship state machine is the structural cause of flat emotional arc), Player Psychologist (cross-exam: UGG pitch comparison sets wrong expectations), Business Analyst (cross-exam: pitch overpromise is a symptom of no tiered done definition). **Survived cross-examination:** Strengthened — the pair-consumption model (Adversarial QA Finding 1) makes this worse: with only 15 tasks, each pair gets exactly one moment, with zero room for accumulative relationship-building.
+
+**Recommendation:** Either expand the design to include lightweight ambient inter-task behavior (residents reacting to their own history without the goose's involvement) — or honestly revise the pitch to "Untitled Goose Game with authored relationship payoffs" and drop the Tomodachi Life comparison. At minimum, give the goose a present narrative thread and vary the Writer Agent's emotional register across task sets.
+
+---
+
+## 2. UNRESOLVED DISAGREEMENTS
+
+### Disagreement 1: Onboarding severity — BLOCKING or MAJOR?
+
+**Position A (Player Psychologist):** The absence of onboarding for the indirect-puzzle loop is BLOCKING. Without teaching the "orchestrate, don't confront" mental model, the game's core loop never clicks, and nothing else in the GDD rescues the experience. The onboarding gap is the gatekeeper that determines whether the player ever reaches the emotional payoffs the game promises.
+
+**Position B (Adversarial QA + Business Analyst):** Onboarding is MAJOR at highest. It is a polish problem fixable in a week of authoring once the core loop works. BLOCKING should be reserved for issues that make the game structurally unviable (task count math, backstory softlock). A game with no onboarding but a working core loop can be fixed; a game with beautiful onboarding but 7 unimplemented agents cannot.
+
+**Decision being escalated:** Is onboarding a structural design requirement that must be specified before production begins, or a polish task that can be iterated during playtesting? The board cannot settle this because it depends on whether the developer's definition of "production-ready" includes validated player comprehension or only functional systems.
+
+---
+
+### Disagreement 2: Async pipeline — remove or fix?
+
+**Position A (Business Analyst):** The entire async pre-generation pipeline is premature optimization for this scale. Generate content synchronously, show a brief loading screen, and move on. The pipeline adds complexity, creates placeholder reactions that deflate emotional moments, and introduces counting delays that confuse the player.
+
+**Position B (Systems Designer + Narrative Critic):** The async pipeline solves a real problem (API latency during set opens with 5-9 tasks needing simultaneous generation). Removing it means loading screens during gameplay. The fix is to reorder the completion sequence (delay goal-state check until authored content is ready) and add debouncing for re-planning, not to remove async entirely.
+
+**Decision being escalated:** Is the async pipeline the default architecture or a stretch goal validated empirically? The board cannot settle this because it depends on whether the developer's LLM API latency is measured or assumed — and no one has built the test harness yet.
+
+---
+
+## 3. QUICK WINS
+
+1. **Fix the pair-consumption exception.** One sentence: "Multi-resident tasks read pairwise records without consuming them; only dedicated two-resident tasks consume a pair." This resolves Finding #1's mathematical incoherence with zero design change.
+
+2. **Fix set sizes to 8 tasks.** One sentence: "Every task set contains exactly 8 tasks." This eliminates the 75% threshold variance (77.8%-87.5%) and simplifies content authoring (developer creates a predictable number of tasks per set).
+
+3. **Add the backstory failure fallback.** One paragraph: if backstory generation fails after 2 retries, the task retires and counts toward thresholds, narrated as an open thread. This resolves Finding #3's softlock with a one-paragraph addition.
+
+---
+
+## 4. VERDICT
+
+This document is architecturally strong — the Goose Solution Planner's validation loop, goal-state polling decoupled from LLM calls, and retirement-as-safety-valve are genuinely well-designed. The five blocking issues are all fixable with targeted, non-architectural edits (clarify the consumption math, cap retirement, add a generation fallback, define MVP tiers, and either expand or honestly scope the pitch). The single change that matters most is **fixing the retirement subsystem**: cross-examination revealed it as the point of failure that touches pacing, narrative integrity, player agency, softlock prevention, and the "no failure state" claim. Cap retirements at 25% per set, require player attempt before retirement, and treat retirement as a narrative event. Everything else cascades from that fix. The developer should ship the core loop with 3 residents and one task set as the MVP; the full 6-resident, 30-40-task vision should be treated as a stretch goal, not the deliverable.
