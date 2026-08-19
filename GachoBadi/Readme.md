@@ -1,6 +1,6 @@
 # Gachō Badi — GER Pipeline (Assignment #6)
 
-**What this is.** A multi-agent neighborhood game (Gachō Badi) where 12 agents produce quests, dialog, and scene events for the player. Assignment #6 asks us to build a **GER pipeline** — Generator → Evaluator → Refiner — with a **Circuit Breaker** — to automatically catch rule-breaking content before it reaches players.
+**What this is.** A multi-agent neighborhood game (Gachō Badi) where 13 agents produce quests, dialog, and scene events for the player. Assignment #6 asks us to build a **GER pipeline** — Generator → Evaluator → Refiner — with a **Circuit Breaker** — to automatically catch rule-breaking content before it reaches players.
 
 **The problem.** Some generated content is broken (e.g. an agent uses a verb that no building registered — "carries it toward the cottage" when the building only knows `dash`, `drop`, `grab`). Manually reviewing every piece is slower than writing the content yourself.
 
@@ -45,7 +45,6 @@ Everything lives in `workflow/`. The GER pipeline sits alongside the existing co
 
 ```
 workflow/
-├── ger/                    ← Generator-Evaluator-Refiner loop
 ├── constraints/            ← per-agent rule definitions
 │   ├── chain_reaction/     # BLOCKING: outcome must be registered
 │   ├── task_creator/       # BLOCKING: mentions both residents, no mischief tone

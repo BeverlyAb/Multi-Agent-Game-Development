@@ -1,7 +1,7 @@
 # Architecture
 
 Gachō Badi is a direct-execution pipeline, not a server: a Python 3 crew
-orchestrates 12 agents that generate game content, a verification layer
+orchestrates 13 agents that generate game content, a verification layer
 checks that output against the game design doc, and a Phaser 3 client
 renders the result. No framework, no mandatory third-party packages, no
 database — the project runs on the Python 3 standard library only.
@@ -16,7 +16,7 @@ workflow/ (verification + goal-oriented outer loop)
 executable/main.py → executable/crew.py (GachoBadiCrew)
         │  orchestrates
         ▼
-agents/runtime/ + agents/dev_time/ (12 agents, all BaseAgent)
+agents/runtime/ + agents/dev_time/ (13 agents, all BaseAgent)
         │  call
         ▼
 api/llm_client.py (Anthropic → OpenAI → deterministic mock fallback)
