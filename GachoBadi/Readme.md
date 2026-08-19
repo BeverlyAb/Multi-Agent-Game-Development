@@ -17,7 +17,7 @@
 3. **What does a failure look like?**
    A task says "Carries it toward the cottage" but the building only registered `['dash', 'drop', 'grab']`. The player tries to perform an action the game doesn't support — the scene breaks, the goose can't interact, the quest is stuck.
 
-## How the pipeline will work
+## How the pipeline works
 
 ```text
 ┌────────────┐    ┌────────────┐    ┌────────────┐    ┌────────────────┐
@@ -45,20 +45,20 @@ Everything lives in `workflow/`. The GER pipeline sits alongside the existing co
 
 ```
 workflow/
-├── ger/                    ← TO BUILD: Generator-Evaluator-Refiner loop
-├── constraints/            ← per-agent rule definitions (EXISTS)
+├── ger/                    ← Generator-Evaluator-Refiner loop
+├── constraints/            ← per-agent rule definitions
 │   ├── chain_reaction/     # BLOCKING: outcome must be registered
 │   ├── task_creator/       # BLOCKING: mentions both residents, no mischief tone
 │   └── goose_solution_planner/ # BLOCKING: no_unregistered_verb (weight 1000)
-├── goal_oriented/          ← Assignment #5: goal-oriented agent loop (EXISTS)
-├── generic/                ← agent-agnostic verification (EXISTS)
-├── definitions/            ← shared workflow data models (EXISTS)
-└── logs/                   ← changelog.jsonl, goal_log.jsonl (EXISTS)
+├── goal_oriented/          ← Assignment #5: goal-oriented agent loop
+├── generic/                ← agent-agnostic verification
+├── definitions/            ← shared workflow data models
+└── logs/                   ← changelog.jsonl, goal_log.jsonl
 ```
 
 **Key design:** Values live in `constraints.yaml` (declarative — weights, token budgets, retry limits), logic lives in `constraints.py` (regex verb extraction, tone scanning, outcome matching). The GDD's own risk ranking drives the priority weights — the pipeline enforces exactly what the design doc says, no more, no less.
 
-**How the existing system already helps:** The constraint folder from Assignment #5 already contains the Evaluator's rule logic — each agent's `constraints.py` already knows how to detect the violations the GER Evaluator needs to check. The GER pipeline wraps this into the Generator → Evaluator → Refiner loop with a Circuit Breaker.
+**How the existing system feeds in:** The constraint folder from Assignment #5 already contains the Evaluator's rule logic — each agent's `constraints.py` already knows how to detect the violations the GER Evaluator checks. The GER pipeline wraps this into the Generator → Evaluator → Refiner loop with a Circuit Breaker.
 
 ### `AGENTS.md` — The rules the pipeline can't break
 
@@ -99,15 +99,6 @@ This keeps changes scoped, reviewed, and auditable — no unreviewed code lands 
 ```
 
 That's a real GDD violation: the Goose Solution Planner's fallback text always includes `Goose: carries it toward {resident}.`, but `"carries"` is never a registered verb. The existing constraint system catches this automatically; without it, a human would have to read every generated task to find the same drift. The Task Creator and Chain Reaction agents pass clean — the system only flags what's actually wrong.
-
-## Rubric alignment
-
-| Criterion | Points | Where it maps |
-|---|---|---|
-| Working Pipeline (GER + Circuit Breaker) | 3.0 | `workflow/ger/` — to build |
-| Evaluator Quality (GDD rule, not generic) | 3.0 | `workflow/constraints/` — already has the rule logic |
-| Game Connection (targets this capstone game) | 2.0 | This repo is Gachō Badi; content type = quest tasks |
-| ReadMe (Pre-Build + what pipeline caught) | 2.0 | This file |
 
 ## Further reading
 
