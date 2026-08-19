@@ -80,6 +80,6 @@ By the end, there is one `definitions/` directory with both game and verificatio
 ## Ownership
 
 - **Human:** owns and modifies this contract. Assigns the `Contract ID` and sets `Status`.
-- **Reviewer:** reads the contract and owns this contract directory's `review.md`. Findings are numbered `P0-001`, `P1-001`, `P2-001`, ... per `docs/finding-severity.md`; only the reviewer assigns severities.
+- **Reviewer:** reads the contract and owns this contract directory's `review.md`. Findings are numbered `P0-001`, `P1-001`, `P2-001`, ... per `docs/finding-severity.md`; only the reviewer assigns severities. All review findings are documented in `review.md` and must be addressed in the response.
 - **Implementer:** reads the contract and the review, modifies source code and tests, and owns this contract directory's `response.md`, disposing of each review finding by id.
 - **AGENTS.md:** defines repository-wide rules; modified only with human approval (see `AGENTS.md` Governance).
