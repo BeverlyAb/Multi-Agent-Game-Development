@@ -1,7 +1,7 @@
 # Declarative half of the constraint spec for
 # agents/runtime/goose_solution_planner_agent.py. The gap-detection LOGIC
-# (regex extraction, etc.) lives in goose_solution_planner_constraints.py
-# next to this file -- only the values that don't need code live here.
+# (regex extraction, etc.) lives in constraints.py next to this file -- only
+# the values that don't need code live here.
 
 # Copied from gdd.txt's Technical Strategy table:
 # "Highest | Goose Solution Planner | 1,500-3,500 | 600-1,500".

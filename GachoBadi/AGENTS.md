@@ -3,7 +3,7 @@
 ## Project
 
 This repository contains **Gachō Badi (Goose Buddy)** — a goal-oriented
-coding agent built on top of a multi-agent game. A 12-agent Python 3 crew
+coding agent built on top of a multi-agent game. A 13-agent Python 3 crew
 generates game content; a verification workflow reads the game design doc
 (`design_review/gdd.txt`), detects where an agent's output drifts from
 what the GDD requires, and rewrites that agent's constraint configuration
@@ -12,7 +12,7 @@ until the drift is gone. See `Readme.md` for the full overview.
 ## Architecture
 
 Python 3 pipeline, stdlib only — no framework, no server, no database.
-A `GachoBadiCrew` orchestrates 12 `BaseAgent` implementations that call a
+A `GachoBadiCrew` orchestrates 13 `BaseAgent` implementations that call a
 shared LLM client (Anthropic → OpenAI → deterministic mock fallback) and
 exchange shared data models; a verification layer wraps the highest-risk
 agents; a Phaser 3 client renders the generated content.

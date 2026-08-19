@@ -1,6 +1,6 @@
 # Declarative half of the constraint spec for
 # agents/runtime/chain_reaction_agent.py. The gap-detection LOGIC lives
-# in chain_reaction_constraints.py next to this file.
+# in constraints.py next to this file.
 #
 # token_budget is present only because AgentConstraints requires one --
 # this agent makes no generate() call at all (its only randomness is

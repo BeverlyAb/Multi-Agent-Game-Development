@@ -1,6 +1,6 @@
 # Declarative half of the constraint spec for
 # agents/runtime/task_creator_agent.py. The gap-detection LOGIC lives in
-# task_creator_constraints.py next to this file.
+# constraints.py next to this file.
 
 # Copied from gdd.txt's Technical Strategy table:
 # "High | Task Creator | 1,200-2,500 | 700-1,500".
