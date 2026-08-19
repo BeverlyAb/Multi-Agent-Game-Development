@@ -37,7 +37,7 @@ from workflow.constraints.goose_solution_planner.constraints import GOOSE_SOLUTI
 from workflow.constraints.task_creator.constraints import TASK_CREATOR_CONSTRAINTS
 from workflow.generic.guarded_llm_client import GuardedLLMClient
 from workflow.generic.guarded_output import verify_output
-from workflow.definitions.models_verification import Severity
+from definitions.models_verification import Severity
 
 
 class GachoBadiCrew:

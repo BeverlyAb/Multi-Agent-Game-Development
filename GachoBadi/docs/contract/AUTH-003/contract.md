@@ -1,7 +1,7 @@
 # Contract: Folder Management — Reduce Redundancy, Improve Clarity
 
 **ID:** AUTH-003
-**Status:** DRAFT
+**Status:** READY FOR REVIEW
 
 ## Problem
 

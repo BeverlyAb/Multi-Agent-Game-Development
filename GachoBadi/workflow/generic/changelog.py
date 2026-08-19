@@ -10,7 +10,7 @@ import os
 from dataclasses import asdict
 from datetime import datetime, timezone
 
-from ..definitions.models_verification import CallRecord
+from ...definitions.models_verification import CallRecord
 
 # This file lives in workflow/generic/, but logs/ is a sibling of
 # generic/ (workflow/logs/), not a child of it -- go up one level first,

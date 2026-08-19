@@ -5,7 +5,7 @@
 This repository contains **Gachō Badi (Goose Buddy)** — a goal-oriented
 coding agent built on top of a multi-agent game. A 13-agent Python 3 crew
 generates game content; a verification workflow reads the game design doc
-(`design_review/gdd.txt`), detects where an agent's output drifts from
+(docs/gdd.txt), detects where an agent's output drifts from
 what the GDD requires, and rewrites that agent's constraint configuration
 until the drift is gone. See `Readme.md` for the full overview.
 
@@ -39,7 +39,7 @@ docs/finding-severity.md covers how review findings are classified
     workflow/          Verification / constraints / goal-oriented agent
     web/               Phaser 3 client
     output/crew/       Generated game content + manifest.json
-    design_review/     GDD and design review docs
+    docs/              Project documentation
     src/               (placeholder) application source
     tests/             (placeholder) automated tests
     docs/              Project documentation

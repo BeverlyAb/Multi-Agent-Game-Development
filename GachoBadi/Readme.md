@@ -104,4 +104,4 @@ That's a real GDD violation: the Goose Solution Planner's fallback text always i
 - `workflow/README.md` — deep design doc for the full `workflow/` package
 - `AGENTS.md` — repo-wide rules and governance
 - `docs/contract/` — per-ID contract workflow
-- `design_review/gdd.txt` — the game design document (Draft #11)
+- `docs/gdd.txt` — the game design document (Draft #11)
