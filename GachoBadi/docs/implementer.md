@@ -16,7 +16,7 @@ The implementer:
 
 ### 1. Receive contract
 
-The human sets status to `READY FOR REVIEW` and sends the contract directory to the reviewer. After the reviewer writes `review.md`, the implementer picks up the work.
+The human sets status to `READY FOR REVIEW` and sends the contract directory to the reviewer. The reviewer writes `review.md`, then sets status to `NEEDS HUMAN INPUT` (with any open P0/P1/P2 findings or required human decisions). The implementer reads the review and begins work.
 
 ### 2. Read contract and review
 
@@ -66,7 +66,7 @@ Create or update `docs/contract/<ID>/response.md` with:
 
 ### 7. Set status
 
-- If all P0/P1 are resolved and work is complete → set status to `READY FOR APPROVAL`.
+- If all P0/P1 are resolved and work is complete → set status to `READY FOR APPROVAL`. The reviewer will then re-review. If the reviewer finds remaining issues, they set `NEEDS HUMAN INPUT` and the cycle repeats (steps 3–7).
 - If blocked on a human decision → set status to `NEEDS HUMAN INPUT` and document what is needed.
 
 ## Communication with reviewer
@@ -75,8 +75,22 @@ The reviewer is on a separate device. Communication happens through the contract
 
 - The reviewer writes findings in `review.md`.
 - The implementer writes the response in `response.md`.
-- The human updates `contract.md` status.
+- Either agent may update `contract.md` status within their authority (see Workflow Lifecycle below).
 - If the reviewer re-reviews and finds remaining issues, the cycle repeats: review → response → re-review.
+
+### Workflow Lifecycle (status authority)
+
+Per `docs/workflow-lifecycle.md`, each status has exactly one determiner:
+
+| Status              | Set by            | When                                              |
+| ------------------- | ----------------- | ------------------------------------------------- |
+| `DRAFT`             | Human             | Task is still being defined                       |
+| `READY FOR REVIEW`  | Human             | Task definition is complete; sent to reviewer      |
+| `NEEDS HUMAN INPUT` | Implementer       | Blocked on a human decision                       |
+| `NEEDS HUMAN INPUT` | Reviewer          | Open P0/P1/P2 findings remain after review         |
+| `READY FOR APPROVAL`| Implementer       | Work + tests complete; all findings addressed      |
+| `READY FOR APPROVAL`| Reviewer          | Re-review confirms most/all severities addressed   |
+| `CLOSED`            | Human             | Human accepted the implementation                  |
 
 ## Response format
 
