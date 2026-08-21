@@ -52,30 +52,30 @@
 ## Implementation Details
 
 ### Evaluator Agent
-- Reads generated content against three defined constraint types
-- Returns SCORE: 1-10 and REASON for violations  
-- Uses regex patterns to detect tone, vocabulary, and formatting violations
+- Reads generated content against three defined constraint types 
+- Returns SCORE: 1-10 and REASON for violations according to GDD-specific rules
+- Uses agent-based architecture consistent with other CrewAI agents in the project
 - Follows existing codebase conventions (same architecture as other constraint agents)
 
 ### Refiner Agent  
 - Takes original content and violation explanations from Evaluator
-- Automatically rewrites output to comply with style guidelines
-- Maintains consistency with the overall GDD's community-building tone
-- Integrates seamlessly with existing task creation workflow
+- Automatically rewrites output to comply with GDD style guidelines
+- Incorporates specific examples from GDD references (resident names, building types, etc.)
+- Maintains consistency with the overall GDD's community-building tone and narrative conventions
 
 ### Validation
 - All changes follow AGENTS.md rules 
-- Code passes verification demo (python3 workflow/generic/demo_verify.py)
-- Full game run completed successfully (python3 executable/main.py)
+- Implementation verified using demonstration script in workflow/constraints/style_guide_agent/demo.py
+- System successfully processes example content through Evaluator → Refiner loop
 - No breaking changes to existing functionality
 
 ## Code Location
 The implementation is located in:
-- `workflow/constraints/style_guide_agent/` - Main implementation files
-- `workflow/generic/style_guide_test.py` - Test demonstrations
+- `workflow/constraints/style_guide_agent/` - Main implementation files including evaluator_agent.py, refiner_agent.py, style_guide_rules.py
+- `workflow/constraints/style_guide_agent/demo.py` - Test demonstrations showing before/after transformations
 
 ## Testing 
-- Verified against existing pipeline system
+- Verified against existing pipeline system using the GDD references and examples
 - Confirmed no impact on task generation quality  
-- Demonstrated successful before/after transformations
+- Demonstrated complete Evaluator → Refiner loop with realistic game content
 - All unit tests pass and system integrates with workflow as specified
