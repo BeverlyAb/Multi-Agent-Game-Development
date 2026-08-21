@@ -1,0 +1,41 @@
+﻿cover background  ELVTR logo MULTI-AGENT AI FOR GAME DEVELOPMENT
+ASSIGNMENT #07
+
+
+ASSIGNMENT #07
+STYLE GUIDE AGENT
+DUE DATE: 20 August 2026, 11:59 PM ET
+STATUS: Mandatory
+CORE OBJECTIVE
+Build an automated, self-correcting AI loop (Generator → Evaluator → Refiner) that rigorously enforces the specific aesthetic and narrative rules of your existing capstone game.
+CRITICAL CONSTRAINTS (THE "DO NOTS")
+* DO NOT invent a new universe. The style guide must be pulled directly from your existing Game Design Document (GDD) or prior assignments.
+* DO NOT use generic content. If a stranger can't tell exactly what game the rules are for, you will get a 0 for Specificity.
+* DO NOT use binary pass/fail grading. The Evaluator must output a SCORE and a REASON.
+* DO NOT intervene in the loop. The agent must identify violations and fix them independently.
+DELIVERABLES CHECKLIST FOR A 10/10
+1. The Capstone-Anchored Style Guide (4.5 Points) Your style rules must be explicitly tied to your game's lore, characters, factions, and tone.
+   * Derived entirely from your GDD/prior work.
+   * Includes at least 3 distinct constraint types (e.g., tone/vibe, specific game vocabulary, formatting conventions, length limits).
+2. The Evaluator & Refiner Loop (3.0 Points) You must demonstrate an automated system that checks content and fixes it.
+   * Evaluator Agent: Analyzes the generator's output against the style guide and returns a SCORE + REASON.
+   * Refiner Agent: Takes the Evaluator's "Reason" and automatically rewrites the content to fix the violations.
+   * Successfully identifies off-brand content and corrects it to match your game's exact aesthetic.
+3. Before/After Demonstration (2.0 Points) You need to show the loop in action using real content generated for your game.
+   * Example 1: Demonstrates the system fixing a specific violation class (e.g., Tone).
+   * Example 2: Demonstrates the system fixing a second violation class (e.g., Vocabulary/Lore inaccuracies).
+   * Example 3: Demonstrates the system fixing a third violation class (e.g., Formatting/Length).
+4. Pipeline Connection (0.5 Points) Exactly one sentence stating where this agent fits into your current capstone workflow (e.g., "This Style Guide Agent will run immediately after NPC dialogue generation to ensure all merchant barks adhere to the gritty, cyberpunk slang established in the GDD.").
+
+
+
+
+STEP-BY-STEP ACTION PLAN
+1. Extract Your Rules. Open your GDD. Pick three distinct rules your content must follow. For example:
+   * Vocabulary: Characters must refer to magic as "The Weave" and tech as "Rust."
+   * Tone: Dialogue must be cynical and dry, avoiding overly enthusiastic exclamation marks.
+   * Formatting: All output must be formatted as in-game datapad logs.
+2. Prompt the Evaluator. Write the prompt for your Evaluator Agent. Give it your extracted rules and instruct it: "Review the following text. Grade it on a scale of 1-10 based on these three rules. Output your response strictly as SCORE: [X/10] and REASON: [Your detailed explanation of what rules were violated]."
+3. Prompt the Refiner. Write the prompt for your Refiner Agent. Instruct it: "Take the original text and the Evaluator's REASON, and rewrite the text so that it scores a perfect 10/10 on the style guide."
+4. Run the Tests. Feed the Generator three separate prompts designed to produce "wrong" content for your game (e.g., ask it to write an overly cheerful character if your game is grimdark). Let your Evaluator catch the errors, and let your Refiner fix them. Save the Before, the Evaluator's Score/Reason, and the After for your submission.
+5. Write the Pipeline Sentence. Draft your single sentence explaining where this fits in your current production pipeline.
