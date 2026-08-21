@@ -1,6 +1,6 @@
-# Gachō Badi — GER Pipeline (Assignment #6)
+# Gachō Badi — GER Pipeline and Style Guide Agent (Assignment #6 + #7)
 
-**What this is.** A multi-agent neighborhood game (Gachō Badi) where 13 agents produce quests, dialog, and scene events for the player. Assignment #6 asks us to build a **GER pipeline** — Generator → Evaluator → Refiner — with a **Circuit Breaker** — to automatically catch rule-breaking content before it reaches players.
+**What this is.** A multi-agent neighborhood game (Gachō Badi) where agents produce quests, dialog, and scene events for the player. Assignment #6 builds a **GER pipeline** — Generator → Evaluator → Refiner — with a **Circuit Breaker** — to automatically catch rule-breaking content before it reaches players. Assignment #7 adds a **Style Guide Agent** that enforces aesthetic and narrative rules, ensuring all generated content matches the game's specific tone, vocabulary, and formatting conventions.
 
 **The problem.** Some generated content is broken (e.g. an agent uses a verb that no building registered — "carries it toward the cottage" when the building only knows `dash`, `drop`, `grab`). Manually reviewing every piece is slower than writing the content yourself.
 
@@ -25,17 +25,24 @@
 │  (task     │    │  (checks   │    │  (retries  │    │  (clean task)  │
 │  content)  │    │  GDD rule) │    │  with fix) │    │                │
 └────────────┘    └─────┬──────┘    └────────────┘    └────────────────┘
-                        │
-                   ┌────▼─────┐
-                   │  Circuit  │  ← loop can't self-correct?
-                   │  Breaker  │    escalates to human review
-                   └──────────┘
+                         │
+                    ┌────▼─────┐
+                    │  Circuit  │  ← loop can't self-correct?
+                    │  Breaker  │    escalates to human review
+                    └──────────┘
+                         │
+                    ┌────▼──────────────────────────┐
+                    │   Style Guide Agent (Assignment #7) │
+                    │  (checks tone, vocabulary,   │
+                    │   formatting, fixes violations)   │
+                    └───────────────────────────────┘
 ```
 
 - **Generator** — produces quest content (task prompts, verb actions) from the agent crew's output.
 - **Evaluator** — checks every verb in the task against the building's registered `possible_verbs` from `constraints.yaml`. The rule is traceable to the GDD's "no invented behavior" contract.
 - **Refiner** — retries with corrective feedback when the evaluator flags a violation.
 - **Circuit Breaker** — stops the loop after `max_retries` and escalates when the pipeline can't self-correct.
+- **Style Guide Agent** (Assignment #7) — enforces GDD-style rules on all generated content: tone consistency, vocabulary accuracy, and formatting conventions. Ensures content matches the cozy, community-building tone where the goose is a quiet helper rather than mischief-maker.
 
 ## Highlighted components
 
@@ -48,7 +55,8 @@ workflow/
 ├── constraints/            ← per-agent rule definitions
 │   ├── chain_reaction/     # BLOCKING: outcome must be registered
 │   ├── task_creator/       # BLOCKING: mentions both residents, no mischief tone
-│   └── goose_solution_planner/ # BLOCKING: no_unregistered_verb (weight 1000)
+│   ├── goose_solution_planner/ # BLOCKING: no_unregistered_verb (weight 1000)
+│   └── style_guide_agent/  # Assignment #7: enforces tone, vocabulary, formatting
 ├── goal_oriented/          ← Assignment #5: goal-oriented agent loop
 ├── generic/                ← agent-agnostic verification
 ├── definitions/            ← shared workflow data models
