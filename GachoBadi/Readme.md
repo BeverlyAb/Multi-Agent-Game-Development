@@ -75,6 +75,14 @@ AGENTS.md defines the coding and behavioral rules every change must follow. For 
 - **Values in `constraints.yaml`, logic in `constraints.py`.** The pipeline respects this split: the Evaluator reads rules from YAML, executes checks in Python.
 - **Keep `workflow/generic/` agent-agnostic; domain-specific gap detection goes in `workflow/constraints/<agent>/`.** The GER pipeline follows this structure.
 - **Every agent call supplies a `fallback` string; the crew must never crash without producing output.** The Circuit Breaker embodies this — it doesn't crash; it escalates gracefully.
+- **Style Guide Agent (Assignment #7) must enforce specific aesthetic and narrative rules:**
+  - Content must maintain the game's community-oriented, cozy tone
+  - No mischief or chaotic behavior (goose is a quiet community-builder, not a "untitled goose game")
+  - Dialogue must be dry and understated, not overly enthusiastic
+  - Use specific GDD terminology for relationships (e.g., "drifted apart" not "estranged")
+  - Reference specific building types, item functionality, and role terminology
+  - Task descriptions must be concise and action-oriented
+  - Content must follow GDD formatting conventions for dialogue and narrative
 - **Before completing a task:** run `python3 workflow/generic/demo_verify.py --agents all` and `python3 executable/main.py`.
 
 ### `/contract` — How changes get reviewed
@@ -96,6 +104,31 @@ docs/contract/
 4. The contract Status (`NEEDS HUMAN INPUT` / `READY FOR APPROVAL` / `CLOSED`) tracks where things stand.
 
 This keeps changes scoped, reviewed, and auditable — no unreviewed code lands on main.
+
+### Assignment #7: Style Guide Agent
+
+The Style Guide Agent adds a new layer of automated quality control that enforces GDD-style rules on all generated content. It ensures that every piece of game content matches the specific aesthetic and narrative conventions of Gachō Badi — a cozy, community-building game where the goose helps residents reconnect rather than cause mischief.
+
+**What it checks:**
+- **Tone:** Is the content community-oriented and cozy? Does it avoid excessive enthusiasm?
+- **Vocabulary:** Are specific GDD terms used correctly? Are there any "generic" phrases that could apply to any game?
+- **Formatting:** Does it follow GDD conventions for dialogue, narrative, and task descriptions?
+
+**How it works:**
+- An Evaluator Agent analyzes content against style guide rules and outputs a SCORE (1-10) and REASON for any violations
+- A Refiner Agent takes the Evaluator's feedback and automatically rewrites content to score 10/10
+- The agents work independently without human intervention, as required by the assignment
+- Demonstrations show real before/after content transformations for tone, vocabulary, and formatting violations
+
+**File structure:**
+- `workflow/constraints/style_guide_agent/evaluator_agent.py` — Evaluator Agent implementation
+- `workflow/constraints/style_guide_agent/refiner_agent.py` — Refiner Agent implementation
+- `workflow/constraints/style_guide_agent/style_guide_rules.py` — Style guide rules and GDD references
+- `workflow/constraints/style_guide_agent/demo.py` — Demonstration of style guide in action
+- `workflow/constraints/style_guide_agent/integration_demo.py` — Pipeline integration example
+
+**Why it matters:**
+Without the Style Guide Agent, generated content might drift into overly enthusiastic dialogue, generic vocabulary, or improper formatting — breaking the cozy, low-stakes tone that defines Gachō Badi. The agent ensures consistency across all generated quests, dialogue, and scenes.
 
 ## What the system already finds in real runs
 
