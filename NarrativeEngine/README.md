@@ -1,6 +1,6 @@
 # Narrative Engine Prototype
 
-A fully functional Python-based narrative engine for dynamic storytelling in RPG games with persistent state tracking, context-aware responses, and automatic state management.
+A fully functional Python-based narrative engine for dynamic storytelling in RPG games with persistent state tracking, context-aware responses, and automatic state management. It applied GLM-4.7-Flash as opposed to the frontier Claude models.
 
 ## World Description: The Crypt of Eternal Shadows
 
@@ -20,6 +20,10 @@ The JSON facts ledger (`narrative_ledger.json`) maintains the current state of t
 - **quests**: Active and completed quest objectives
 - **memories**: Chronological record of player actions for continuity
 - **turn_count**: Number of actions taken by the player
+
+## Surprising Feature
+
+In narrative_ledger.json, it did save my turns as "memories", even the ones that were just gibberish. I liked that it reinforced the RAG concept. As a user, I thought the session ended after the 5 turns and it would reset, but having the ledger meant it "saved" my previous gameplay. 
 
 ## Technical Implementation
 
