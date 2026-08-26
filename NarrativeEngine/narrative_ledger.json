@@ -1,0 +1,25 @@
+{
+  "player_name": "The Adventurer",
+  "location": "entrance_hall",
+  "health": 100,
+  "inventory": [],
+  "reputation": {
+    "allies": 0,
+    "enemies": 0
+  },
+  "story_flags": {},
+  "encounters": [],
+  "quests": [],
+  "memories": [
+    "Turn 2: Player The Adventurer - Enter the darkness",
+    "Turn 3: Player The Adventurer - Cast for sight",
+    "Turn 4: Player The Adventurer - Cast for sight",
+    "Turn 5: Player The Adventurer - go further",
+    "Turn 1: Player The Adventurer - boo",
+    "Turn 2: Player The Adventurer - ds;kldmksaff",
+    "Turn 3: Player The Adventurer - ;masfkalsflkansdlfnlasdf",
+    "Turn 4: Player The Adventurer - lnflndf\\",
+    "Turn 5: Player The Adventurer - ;knfkl;dsnfsf",
+    "Turn 1: Player The Adventurer - mage"
+  ]
+}
